@@ -37,6 +37,7 @@ public class MainController {
             alert.setHeaderText(null);
             alert.setContentText("Error loading add property screen");
             alert.showAndWait();
+            System.out.println(e.getMessage());
         }
     }
 }
