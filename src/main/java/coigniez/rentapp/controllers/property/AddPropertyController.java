@@ -1,20 +1,58 @@
 package coigniez.rentapp.controllers.property;
 
+import coigniez.rentapp.services.PropertyService;
+import coigniez.rentapp.model.Property;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
-import net.rgielen.fxweaver.core.FxmlView;
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.structure.StringField;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 
 @Component
 @FxmlView("/views/property/addProperty.fxml")
 public class AddPropertyController {
+
+    @Autowired
+    private PropertyService propertyService;
+
     @FXML
-    private AnchorPane formField;
+    private VBox formField;
+
+    private Form form;
+    private StringField nameField;
 
     @FXML
     public void initialize() {
-        System.out.println("AddPropertyController initialized");
-        formField.getChildren().add(new javafx.scene.control.Label("Add Property Form"));
+        nameField = Field.ofStringType("Name")
+            .label("Name")
+            .required("This field can’t be empty");
+
+        // Create the form
+        form = Form.of(
+            Group.of(nameField)
+        ).title("Property Form");
+
+        // Render the form
+        formField.getChildren().add(new FormRenderer(form));
+
+        // Add a submit button
+        Button submitButton = new Button("Submit");
+        submitButton.setOnAction(event -> addProperty());
+        formField.getChildren().add(submitButton);
+    }
+
+    private void addProperty() {
+        Property property = new Property();
+        property.setName(nameField.getValue());
+
+        propertyService.saveProperty(property);
     }
 }
