@@ -1,5 +1,7 @@
 package coigniez.rentapp.model;
 
+import java.util.Arrays;
+
 public enum Country {
     BELGIUM("BE") {
         @Override
@@ -46,6 +48,15 @@ public enum Country {
                 .append(" ");  // append a space
         }
         return nameWithSpaces.toString().trim(); // remove the trailing space
+    }
+
+    /**
+     * @return an array of country names with spaces and uppercase first letters
+     */
+    public static String[] getNames() {
+        return Arrays.stream(Country.values())
+                     .map(Country::getName)
+                     .toArray(String[]::new);
     }
 
     public void validatePostalCode(String postalCode) {

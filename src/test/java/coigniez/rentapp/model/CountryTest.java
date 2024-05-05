@@ -20,6 +20,12 @@ public class CountryTest {
     }
 
     @Test
+    void testGetNames() {
+        String[] expected = {"Belgium", "France", "Germany", "Netherlands", "United Kingdom"};
+        assertArrayEquals(expected, Country.getNames());
+    }
+
+    @Test
     void testGetName() {
         assertEquals("Belgium", Country.BELGIUM.getName());
         assertEquals("France", Country.FRANCE.getName());
