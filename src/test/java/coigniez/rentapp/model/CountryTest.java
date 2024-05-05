@@ -17,6 +17,15 @@ public class CountryTest {
     }
 
     @Test
+    void testGetName() {
+        assertEquals("Belgium", Country.BELGIUM.getName());
+        assertEquals("France", Country.FRANCE.getName());
+        assertEquals("Germany", Country.GERMANY.getName());
+        assertEquals("Netherlands", Country.NETHERLANDS.getName());
+        assertEquals("United Kingdom", Country.UNITED_KINGDOM.getName());
+    }
+
+    @Test
     void testValues() {
         Country[] expected = {Country.BELGIUM, Country.FRANCE, Country.GERMANY, Country.NETHERLANDS, Country.UNITED_KINGDOM};
         assertArrayEquals(expected, Country.values());
@@ -29,12 +38,14 @@ public class CountryTest {
     }
 
     @Test
-    void testGetName() {
-        assertEquals("Belgium", Country.BELGIUM.getName());
-        assertEquals("France", Country.FRANCE.getName());
-        assertEquals("Germany", Country.GERMANY.getName());
-        assertEquals("Netherlands", Country.NETHERLANDS.getName());
-        assertEquals("United Kingdom", Country.UNITED_KINGDOM.getName());
+    void testGet() {
+        assertEquals(Country.BELGIUM, Country.get("BE"));
+        assertEquals(Country.FRANCE, Country.get("France"));
+        assertEquals(Country.GERMANY, Country.get("DE"));
+        assertEquals(Country.NETHERLANDS, Country.get("Netherlands"));
+        assertEquals(Country.UNITED_KINGDOM, Country.get("UK"));
+
+        assertThrows(IllegalArgumentException.class, () -> Country.get("InvalidCountry"));
     }
 
     @Test

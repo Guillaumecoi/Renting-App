@@ -3,66 +3,69 @@ package coigniez.rentapp.model;
 import java.util.Arrays;
 
 import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import lombok.Getter;
 
+/**
+ * Enum representing various countries.
+ * Each country has a code, a name, and a postal code regular expression for validation.
+ * The {@link #get(String)} method can be used to get a country by its code or name.
+ * The {@link #validatePostalCode(String)} method can be used to validate a postal code for a country.
+ */
+@Getter
 public enum Country {
-    BELGIUM("BE") {
-        @Override
-        public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
-            if (postalCode.length() != 4 || !postalCode.matches("\\d+")) {
-                throw new InvalidPostalCodeException("Invalid postal code for Belgium. It should be 4 digits.");
-            }
-        }
-    },
-    FRANCE("FR"),
-    GERMANY("DE"),
-    NETHERLANDS("NL") {
-        @Override
-        public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
-            if (!postalCode.matches("\\d{4} [A-Z]{2}")) {
-                throw new InvalidPostalCodeException("Invalid postal code for Netherlands. It should be in the format 'NNNN AA'.");
-            }
-        }
-    },
-    UNITED_KINGDOM("UK");
+    // Enum values
+    BELGIUM("BE", "Belgium", "\\d{4}"),
+    FRANCE("FR", "France", null),
+    GERMANY("DE", "Germany", null),
+    NETHERLANDS("NL", "Netherlands", "\\d{4} [A-Z]{2}"),
+    UNITED_KINGDOM("UK", "United Kingdom", null);
 
+    // Enum fields
     private final String code;
+    private final String name;
+    private final String postalCodeRegex;
 
-    Country(String code) {
+    // Constructor
+    Country(String code, String name, String postalCodeRegex) {
         this.code = code;
+        this.name = name;
+        this.postalCodeRegex = postalCodeRegex;
     }
 
-    public String getCode() {
-        return code;
-    }
 
-    public String getName() {
-        // convert enum name to lowercase and replace underscores with spaces
-        String name = name().toLowerCase().replace('_', ' ');
-        // split the name into an array of words
-        String[] words = name.split("\\s+");
+    // Methods
 
-        // create a StringBuilder to build the name with spaces and uppercase first letters
-        StringBuilder nameWithSpaces = new StringBuilder();
-        for (String word : words) {
-            nameWithSpaces.append(
-                word.substring(0, 1).toUpperCase())  // set first letter to uppercase
-                .append(word.substring(1))  // append the rest of the word
-                .append(" ");  // append a space
-        }
-        return nameWithSpaces.toString().trim(); // remove the trailing space
+    /**
+     * Get the country enum by its code or name.
+     * @param codeOrName The code or name of the country.
+     * @return The country enum.
+     */
+    public static Country get(String codeOrName) {
+        return Arrays.stream(values())
+                .filter(country -> country.code.equals(codeOrName) || country.name.equals(codeOrName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid country code or name: " + codeOrName));
     }
 
     /**
-     * @return an array of country names with spaces and uppercase first letters
+     * Get the names of all countries.
+     * @return An array of country names.
      */
     public static String[] getNames() {
-        return Arrays.stream(Country.values())
-                     .map(Country::getName)
-                     .toArray(String[]::new);
+        return Arrays.stream(values())
+                .map(Country::getName)
+                .toArray(String[]::new);
     }
 
+    /*
+     * Validate the postal code of the country based on the postal code regex.
+     */
     public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
-        // Default implementation does nothing.
-        // Override this method in each enum value to provide country-specific validation.
+        if (postalCodeRegex == null) {
+            return;
+        }
+        if (!postalCode.matches(postalCodeRegex)) {
+            throw new InvalidPostalCodeException("Invalid postal code for " + name + ".");
+        }
     }
 }
