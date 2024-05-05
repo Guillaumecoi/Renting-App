@@ -7,7 +7,7 @@ import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
 public enum Country {
     BELGIUM("BE") {
         @Override
-        public void validatePostalCode(String postalCode) {
+        public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
             if (postalCode.length() != 4 || !postalCode.matches("\\d+")) {
                 throw new InvalidPostalCodeException("Invalid postal code for Belgium. It should be 4 digits.");
             }
@@ -17,7 +17,7 @@ public enum Country {
     GERMANY("DE"),
     NETHERLANDS("NL") {
         @Override
-        public void validatePostalCode(String postalCode) {
+        public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
             if (!postalCode.matches("\\d{4} [A-Z]{2}")) {
                 throw new InvalidPostalCodeException("Invalid postal code for Netherlands. It should be in the format 'NNNN AA'.");
             }
@@ -61,7 +61,7 @@ public enum Country {
                      .toArray(String[]::new);
     }
 
-    public void validatePostalCode(String postalCode) {
+    public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
         // Default implementation does nothing.
         // Override this method in each enum value to provide country-specific validation.
     }
