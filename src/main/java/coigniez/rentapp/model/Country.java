@@ -2,12 +2,14 @@ package coigniez.rentapp.model;
 
 import java.util.Arrays;
 
+import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+
 public enum Country {
     BELGIUM("BE") {
         @Override
         public void validatePostalCode(String postalCode) {
             if (postalCode.length() != 4 || !postalCode.matches("\\d+")) {
-                throw new IllegalArgumentException("Invalid postal code for Belgium. It should be 4 digits.");
+                throw new InvalidPostalCodeException("Invalid postal code for Belgium. It should be 4 digits.");
             }
         }
     },
@@ -17,7 +19,7 @@ public enum Country {
         @Override
         public void validatePostalCode(String postalCode) {
             if (!postalCode.matches("\\d{4} [A-Z]{2}")) {
-                throw new IllegalArgumentException("Invalid postal code for Netherlands. It should be in the format 'NNNN AA'.");
+                throw new InvalidPostalCodeException("Invalid postal code for Netherlands. It should be in the format 'NNNN AA'.");
             }
         }
     },
