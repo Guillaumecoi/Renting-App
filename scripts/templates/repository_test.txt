@@ -1,0 +1,11 @@
+package coigniez.rentapp.model.$ENTITY;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class $ENTITYRepositoryTest {
+    @Test
+    public void testRepository() {
+        // TODO: Add tests for $ENTITYRepository
+    }
+}

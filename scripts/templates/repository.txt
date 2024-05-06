@@ -1,0 +1,6 @@
+package coigniez.rentapp.model.$ENTITY;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface $ENTITYRepository extends JpaRepository<$ENTITY, Long> {
+}

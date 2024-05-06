@@ -1,0 +1,12 @@
+package coigniez.rentapp.model.$ENTITY;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class $ENTITYTest {
+    @Test
+    public void testEntity() {
+        $ENTITY $LOWERCASE_ENTITY = new $ENTITY();
+        // TODO: Add tests for $ENTITY
+    }
+}

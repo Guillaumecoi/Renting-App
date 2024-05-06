@@ -1,0 +1,35 @@
+package coigniez.rentapp.model.$ENTITY;
+
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class $ENTITYService {
+    private final $ENTITYRepository $LOWERCASE_ENTITYRepository;
+
+    public $ENTITYService($ENTITYRepository $LOWERCASE_ENTITYRepository) {
+        this.$LOWERCASE_ENTITYRepository = $LOWERCASE_ENTITYRepository;
+    }
+
+    public $ENTITY save$ENTITY($ENTITY $LOWERCASE_ENTITY) {
+        return $LOWERCASE_ENTITYRepository.save($LOWERCASE_ENTITY);
+    }
+
+    public Optional<$ENTITY> find$ENTITYById(Long id) {
+        return $LOWERCASE_ENTITYRepository.findById(id);
+    }
+
+    public List<$ENTITY> findAll$ENTITYs() {
+        return $LOWERCASE_ENTITYRepository.findAll();
+    }
+
+    public $ENTITY update$ENTITY($ENTITY $LOWERCASE_ENTITY) {
+        return $LOWERCASE_ENTITYRepository.save($LOWERCASE_ENTITY);
+    }
+
+    public void delete$ENTITY(Long id) {
+        $LOWERCASE_ENTITYRepository.deleteById(id);
+    }
+}
