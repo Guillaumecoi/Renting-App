@@ -1,4 +1,4 @@
-package coigniez.rentapp.model;
+package coigniez.rentapp.model.address;
 
 import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
 import org.junit.jupiter.api.BeforeEach;

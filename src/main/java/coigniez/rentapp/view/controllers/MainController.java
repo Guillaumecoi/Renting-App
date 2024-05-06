@@ -1,9 +1,9 @@
-package coigniez.rentapp.controllers;
+package coigniez.rentapp.view.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import coigniez.rentapp.controllers.property.AddPropertyController;
+import coigniez.rentapp.view.controllers.property.AddPropertyController;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 

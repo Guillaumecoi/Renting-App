@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import coigniez.rentapp.controllers.MainController;
+import coigniez.rentapp.view.controllers.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;

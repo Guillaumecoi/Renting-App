@@ -1,8 +1,6 @@
-package coigniez.rentapp.services;
+package coigniez.rentapp.model.property;
 
 import org.springframework.stereotype.Service;
-import coigniez.rentapp.model.Property;
-import coigniez.rentapp.repositories.PropertyRepository;
 
 import java.util.List;
 import java.util.Optional;

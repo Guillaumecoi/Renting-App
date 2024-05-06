@@ -1,10 +1,7 @@
-package coigniez.rentapp.controllers.property;
+package coigniez.rentapp.view.controllers.property;
 
-import coigniez.rentapp.services.PropertyService;
-import coigniez.rentapp.model.Property;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,9 @@ import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+
+import coigniez.rentapp.model.property.Property;
+import coigniez.rentapp.model.property.PropertyService;
 
 @Component
 @FxmlView("/views/property/addProperty.fxml")

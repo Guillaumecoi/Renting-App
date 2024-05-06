@@ -1,6 +1,5 @@
-package coigniez.rentapp.services;
+package coigniez.rentapp.model.property;
 
-import coigniez.rentapp.model.Property;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

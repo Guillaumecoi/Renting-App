@@ -1,4 +1,4 @@
-package coigniez.rentapp.model;
+package coigniez.rentapp.model.address;
 
 import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
 import jakarta.persistence.Column;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "properties")
+@Table(name = "addresses")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

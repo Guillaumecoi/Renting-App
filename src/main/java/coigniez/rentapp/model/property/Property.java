@@ -1,4 +1,4 @@
-package coigniez.rentapp.model;
+package coigniez.rentapp.model.property;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

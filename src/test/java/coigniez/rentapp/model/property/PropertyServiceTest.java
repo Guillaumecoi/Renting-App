@@ -1,7 +1,5 @@
-package coigniez.rentapp.services;
+package coigniez.rentapp.model.property;
 
-import coigniez.rentapp.model.Property;
-import coigniez.rentapp.repositories.PropertyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

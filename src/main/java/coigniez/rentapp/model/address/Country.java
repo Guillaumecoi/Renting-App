@@ -1,4 +1,4 @@
-package coigniez.rentapp.model;
+package coigniez.rentapp.model.address;
 
 import java.util.Arrays;
 
@@ -57,8 +57,10 @@ public enum Country {
                 .toArray(String[]::new);
     }
 
-    /*
+    /**
      * Validate the postal code of the country based on the postal code regex.
+     * @param postalCode The postal code to validate.
+     * @throws InvalidPostalCodeException If the postal code is invalid.
      */
     public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
         if (postalCodeRegex == null) {

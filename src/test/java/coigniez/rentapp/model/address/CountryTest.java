@@ -1,4 +1,4 @@
-package coigniez.rentapp.model;
+package coigniez.rentapp.model.address;
 
 import org.junit.jupiter.api.Test;
 

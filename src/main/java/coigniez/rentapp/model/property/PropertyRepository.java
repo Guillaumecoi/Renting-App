@@ -1,6 +1,5 @@
-package coigniez.rentapp.repositories;
+package coigniez.rentapp.model.property;
 
-import coigniez.rentapp.model.Property;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
