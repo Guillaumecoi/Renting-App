@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class $ENTITYTest {
     @Test
-    public void testEntity() {
-        $ENTITY $LOWERCASE_ENTITY = new $ENTITY();
+    public void test$ENTITY() {
         // TODO: Add tests for $ENTITY
     }
 }
