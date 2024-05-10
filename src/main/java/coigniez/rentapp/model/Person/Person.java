@@ -17,6 +17,7 @@ import lombok.ToString;
 @Data
 @ToString
 public class Person {
+    
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 }

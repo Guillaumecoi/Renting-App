@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PersonTest {
     @Test
-    public void testEntity() {
-        Person person = new Person();
+    public void testPerson() {
         // TODO: Add tests for Person
     }
 }
