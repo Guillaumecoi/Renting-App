@@ -6,6 +6,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import coigniez.rentapp.model.address.Address;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,20 +24,41 @@ public class PropertyServiceIntegrationTest {
     private PropertyService propertyService;
 
     @Test
-    public void testSaveProperty() {
+    public void testSaveProperty() throws Exception {
+        Address address = new Address();
+        address.setStreet("Test Street");
+        address.setHouseNumber("123");
+        address.setBusNumber("1A");
+        address.setPostalCode("1234");
+        address.setCity("Test City");
+        address.setProvince("Test Province");
+        address.setCountry("Belgium");
         Property property = new Property();
         property.setName("Test Property");
+        property.setAddress(address);
 
         Property savedProperty = propertyService.saveProperty(property);
 
         assertNotNull(savedProperty.getId());
         assertEquals(property.getName(), savedProperty.getName());
+        assertNotNull(savedProperty.getAddress());
+        assertEquals(property.getAddress(), savedProperty.getAddress());
     }
 
     @Test
-    public void testFindPropertyById() {
+    public void testFindPropertyById() throws Exception {
+        Address address = new Address();
+        address.setStreet("Test Street");
+        address.setHouseNumber("123");
+        address.setBusNumber("1A");
+        address.setPostalCode("1234");
+        address.setCity("Test City");
+        address.setProvince("Test Province");
+        address.setCountry("Belgium");
+
         Property property = new Property();
         property.setName("Test Property");
+        property.setAddress(address);
 
         Property savedProperty = entityManager.persistAndFlush(property);
 
@@ -43,5 +66,7 @@ public class PropertyServiceIntegrationTest {
 
         assertEquals(savedProperty.getId(), foundProperty.get().getId());
         assertEquals(property.getName(), foundProperty.get().getName());
+        assertNotNull(foundProperty.get().getAddress());
+        assertEquals(property.getAddress(), foundProperty.get().getAddress());
     }
 }
