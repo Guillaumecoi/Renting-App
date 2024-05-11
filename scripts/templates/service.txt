@@ -1,4 +1,4 @@
-package coigniez.rentapp.model.$ENTITY;
+package coigniez.rentapp.model.$LOWERCASE_ENTITY;
 
 import org.springframework.stereotype.Service;
 
