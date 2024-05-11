@@ -45,7 +45,7 @@ public class AddressMapperTest {
         dto.setProvince("Test Province");
         dto.setCountry("Invalid Country");
 
-        assertThrows(InvalidPostalCodeException.class, () -> AddressMapper.dtoToEntity(dto));
+        assertThrows(IllegalArgumentException.class, () -> AddressMapper.dtoToEntity(dto));
     }
 
     @Test
