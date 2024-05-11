@@ -1,4 +1,4 @@
-package coigniez.rentapp.model.Person;
+package coigniez.rentapp.model.person;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
