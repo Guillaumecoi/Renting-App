@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +56,7 @@ public class PropertyServiceTest {
     }
 
     @Test
-    void testSaveProperty() throws InvalidPostalCodeException {
+    void testSaveProperty() throws InvalidAddressException {
         PropertyDTO property = new PropertyDTO();
         Property propertyEntity = new Property();
         when(propertyRepository.save(any(Property.class))).thenReturn(propertyEntity);

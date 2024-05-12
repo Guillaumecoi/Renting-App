@@ -1,6 +1,6 @@
 package coigniez.rentapp.model.address;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -57,9 +57,9 @@ public class Address {
     /**
      * Set the postal code and validate it based on the country.
      * @param postalCode The postal code.
-     * @throws InvalidPostalCodeException If the postal code is invalid for the country.
+     * @throws InvalidAddressException If the postal code is invalid for the country.
      */
-    public void setPostalCode(String postalCode) throws InvalidPostalCodeException {
+    public void setPostalCode(String postalCode) throws InvalidAddressException {
         if (this.country != null) {
             validatePostalCode(postalCode, this.country);
         }
@@ -70,18 +70,18 @@ public class Address {
     /**
      * Set the country by its name.
      * @param country The name or code of the country.
-     * @throws InvalidPostalCodeException If the postal code is invalid for this country.
+     * @throws InvalidAddressException If the postal code or country is invalid for this country.
      */
-    public void setCountry(String country) throws InvalidPostalCodeException {
+    public void setCountry(String country) throws InvalidAddressException {
         setCountry(Country.get(country));
     }
 
     /**
      * Set the country by its enum.
      * @param country The country enum.
-     * @throws InvalidPostalCodeException If the postal code is invalid for this country.
+     * @throws InvalidAddressException If the postal code is invalid for this country.
      */
-    public void setCountry(Country country) throws InvalidPostalCodeException {
+    public void setCountry(Country country) throws InvalidAddressException {
         if (this.postalCode != null) {
             validatePostalCode(this.postalCode, country);
         }
@@ -90,9 +90,9 @@ public class Address {
 
     /**
      * Validates the postal code of the country based on the postal code regex.
-     * @throws InvalidPostalCodeException If the postal code is invalid.
+     * @throws InvalidAddressException If the postal code is invalid.
      */
-    private void validatePostalCode(String postalCode, Country country) throws InvalidPostalCodeException {
+    private void validatePostalCode(String postalCode, Country country) throws InvalidAddressException {
         country.validatePostalCode(postalCode);
     }
     

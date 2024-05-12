@@ -1,6 +1,6 @@
 package coigniez.rentapp.model.address;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 public class AddressMapper {
 
@@ -8,9 +8,9 @@ public class AddressMapper {
      * Maps an AddressDTO to an Address entity
      * @param dto AddressDTO
      * @return Address entity
-     * @throws InvalidPostalCodeException if the postal code is invalid
+     * @throws InvalidAddressException if the postal code or country is invalid
      */
-    public static Address dtoToEntity(AddressDTO dto) throws InvalidPostalCodeException {
+    public static Address dtoToEntity(AddressDTO dto) throws InvalidAddressException {
         if (dto == null) {
             return null;
         }

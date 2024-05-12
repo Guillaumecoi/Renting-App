@@ -2,14 +2,14 @@ package coigniez.rentapp.model.address;
 
 import org.junit.jupiter.api.Test;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddressMapperTest {
 
     @Test
-    public void testDtoToEntity() throws InvalidPostalCodeException {
+    public void testDtoToEntity() throws InvalidAddressException {
         AddressDTO dto = new AddressDTO();
         dto.setId(1L);
         dto.setStreet("Test Street");
@@ -34,7 +34,7 @@ public class AddressMapperTest {
     }
 
     @Test
-    public void testDtoToEntityNull() throws InvalidPostalCodeException {
+    public void testDtoToEntityNull() throws InvalidAddressException {
         assertNull(AddressMapper.dtoToEntity(null));
     }
 
@@ -50,7 +50,7 @@ public class AddressMapperTest {
         dto.setProvince("Test Province");
         dto.setCountry("Invalid Country");
 
-        assertThrows(IllegalArgumentException.class, () -> AddressMapper.dtoToEntity(dto));
+        assertThrows(InvalidAddressException.class, () -> AddressMapper.dtoToEntity(dto));
     }
 
     @Test
@@ -65,11 +65,11 @@ public class AddressMapperTest {
         dto.setProvince("Test Province");
         dto.setCountry("Belgium");
 
-        assertThrows(InvalidPostalCodeException.class, () -> AddressMapper.dtoToEntity(dto));
+        assertThrows(InvalidAddressException.class, () -> AddressMapper.dtoToEntity(dto));
     }
 
     @Test
-    public void testEntityToDto() throws InvalidPostalCodeException {
+    public void testEntityToDto() throws InvalidAddressException {
         Address address = new Address();
         address.setId(1L);
         address.setStreet("Test Street");

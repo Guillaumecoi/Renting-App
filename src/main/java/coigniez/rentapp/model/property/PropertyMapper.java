@@ -1,7 +1,7 @@
 package coigniez.rentapp.model.property;
 
 import coigniez.rentapp.model.address.AddressMapper;
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 public class PropertyMapper {
 
@@ -18,7 +18,7 @@ public class PropertyMapper {
         return dto;
     }
 
-    public static Property dtoToEntity(PropertyDTO dto) throws InvalidPostalCodeException {
+    public static Property dtoToEntity(PropertyDTO dto) throws InvalidAddressException {
         if (dto == null) {
             return null;
         }

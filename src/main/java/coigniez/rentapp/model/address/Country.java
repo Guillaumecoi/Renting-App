@@ -2,7 +2,7 @@ package coigniez.rentapp.model.address;
 
 import java.util.Arrays;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 import lombok.Getter;
 
 /**
@@ -39,12 +39,13 @@ public enum Country {
      * Get the country enum by its code or name.
      * @param codeOrName The code or name of the country.
      * @return The country enum.
+     * @throws InvalidAddressException If the code or name is not in the enum list.
      */
-    public static Country get(String codeOrName) {
+    public static Country get(String codeOrName) throws InvalidAddressException {
         return Arrays.stream(values())
                 .filter(country -> country.code.equals(codeOrName) || country.name.equals(codeOrName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid country code or name: " + codeOrName));
+                .orElseThrow(() -> new InvalidAddressException("Invalid country code or name: " + codeOrName));
     }
 
     /**
@@ -70,14 +71,14 @@ public enum Country {
     /**
      * Validate the postal code of the country based on the postal code regex.
      * @param postalCode The postal code to validate.
-     * @throws InvalidPostalCodeException If the postal code is invalid.
+     * @throws InvalidAddressException If the postal code is invalid.
      */
-    public void validatePostalCode(String postalCode) throws InvalidPostalCodeException {
+    public void validatePostalCode(String postalCode) throws InvalidAddressException {
         if (postalCodeRegex == null) {
             return;
         }
         if (!postalCode.matches(postalCodeRegex)) {
-            throw new InvalidPostalCodeException("Invalid postal code for " + name + ".");
+            throw new InvalidAddressException("Invalid postal code for " + name + ".");
         }
     }
 }

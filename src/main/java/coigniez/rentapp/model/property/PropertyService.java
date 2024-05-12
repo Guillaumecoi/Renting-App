@@ -2,7 +2,7 @@ package coigniez.rentapp.model.property;
 
 import org.springframework.stereotype.Service;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,13 @@ public class PropertyService {
         this.propertyRepository = propertyRepository;
     }
 
-    public PropertyDTO saveProperty(PropertyDTO property) throws InvalidPostalCodeException {
+    /**
+     * Save a property to the database
+     * @param property the property to save 
+     * @return the saved property
+     * @throws InvalidAddressException if the postal code or country is invalid
+     */
+    public PropertyDTO saveProperty(PropertyDTO property) throws InvalidAddressException {
         Property savedProperty = propertyRepository.save(PropertyMapper.dtoToEntity(property));
         return PropertyMapper.entityToDto(savedProperty);
     }

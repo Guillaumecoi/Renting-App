@@ -1,6 +1,6 @@
 package coigniez.rentapp.model.address;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +48,7 @@ class AddressTest {
     @Test
     void testSetInvalidPostalCode() {
         String postalCode = "invalid";
-        assertThrows(InvalidPostalCodeException.class, () -> {
+        assertThrows(InvalidAddressException.class, () -> {
             address.setCountry(Country.BELGIUM.getName());
             address.setPostalCode(postalCode);
         });

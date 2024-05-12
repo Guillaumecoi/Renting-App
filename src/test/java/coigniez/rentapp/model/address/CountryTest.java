@@ -2,7 +2,7 @@ package coigniez.rentapp.model.address;
 
 import org.junit.jupiter.api.Test;
 
-import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,27 +44,27 @@ public class CountryTest {
     }
 
     @Test
-    void testGet() {
+    void testGet() throws InvalidAddressException {
         assertEquals(Country.BELGIUM, Country.get("BE"));
         assertEquals(Country.FRANCE, Country.get("France"));
         assertEquals(Country.GERMANY, Country.get("DE"));
         assertEquals(Country.NETHERLANDS, Country.get("Netherlands"));
         assertEquals(Country.UNITED_KINGDOM, Country.get("UK"));
 
-        assertThrows(IllegalArgumentException.class, () -> Country.get("InvalidCountry"));
+        assertThrows(InvalidAddressException.class, () -> Country.get("InvalidCountry"));
     }
 
     @Test
     void testValidatePostalCodeBelgium() {
         assertDoesNotThrow(() -> Country.BELGIUM.validatePostalCode("1000"));
-        assertThrows(InvalidPostalCodeException.class, () -> Country.BELGIUM.validatePostalCode("10000"));
-        assertThrows(InvalidPostalCodeException.class, () -> Country.BELGIUM.validatePostalCode("abc"));
+        assertThrows(InvalidAddressException.class, () -> Country.BELGIUM.validatePostalCode("10000"));
+        assertThrows(InvalidAddressException.class, () -> Country.BELGIUM.validatePostalCode("abc"));
     }
 
     @Test
     void testValidatePostalCodeNetherlands() {
         assertDoesNotThrow(() -> Country.NETHERLANDS.validatePostalCode("1234 AB"));
-        assertThrows(InvalidPostalCodeException.class, () -> Country.NETHERLANDS.validatePostalCode("1234"));
-        assertThrows(InvalidPostalCodeException.class, () -> Country.NETHERLANDS.validatePostalCode("1234 ABC"));
+        assertThrows(InvalidAddressException.class, () -> Country.NETHERLANDS.validatePostalCode("1234"));
+        assertThrows(InvalidAddressException.class, () -> Country.NETHERLANDS.validatePostalCode("1234 ABC"));
     }
 }
