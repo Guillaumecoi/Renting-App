@@ -12,6 +12,7 @@ public class PropertyMapperTest {
 
     @Test
     void testDtoToEntity() throws InvalidPostalCodeException {
+        // Arrange
         PropertyDTO dto = new PropertyDTO();
         dto.setId(1L);
         dto.setName("Test Property");
@@ -25,11 +26,12 @@ public class PropertyMapperTest {
         AddressDto.setCity("Test City");
         AddressDto.setProvince("Test Province");
         AddressDto.setCountry("Belgium");
-
         dto.setAddress(AddressDto);
 
+        // Act
         Property entity = PropertyMapper.dtoToEntity(dto);
 
+        // Assert
         assertNotNull(entity);
         assertEquals(dto.getId(), entity.getId());
         assertEquals(dto.getName(), entity.getName());
@@ -45,7 +47,65 @@ public class PropertyMapperTest {
     }
 
     @Test
+    void testDtoToEntityWithNull() throws InvalidPostalCodeException {
+        // Arrange
+        PropertyDTO dto = null;
+
+        // Act
+        Property entity = PropertyMapper.dtoToEntity(dto);
+
+        // Assert
+        assertNull(entity);
+    }
+
+    @Test
+    void testDtoToEntityWithInvalidCountry() {
+        // Arrange
+        PropertyDTO dto = new PropertyDTO();
+        dto.setId(1L);
+        dto.setName("Test Property");
+        // set AddressDTO for dto
+        AddressDTO AddressDto = new AddressDTO();
+        AddressDto.setId(1L);
+        AddressDto.setStreet("Test Street");
+        AddressDto.setHouseNumber("123");
+        AddressDto.setBusNumber("1A");
+        AddressDto.setPostalCode("1234");
+        AddressDto.setCity("Test City");
+        AddressDto.setProvince("Test Province");
+        AddressDto.setCountry("Invalid Country");
+        dto.setAddress(AddressDto);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> PropertyMapper.dtoToEntity(dto));  
+    }
+
+    @Test
+    void testDtoToEntityWithInvalidPostalCode() {
+        // Arrange
+        PropertyDTO dto = new PropertyDTO();
+        dto.setId(1L);
+        dto.setName("Test Property");
+        // set AddressDTO for dto
+        AddressDTO AddressDto = new AddressDTO();
+        AddressDto.setId(1L);
+        AddressDto.setStreet("Test Street");
+        AddressDto.setHouseNumber("123");
+        AddressDto.setBusNumber("1A");
+        AddressDto.setPostalCode("Invalid Postal Code");
+        AddressDto.setCity("Test City");
+        AddressDto.setProvince("Test Province");
+        AddressDto.setCountry("Belgium");
+        dto.setAddress(AddressDto);
+
+        // Act & Assert
+        assertThrows(InvalidPostalCodeException.class, () -> PropertyMapper.dtoToEntity(dto));  
+    }
+    
+
+    @Test
     void testEntityToDto() throws InvalidPostalCodeException {
+        // Arrange
         Property entity = new Property();
         entity.setId(1L);
         entity.setName("Test Property");
@@ -59,11 +119,12 @@ public class PropertyMapperTest {
         address.setCity("Test City");
         address.setProvince("Test Province");
         address.setCountry("Belgium");
-
         entity.setAddress(address);
 
+        // Act
         PropertyDTO dto = PropertyMapper.entityToDto(entity);
 
+        // Assert
         assertNotNull(dto);
         assertEquals(entity.getId(), dto.getId());
         assertEquals(entity.getName(), dto.getName());
@@ -76,6 +137,17 @@ public class PropertyMapperTest {
         assertEquals(entity.getAddress().getCity(), dto.getAddress().getCity());
         assertEquals(entity.getAddress().getProvince(), dto.getAddress().getProvince());
         assertEquals(entity.getAddress().getCountry(), dto.getAddress().getCountry());
-        
+    }
+
+    @Test
+    void testEntityToDtoWithNull() {
+        // Arrange
+        Property entity = null;
+
+        // Act
+        PropertyDTO dto = PropertyMapper.entityToDto(entity);
+
+        // Assert
+        assertNull(dto);
     }
 }
