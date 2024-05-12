@@ -34,6 +34,11 @@ public class AddressMapperTest {
     }
 
     @Test
+    public void testDtoToEntityNull() throws InvalidPostalCodeException {
+        assertNull(AddressMapper.dtoToEntity(null));
+    }
+
+    @Test
     public void testDtoToEntityInvalidCountry() {
         AddressDTO dto = new AddressDTO();
         dto.setId(1L);
@@ -63,8 +68,6 @@ public class AddressMapperTest {
         assertThrows(InvalidPostalCodeException.class, () -> AddressMapper.dtoToEntity(dto));
     }
 
-
-
     @Test
     public void testEntityToDto() throws InvalidPostalCodeException {
         Address address = new Address();
@@ -88,5 +91,10 @@ public class AddressMapperTest {
         assertEquals(address.getCity(), dto.getCity());
         assertEquals(address.getProvince(), dto.getProvince());
         assertEquals(address.getCountry(), dto.getCountry());
+    }
+
+    @Test
+    public void testEntityToDtoNull() {
+        assertNull(AddressMapper.entityToDto(null));
     }
 }

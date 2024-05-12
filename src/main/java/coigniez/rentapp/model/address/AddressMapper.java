@@ -4,7 +4,16 @@ import coigniez.rentapp.model.exceptions.InvalidPostalCodeException;
 
 public class AddressMapper {
 
+    /**
+     * Maps an AddressDTO to an Address entity
+     * @param dto AddressDTO
+     * @return Address entity
+     * @throws InvalidPostalCodeException if the postal code is invalid
+     */
     public static Address dtoToEntity(AddressDTO dto) throws InvalidPostalCodeException {
+        if (dto == null) {
+            return null;
+        }
         Address address = new Address();
         address.setId(dto.getId());
         address.setStreet(dto.getStreet());
@@ -17,7 +26,15 @@ public class AddressMapper {
         return address;
     }
 
+    /**
+     * Maps an Address entity to an AddressDTO
+     * @param address Address entity
+     * @return AddressDTO
+     */
     public static AddressDTO entityToDto(Address address) {
+        if (address == null) {
+            return null;
+        }
         AddressDTO dto = new AddressDTO();
         dto.setId(address.getId());
         dto.setStreet(address.getStreet());
