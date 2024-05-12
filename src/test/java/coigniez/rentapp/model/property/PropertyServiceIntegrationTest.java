@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Import;
 
 import coigniez.rentapp.model.address.Address;
 import coigniez.rentapp.model.address.AddressDTO;
+import coigniez.rentapp.model.address.AddressMapper;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(PropertyService.class)
@@ -55,6 +55,7 @@ public class PropertyServiceIntegrationTest {
 
     @Test
     public void testFindPropertyById() throws Exception {
+        // Arrange
         Address address = new Address();
         address.setStreet("Test Street");
         address.setHouseNumber("123");
@@ -70,11 +71,30 @@ public class PropertyServiceIntegrationTest {
 
         Property savedProperty = entityManager.persistAndFlush(property);
 
-        Optional<Property> foundProperty = propertyService.findPropertyById(savedProperty.getId());
+        // Act
+        Optional<PropertyDTO> foundProperty = propertyService.findPropertyById(savedProperty.getId());
 
+        // Assert
+        assertTrue(foundProperty.isPresent());
         assertEquals(savedProperty.getId(), foundProperty.get().getId());
         assertEquals(property.getName(), foundProperty.get().getName());
         assertNotNull(foundProperty.get().getAddress());
-        assertEquals(property.getAddress(), foundProperty.get().getAddress());
+        assertEquals(address.getId(), foundProperty.get().getAddress().getId());
+        assertEquals(address.getStreet(), foundProperty.get().getAddress().getStreet());
+        assertEquals(address.getHouseNumber(), foundProperty.get().getAddress().getHouseNumber());
+        assertEquals(address.getBusNumber(), foundProperty.get().getAddress().getBusNumber());
+        assertEquals(address.getPostalCode(), foundProperty.get().getAddress().getPostalCode());
+        assertEquals(address.getCity(), foundProperty.get().getAddress().getCity());
+        assertEquals(address.getProvince(), foundProperty.get().getAddress().getProvince());
+        assertEquals(address.getCountry(), foundProperty.get().getAddress().getCountry());
+    }
+
+    @Test
+    public void testFindPropertyByIdNotFound() {
+        // Act
+        Optional<PropertyDTO> foundProperty = propertyService.findPropertyById(1L);
+
+        // Assert
+        assertTrue(foundProperty.isEmpty());
     }
 }

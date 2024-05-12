@@ -49,7 +49,7 @@ public class PropertyServiceTest {
         property.setId(1L);
         when(propertyRepository.findById(1L)).thenReturn(Optional.of(property));
 
-        Optional<Property> foundProperty = propertyService.findPropertyById(1L);
+        Optional<PropertyDTO> foundProperty = propertyService.findPropertyById(1L);
 
         assertEquals(property.getId(), foundProperty.get().getId());
         verify(propertyRepository, times(1)).findById(1L);

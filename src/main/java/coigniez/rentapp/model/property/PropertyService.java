@@ -27,8 +27,13 @@ public class PropertyService {
         return PropertyMapper.entityToDto(savedProperty);
     }
 
-    public Optional<Property> findPropertyById(Long id) {
-        return propertyRepository.findById(id);
+    /**
+     * Find a property by its id
+     * @param id the id of the property
+     * @return the property if found
+     */
+    public Optional<PropertyDTO> findPropertyById(Long id) {
+        return propertyRepository.findById(id).map(PropertyMapper::entityToDto);
     }
 
     public List<Property> findAllProperties() {
