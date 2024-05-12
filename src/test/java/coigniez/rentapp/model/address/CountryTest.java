@@ -38,6 +38,12 @@ public class CountryTest {
     }
 
     @Test
+    void testGetCodes() {
+        String[] expected = {"BE", "FR", "DE", "NL", "UK"};
+        assertArrayEquals(expected, Country.getCodes());
+    }
+
+    @Test
     void testGet() {
         assertEquals(Country.BELGIUM, Country.get("BE"));
         assertEquals(Country.FRANCE, Country.get("France"));

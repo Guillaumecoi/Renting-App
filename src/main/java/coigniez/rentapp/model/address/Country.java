@@ -58,6 +58,16 @@ public enum Country {
     }
 
     /**
+     * Get the codes of all countries.
+     * @return An array of country codes.
+     */
+    public static String[] getCodes() {
+        return Arrays.stream(values())
+                .map(Country::getCode)
+                .toArray(String[]::new);
+    }
+
+    /**
      * Validate the postal code of the country based on the postal code regex.
      * @param postalCode The postal code to validate.
      * @throws InvalidPostalCodeException If the postal code is invalid.
