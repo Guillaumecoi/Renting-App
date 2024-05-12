@@ -50,9 +50,6 @@ public class AddPropertyController {
     }
 
     private void addProperty() {
-        Property property = new Property();
-        property.setName(nameField.getValue());
-
-        propertyService.saveProperty(property);
+        // Todo: Add property using PropertyDto
     }
 }

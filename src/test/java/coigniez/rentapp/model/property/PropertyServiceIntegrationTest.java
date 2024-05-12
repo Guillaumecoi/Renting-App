@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
 import coigniez.rentapp.model.address.Address;
+import coigniez.rentapp.model.address.AddressDTO;
 
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class PropertyServiceIntegrationTest {
 
     @Test
     public void testSaveProperty() throws Exception {
-        Address address = new Address();
+        AddressDTO address = new AddressDTO();
         address.setStreet("Test Street");
         address.setHouseNumber("123");
         address.setBusNumber("1A");
@@ -33,16 +34,23 @@ public class PropertyServiceIntegrationTest {
         address.setCity("Test City");
         address.setProvince("Test Province");
         address.setCountry("Belgium");
-        Property property = new Property();
+        PropertyDTO property = new PropertyDTO();
         property.setName("Test Property");
         property.setAddress(address);
 
-        Property savedProperty = propertyService.saveProperty(property);
+        PropertyDTO savedProperty = propertyService.saveProperty(property);
 
         assertNotNull(savedProperty.getId());
         assertEquals(property.getName(), savedProperty.getName());
         assertNotNull(savedProperty.getAddress());
-        assertEquals(property.getAddress(), savedProperty.getAddress());
+        assertNotNull(savedProperty.getAddress().getId());
+        assertEquals(address.getStreet(), savedProperty.getAddress().getStreet());
+        assertEquals(address.getHouseNumber(), savedProperty.getAddress().getHouseNumber());
+        assertEquals(address.getBusNumber(), savedProperty.getAddress().getBusNumber());
+        assertEquals(address.getPostalCode(), savedProperty.getAddress().getPostalCode());
+        assertEquals(address.getCity(), savedProperty.getAddress().getCity());
+        assertEquals(address.getProvince(), savedProperty.getAddress().getProvince());
+        assertEquals(address.getCountry(), savedProperty.getAddress().getCountry());
     }
 
     @Test
