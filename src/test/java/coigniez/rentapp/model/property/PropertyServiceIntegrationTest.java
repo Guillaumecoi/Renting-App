@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 
 import coigniez.rentapp.model.address.Address;
 import coigniez.rentapp.model.address.AddressDTO;
-import coigniez.rentapp.model.address.AddressMapper;
 
 import java.util.Optional;
 
