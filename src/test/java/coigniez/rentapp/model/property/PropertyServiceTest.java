@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
+
 import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import java.util.Arrays;
@@ -68,13 +70,14 @@ public class PropertyServiceTest {
     }
 
     @Test
-    void testUpdateProperty() {
-        Property property = new Property();
-        when(propertyRepository.save(any(Property.class))).thenReturn(property);
+    void testUpdateProperty() throws InvalidAddressException {
+        PropertyDTO property = new PropertyDTO();
+        Property propertyEntity = new Property();
+        when(propertyRepository.save(any(Property.class))).thenReturn(propertyEntity);
 
-        Property updatedProperty = propertyService.updateProperty(property);
+        PropertyDTO updatedProperty = propertyService.updateProperty(property);
 
         assertEquals(property, updatedProperty);
-        verify(propertyRepository, times(1)).save(property);
+        verify(propertyRepository, times(1)).save(propertyEntity);
     }
 }

@@ -118,4 +118,40 @@ public class PropertyServiceIntegrationTest {
         assertEquals(property1.getName(), properties.get(0).getName());
         assertEquals(property2.getName(), properties.get(1).getName());
     }
+
+    @Test
+    void testUpdateProperty() throws InvalidAddressException {
+        // Arrange
+        AddressDTO address = new AddressDTO();
+        address.setStreet("Test Street");
+        address.setHouseNumber("123");
+        address.setBusNumber("1A");
+        address.setPostalCode("1234");
+        address.setCity("Test City");
+        address.setProvince("Test Province");
+        address.setCountry("Belgium");
+        PropertyDTO property = new PropertyDTO();
+        property.setName("Test Property");
+        property.setAddress(address);
+
+        PropertyDTO savedProperty = propertyService.saveProperty(property);
+
+        savedProperty.setName("Updated Property");
+        savedProperty.getAddress().setStreet("Updated Street");
+
+        // Act
+        PropertyDTO updatedProperty = propertyService.updateProperty(savedProperty);
+
+        // Assert
+        assertEquals(savedProperty.getId(), updatedProperty.getId());
+        assertEquals(savedProperty.getName(), updatedProperty.getName());
+        assertEquals(savedProperty.getAddress().getId(), updatedProperty.getAddress().getId());
+        assertEquals(savedProperty.getAddress().getStreet(), updatedProperty.getAddress().getStreet());
+        assertEquals(savedProperty.getAddress().getHouseNumber(), updatedProperty.getAddress().getHouseNumber());
+        assertEquals(savedProperty.getAddress().getBusNumber(), updatedProperty.getAddress().getBusNumber());
+        assertEquals(savedProperty.getAddress().getPostalCode(), updatedProperty.getAddress().getPostalCode());
+        assertEquals(savedProperty.getAddress().getCity(), updatedProperty.getAddress().getCity());
+        assertEquals(savedProperty.getAddress().getProvince(), updatedProperty.getAddress().getProvince());
+        assertEquals(savedProperty.getAddress().getCountry(), updatedProperty.getAddress().getCountry());
+    }
 }

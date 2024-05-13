@@ -45,8 +45,15 @@ public class PropertyService {
         return PropertyMapper.entitiesToDtos(properties);
     }
 
-    public Property updateProperty(Property property) {
-        return propertyRepository.save(property);
+    /**
+     * Update a property in the database
+     * @param property the property to update
+     * @return the updated property
+     * @throws InvalidAddressException if the postal code or country is invalid
+     */
+    public PropertyDTO updateProperty(PropertyDTO property) throws InvalidAddressException {
+        Property updatedProperty = propertyRepository.save(PropertyMapper.dtoToEntity(property));
+        return PropertyMapper.entityToDto(updatedProperty);
     }
 
     public void deleteProperty(Long id) {
