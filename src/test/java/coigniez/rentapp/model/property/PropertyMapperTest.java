@@ -8,16 +8,9 @@ import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
-
 public class PropertyMapperTest {
 
-    private PropertyMapper propertyMapper;
-
-    @BeforeEach
-    public void setup() {
-        propertyMapper = new PropertyMapper();
-    }
+    private final PropertyMapper propertyMapper = new PropertyMapper();
 
     @Test
     void testEntityToDto() throws InvalidAddressException {
