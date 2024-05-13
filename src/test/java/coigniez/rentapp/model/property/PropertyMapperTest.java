@@ -8,7 +8,16 @@ import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
+
 public class PropertyMapperTest {
+
+    private PropertyMapper propertyMapper;
+
+    @BeforeEach
+    public void setup() {
+        propertyMapper = new PropertyMapper();
+    }
 
     @Test
     void testEntityToDto() throws InvalidAddressException {
@@ -29,7 +38,7 @@ public class PropertyMapperTest {
         entity.setAddress(address);
 
         // Act
-        PropertyDTO dto = PropertyMapper.entityToDto(entity);
+        PropertyDTO dto = propertyMapper.entityToDto(entity);
 
         // Assert
         assertNotNull(dto);
@@ -52,7 +61,7 @@ public class PropertyMapperTest {
         Property entity = null;
 
         // Act
-        PropertyDTO dto = PropertyMapper.entityToDto(entity);
+        PropertyDTO dto = propertyMapper.entityToDto(entity);
 
         // Assert
         assertNull(dto);
@@ -92,8 +101,8 @@ public class PropertyMapperTest {
         entity2.setAddress(address2);
 
         // Act
-        PropertyDTO dto1 = PropertyMapper.entityToDto(entity1);
-        PropertyDTO dto2 = PropertyMapper.entityToDto(entity2);
+        PropertyDTO dto1 = propertyMapper.entityToDto(entity1);
+        PropertyDTO dto2 = propertyMapper.entityToDto(entity2);
 
         // Assert
         assertNotNull(dto1);
@@ -142,7 +151,7 @@ public class PropertyMapperTest {
         dto.setAddress(AddressDto);
 
         // Act
-        Property entity = PropertyMapper.dtoToEntity(dto);
+        Property entity = propertyMapper.dtoToEntity(dto);
 
         // Assert
         assertNotNull(entity);
@@ -165,7 +174,7 @@ public class PropertyMapperTest {
         PropertyDTO dto = null;
 
         // Act
-        Property entity = PropertyMapper.dtoToEntity(dto);
+        Property entity = propertyMapper.dtoToEntity(dto);
 
         // Assert
         assertNull(entity);
@@ -190,7 +199,7 @@ public class PropertyMapperTest {
         dto.setAddress(AddressDto);
 
         // Act & Assert
-        assertThrows(InvalidAddressException.class, () -> PropertyMapper.dtoToEntity(dto));  
+        assertThrows(InvalidAddressException.class, () -> propertyMapper.dtoToEntity(dto));  
     }
 
     @Test
@@ -212,7 +221,7 @@ public class PropertyMapperTest {
         dto.setAddress(AddressDto);
 
         // Act & Assert
-        assertThrows(InvalidAddressException.class, () -> PropertyMapper.dtoToEntity(dto));  
+        assertThrows(InvalidAddressException.class, () -> propertyMapper.dtoToEntity(dto));  
     }
 
     @Test
@@ -249,8 +258,8 @@ public class PropertyMapperTest {
         dto2.setAddress(AddressDto2);
 
         // Act
-        Property entity1 = PropertyMapper.dtoToEntity(dto1);
-        Property entity2 = PropertyMapper.dtoToEntity(dto2);
+        Property entity1 = propertyMapper.dtoToEntity(dto1);
+        Property entity2 = propertyMapper.dtoToEntity(dto2);
 
         // Assert
         assertNotNull(entity1);

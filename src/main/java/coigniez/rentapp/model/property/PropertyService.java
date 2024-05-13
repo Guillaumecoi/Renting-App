@@ -11,6 +11,7 @@ import java.util.Optional;
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
+    private final PropertyMapper propertyMapper = new PropertyMapper();
 
     public PropertyService(PropertyRepository propertyRepository) {
         this.propertyRepository = propertyRepository;
@@ -23,8 +24,8 @@ public class PropertyService {
      * @throws InvalidAddressException if the postal code or country is invalid
      */
     public PropertyDTO saveProperty(PropertyDTO property) throws InvalidAddressException {
-        Property savedProperty = propertyRepository.save(PropertyMapper.dtoToEntity(property));
-        return PropertyMapper.entityToDto(savedProperty);
+        Property savedProperty = propertyRepository.save(propertyMapper.dtoToEntity(property));
+        return propertyMapper.entityToDto(savedProperty);
     }
 
     /**
@@ -33,7 +34,7 @@ public class PropertyService {
      * @return the property if found
      */
     public Optional<PropertyDTO> findPropertyById(Long id) {
-        return propertyRepository.findById(id).map(PropertyMapper::entityToDto);
+        return propertyRepository.findById(id).map(propertyMapper::entityToDto);
     }
 
     /**
@@ -42,7 +43,7 @@ public class PropertyService {
      */
     public List<PropertyDTO> findAllProperties() {
         List<Property> properties = propertyRepository.findAll();
-        return PropertyMapper.entitiesToDtos(properties);
+        return propertyMapper.entitiesToDtos(properties);
     }
 
     /**
@@ -52,8 +53,8 @@ public class PropertyService {
      * @throws InvalidAddressException if the postal code or country is invalid
      */
     public PropertyDTO updateProperty(PropertyDTO property) throws InvalidAddressException {
-        Property updatedProperty = propertyRepository.save(PropertyMapper.dtoToEntity(property));
-        return PropertyMapper.entityToDto(updatedProperty);
+        Property updatedProperty = propertyRepository.save(propertyMapper.dtoToEntity(property));
+        return propertyMapper.entityToDto(updatedProperty);
     }
 
     /**

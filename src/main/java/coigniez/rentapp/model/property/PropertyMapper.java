@@ -5,10 +5,11 @@ import java.util.List;
 
 import coigniez.rentapp.model.address.AddressMapper;
 import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.interfaces.Mapper;
 
-public class PropertyMapper {
+public class PropertyMapper implements Mapper<Property, PropertyDTO>{
 
-    public static PropertyDTO entityToDto(Property property) {
+    public PropertyDTO entityToDto(Property property) {
         if (property == null) {
             return null;
         }
@@ -21,7 +22,7 @@ public class PropertyMapper {
         return dto;
     }
 
-    public static List<PropertyDTO> entitiesToDtos(List<Property> properties) {
+    public List<PropertyDTO> entitiesToDtos(List<Property> properties) {
         if (properties == null) {
             return null;
         }
@@ -34,7 +35,7 @@ public class PropertyMapper {
         return dtos;
     }
 
-    public static Property dtoToEntity(PropertyDTO dto) throws InvalidAddressException {
+    public Property dtoToEntity(PropertyDTO dto) throws InvalidAddressException {
         if (dto == null) {
             return null;
         }
@@ -47,7 +48,7 @@ public class PropertyMapper {
         return property;
     }
 
-    public static List<Property> dtosToEntities(List<PropertyDTO> dtos) throws InvalidAddressException {
+    public List<Property> dtosToEntities(List<PropertyDTO> dtos) throws InvalidAddressException {
         if (dtos == null) {
             return null;
         }
