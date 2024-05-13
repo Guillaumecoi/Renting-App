@@ -56,6 +56,10 @@ public class PropertyService {
         return PropertyMapper.entityToDto(updatedProperty);
     }
 
+    /**
+     * Delete a property from the database
+     * @param id the id of the property to delete
+     */
     public void deleteProperty(Long id) {
         propertyRepository.deleteById(id);
     }

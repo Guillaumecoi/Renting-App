@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
-
 import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import java.util.Arrays;
