@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Import;
 
 import coigniez.rentapp.model.address.Address;
 import coigniez.rentapp.model.address.AddressDTO;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 import java.util.Optional;
 
@@ -95,5 +96,26 @@ public class PropertyServiceIntegrationTest {
 
         // Assert
         assertTrue(foundProperty.isEmpty());
+    }
+
+    @Test
+    void testFindAllProperties() throws InvalidAddressException {
+        // Arrange
+        Property property1 = new Property();
+        property1.setName("Test Property 1");
+
+        Property property2 = new Property();
+        property2.setName("Test Property 2");
+
+        entityManager.persistAndFlush(property1);
+        entityManager.persistAndFlush(property2);
+
+        // Act
+        var properties = propertyService.findAllProperties();
+
+        // Assert
+        assertEquals(2, properties.size());
+        assertEquals(property1.getName(), properties.get(0).getName());
+        assertEquals(property2.getName(), properties.get(1).getName());
     }
 }

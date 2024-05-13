@@ -37,7 +37,7 @@ public class PropertyServiceTest {
         Property property2 = new Property();
         when(propertyRepository.findAll()).thenReturn(Arrays.asList(property1, property2));
 
-        List<Property> properties = propertyService.findAllProperties();
+        List<PropertyDTO> properties = propertyService.findAllProperties();
 
         assertEquals(2, properties.size());
         verify(propertyRepository, times(1)).findAll();

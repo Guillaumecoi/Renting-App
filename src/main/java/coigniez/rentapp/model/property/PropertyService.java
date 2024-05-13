@@ -36,8 +36,13 @@ public class PropertyService {
         return propertyRepository.findById(id).map(PropertyMapper::entityToDto);
     }
 
-    public List<Property> findAllProperties() {
-        return propertyRepository.findAll();
+    /**
+     * Find all properties in the database
+     * @return a list of all properties
+     */
+    public List<PropertyDTO> findAllProperties() {
+        List<Property> properties = propertyRepository.findAll();
+        return PropertyMapper.entitiesToDtos(properties);
     }
 
     public Property updateProperty(Property property) {
