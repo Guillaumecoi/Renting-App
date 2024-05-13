@@ -1,9 +1,12 @@
 package coigniez.rentapp.view.controllers.property;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import net.rgielen.fxweaver.core.FxmlView;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +16,8 @@ import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
 
-import coigniez.rentapp.model.property.Property;
+import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 
 @Component
@@ -50,6 +54,17 @@ public class AddPropertyController {
     }
 
     private void addProperty() {
-        // TODO: Add property using PropertyDto
+        try {
+            PropertyDTO property = new PropertyDTO();
+            property.setName(nameField.getValue());
+            propertyService.saveProperty(property);
+        } catch (InvalidAddressException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("An error occurred");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
     }
 }
