@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AddressMapperTest {
 
+    private final AddressMapper addressMapper = new AddressMapper();
+
     @Test
     public void testDtoToEntity() throws InvalidAddressException {
         AddressDTO dto = new AddressDTO();
@@ -20,7 +22,7 @@ public class AddressMapperTest {
         dto.setProvince("Test Province");
         dto.setCountry("Belgium");
 
-        Address address = AddressMapper.dtoToEntity(dto);
+        Address address = addressMapper.dtoToEntity(dto);
 
         assertNotNull(address);
         assertEquals(dto.getId(), address.getId());
@@ -35,7 +37,7 @@ public class AddressMapperTest {
 
     @Test
     public void testDtoToEntityNull() throws InvalidAddressException {
-        assertNull(AddressMapper.dtoToEntity(null));
+        assertNull(addressMapper.dtoToEntity(null));
     }
 
     @Test
@@ -50,7 +52,7 @@ public class AddressMapperTest {
         dto.setProvince("Test Province");
         dto.setCountry("Invalid Country");
 
-        assertThrows(InvalidAddressException.class, () -> AddressMapper.dtoToEntity(dto));
+        assertThrows(InvalidAddressException.class, () -> addressMapper.dtoToEntity(dto));
     }
 
     @Test
@@ -65,7 +67,7 @@ public class AddressMapperTest {
         dto.setProvince("Test Province");
         dto.setCountry("Belgium");
 
-        assertThrows(InvalidAddressException.class, () -> AddressMapper.dtoToEntity(dto));
+        assertThrows(InvalidAddressException.class, () -> addressMapper.dtoToEntity(dto));
     }
 
     @Test
@@ -80,7 +82,7 @@ public class AddressMapperTest {
         address.setProvince("Test Province");
         address.setCountry("Belgium");
 
-        AddressDTO dto = AddressMapper.entityToDto(address);
+        AddressDTO dto = addressMapper.entityToDto(address);
 
         assertNotNull(dto);
         assertEquals(address.getId(), dto.getId());
@@ -95,6 +97,6 @@ public class AddressMapperTest {
 
     @Test
     public void testEntityToDtoNull() {
-        assertNull(AddressMapper.entityToDto(null));
+        assertNull(addressMapper.entityToDto(null));
     }
 }

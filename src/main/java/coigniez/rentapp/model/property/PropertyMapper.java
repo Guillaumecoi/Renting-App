@@ -7,7 +7,8 @@ import coigniez.rentapp.model.address.AddressMapper;
 import coigniez.rentapp.model.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.interfaces.Mapper;
 
-public class PropertyMapper implements Mapper<Property, PropertyDTO>{
+public class PropertyMapper implements Mapper<Property, PropertyDTO> {
+    private final AddressMapper addressMapper = new AddressMapper();
 
     public PropertyDTO entityToDto(Property property) {
         if (property == null) {
@@ -17,7 +18,7 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO>{
         PropertyDTO dto = new PropertyDTO();
         dto.setId(property.getId());
         dto.setName(property.getName());
-        dto.setAddress(AddressMapper.entityToDto(property.getAddress()));
+        dto.setAddress(addressMapper.entityToDto(property.getAddress()));
 
         return dto;
     }
@@ -43,7 +44,7 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO>{
         Property property = new Property();
         property.setId(dto.getId());
         property.setName(dto.getName());
-        property.setAddress(AddressMapper.dtoToEntity(dto.getAddress()));
+        property.setAddress(addressMapper.dtoToEntity(dto.getAddress()));
 
         return property;
     }
