@@ -1,11 +1,97 @@
 package coigniez.rentapp.model.$LOWERCASE_ENTITY;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
+@DataJpaTest
+@ActiveProfiles("test")
 public class $ENTITYRepositoryTest {
+
+    @Autowired
+    private $ENTITYRepository $lowercase_entityRepository;
+
+    private $ENTITY $lowercase_entity;
+
+    @BeforeEach
+    public void setUp() {
+        $lowercase_entity = new $ENTITY();
+        $lowercase_entity.setName("Test $ENTITY");
+        // set properties here
+        $lowercase_entity = $lowercase_entityRepository.saveAndFlush($lowercase_entity);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        $lowercase_entityRepository.deleteAll();
+    }
+
     @Test
-    public void testRepository() {
-        // TODO: Add tests for $ENTITYRepository
+    public void testCreate$ENTITY() {
+        // Arrange
+        $ENTITY new$ENTITY = new $ENTITY();
+        new$ENTITY.setName("New $ENTITY");
+
+        // Act
+        $ENTITY saved$ENTITY = $lowercase_entityRepository.save(new$ENTITY);
+
+        // Assert
+        assertNotNull(saved$ENTITY.getId());
+        assertEquals(new$ENTITY.getName(), saved$ENTITY.getName());
+    }
+
+    @Test
+    public void testRead$ENTITY() {
+        // Act
+        Optional<$ENTITY> read$ENTITY = $lowercase_entityRepository.findById($lowercase_entity.getId());
+
+        // Assert
+        assertTrue(read$ENTITY.isPresent());
+    }
+
+    @Test
+    public void testUpdate$ENTITY() {
+        // Arrange
+        $lowercase_entity.setName("Updated $ENTITY");
+
+        // Act
+        $lowercase_entityRepository.saveAndFlush($lowercase_entity);
+
+        // Assert
+        $ENTITY updated$ENTITY = $lowercase_entityRepository.findById($lowercase_entity.getId()).orElse(null);
+        assertEquals("Updated $ENTITY", updated$ENTITY.getName());
+    }
+
+    @Test
+    public void testDelete$ENTITY() {
+        // Arrange
+        Long id = $lowercase_entity.getId();
+
+        // Act
+        $lowercase_entityRepository.delete($lowercase_entity);
+
+        // Assert
+        Optional<$ENTITY> deleted$ENTITY = $lowercase_entityRepository.findById(id);
+        assertFalse(deleted$ENTITY.isPresent());
+    }
+
+    @Test
+    void testDeleteById() {
+        // Arrange
+        Long id = $lowercase_entity.getId();
+
+        // Act
+        $lowercase_entityRepository.deleteById(id);
+
+        // Assert
+        Optional<$ENTITY> deleted$ENTITY = $lowercase_entityRepository.findById(id);
+        assertFalse(deleted$ENTITY.isPresent());
     }
 }
