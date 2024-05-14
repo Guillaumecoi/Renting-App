@@ -1,12 +1,14 @@
 package coigniez.rentapp.model.property;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import coigniez.rentapp.model.address.Address;
 import coigniez.rentapp.model.address.AddressDTO;
 import coigniez.rentapp.model.exceptions.InvalidAddressException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertyMapperTest {
 
@@ -50,14 +52,7 @@ public class PropertyMapperTest {
 
     @Test
     void testEntityToDtoWithNull() {
-        // Arrange
-        Property entity = null;
-
-        // Act
-        PropertyDTO dto = propertyMapper.entityToDto(entity);
-
-        // Assert
-        assertNull(dto);
+        assertNull(propertyMapper.entityToDto(null));
     }
 
     @Test
@@ -93,36 +88,41 @@ public class PropertyMapperTest {
         address2.setCountry("Belgium");
         entity2.setAddress(address2);
 
+        List<Property> entities = new ArrayList<>();
+        entities.add(entity1);
+        entities.add(entity2);
+
         // Act
-        PropertyDTO dto1 = propertyMapper.entityToDto(entity1);
-        PropertyDTO dto2 = propertyMapper.entityToDto(entity2);
+        List<PropertyDTO> dtos = propertyMapper.entitiesToDtos(entities);
 
         // Assert
-        assertNotNull(dto1);
-        assertEquals(entity1.getId(), dto1.getId());
-        assertEquals(entity1.getName(), dto1.getName());
+        assertNotNull(dtos);
+        assertEquals(2, dtos.size());
+        assertEquals(entity1.getId(), dtos.get(0).getId());
+        assertEquals(entity1.getName(), dtos.get(0).getName());
         // assert AddressDTO for entity1
-        assertEquals(entity1.getAddress().getId(), dto1.getAddress().getId());
-        assertEquals(entity1.getAddress().getStreet(), dto1.getAddress().getStreet());
-        assertEquals(entity1.getAddress().getHouseNumber(), dto1.getAddress().getHouseNumber());
-        assertEquals(entity1.getAddress().getBusNumber(), dto1.getAddress().getBusNumber());
-        assertEquals(entity1.getAddress().getPostalCode(), dto1.getAddress().getPostalCode());
-        assertEquals(entity1.getAddress().getCity(), dto1.getAddress().getCity());
-        assertEquals(entity1.getAddress().getProvince(), dto1.getAddress().getProvince());
-        assertEquals(entity1.getAddress().getCountry(), dto1.getAddress().getCountry());
+        assertEquals(entity1.getAddress().getId(), dtos.get(0).getAddress().getId());
+        assertEquals(entity1.getAddress().getStreet(), dtos.get(0).getAddress().getStreet());
+        assertEquals(entity1.getAddress().getHouseNumber(), dtos.get(0).getAddress().getHouseNumber());
+        assertEquals(entity1.getAddress().getBusNumber(), dtos.get(0).getAddress().getBusNumber());
+        assertEquals(entity1.getAddress().getPostalCode(), dtos.get(0).getAddress().getPostalCode());
+        assertEquals(entity1.getAddress().getCity(), dtos.get(0).getAddress().getCity());
+        assertEquals(entity1.getAddress().getProvince(), dtos.get(0).getAddress().getProvince());
+        assertEquals(entity1.getAddress().getCountry(), dtos.get(0).getAddress().getCountry());
 
-        assertNotNull(dto2);
-        assertEquals(entity2.getId(), dto2.getId());
-        assertEquals(entity2.getName(), dto2.getName());
+        // assert entity2
+        assertEquals(entity2.getId(), dtos.get(1).getId());
+        assertEquals(entity2.getName(), dtos.get(1).getName());
         // assert AddressDTO for entity2
-        assertEquals(entity2.getAddress().getId(), dto2.getAddress().getId());
-        assertEquals(entity2.getAddress().getStreet(), dto2.getAddress().getStreet());
-        assertEquals(entity2.getAddress().getHouseNumber(), dto2.getAddress().getHouseNumber());
-        assertEquals(entity2.getAddress().getBusNumber(), dto2.getAddress().getBusNumber());
-        assertEquals(entity2.getAddress().getPostalCode(), dto2.getAddress().getPostalCode());
-        assertEquals(entity2.getAddress().getCity(), dto2.getAddress().getCity());
-        assertEquals(entity2.getAddress().getProvince(), dto2.getAddress().getProvince());
-        assertEquals(entity2.getAddress().getCountry(), dto2.getAddress().getCountry());
+        assertEquals(entity2.getAddress().getId(), dtos.get(1).getAddress().getId());
+        assertEquals(entity2.getAddress().getStreet(), dtos.get(1).getAddress().getStreet());
+        assertEquals(entity2.getAddress().getHouseNumber(), dtos.get(1).getAddress().getHouseNumber());
+        assertEquals(entity2.getAddress().getBusNumber(), dtos.get(1).getAddress().getBusNumber());
+        assertEquals(entity2.getAddress().getPostalCode(), dtos.get(1).getAddress().getPostalCode());
+        assertEquals(entity2.getAddress().getCity(), dtos.get(1).getAddress().getCity());
+        assertEquals(entity2.getAddress().getProvince(), dtos.get(1).getAddress().getProvince());
+        assertEquals(entity2.getAddress().getCountry(), dtos.get(1).getAddress().getCountry());
+
     }
 
     @Test
@@ -158,19 +158,12 @@ public class PropertyMapperTest {
         assertEquals(dto.getAddress().getPostalCode(), entity.getAddress().getPostalCode());
         assertEquals(dto.getAddress().getCity(), entity.getAddress().getCity());
         assertEquals(dto.getAddress().getProvince(), entity.getAddress().getProvince());
-        assertEquals(dto.getAddress().getCountry(), entity.getAddress().getCountry());        
+        assertEquals(dto.getAddress().getCountry(), entity.getAddress().getCountry());
     }
 
     @Test
     void testDtoToEntityWithNull() throws InvalidAddressException {
-        // Arrange
-        PropertyDTO dto = null;
-
-        // Act
-        Property entity = propertyMapper.dtoToEntity(dto);
-
-        // Assert
-        assertNull(entity);
+        assertNull(propertyMapper.dtoToEntity(null));
     }
 
     @Test
@@ -192,7 +185,7 @@ public class PropertyMapperTest {
         dto.setAddress(AddressDto);
 
         // Act & Assert
-        assertThrows(InvalidAddressException.class, () -> propertyMapper.dtoToEntity(dto));  
+        assertThrows(InvalidAddressException.class, () -> propertyMapper.dtoToEntity(dto));
     }
 
     @Test
@@ -214,7 +207,7 @@ public class PropertyMapperTest {
         dto.setAddress(AddressDto);
 
         // Act & Assert
-        assertThrows(InvalidAddressException.class, () -> propertyMapper.dtoToEntity(dto));  
+        assertThrows(InvalidAddressException.class, () -> propertyMapper.dtoToEntity(dto));
     }
 
     @Test
@@ -250,37 +243,41 @@ public class PropertyMapperTest {
         AddressDto2.setCountry("Belgium");
         dto2.setAddress(AddressDto2);
 
+        List<PropertyDTO> dtos = new ArrayList<>();
+        dtos.add(dto1);
+        dtos.add(dto2);
+
         // Act
-        Property entity1 = propertyMapper.dtoToEntity(dto1);
-        Property entity2 = propertyMapper.dtoToEntity(dto2);
+        List<Property> entities = propertyMapper.dtosToEntities(dtos);
 
         // Assert
-        assertNotNull(entity1);
-        assertEquals(dto1.getId(), entity1.getId());
-        assertEquals(dto1.getName(), entity1.getName());
+        assertNotNull(entities);
+        assertEquals(2, entities.size());
+        assertEquals(dto1.getId(), entities.get(0).getId());
+        assertEquals(dto1.getName(), entities.get(0).getName());
         // assert Address entity for dto1
-        assertEquals(dto1.getAddress().getId(), entity1.getAddress().getId());
-        assertEquals(dto1.getAddress().getStreet(), entity1.getAddress().getStreet());
-        assertEquals(dto1.getAddress().getHouseNumber(), entity1.getAddress().getHouseNumber());
-        assertEquals(dto1.getAddress().getBusNumber(), entity1.getAddress().getBusNumber());
-        assertEquals(dto1.getAddress().getPostalCode(), entity1.getAddress().getPostalCode());
-        assertEquals(dto1.getAddress().getCity(), entity1.getAddress().getCity());
-        assertEquals(dto1.getAddress().getProvince(), entity1.getAddress().getProvince());
-        assertEquals(dto1.getAddress().getCountry(), entity1.getAddress().getCountry());
+        assertEquals(dto1.getAddress().getId(), entities.get(0).getAddress().getId());
+        assertEquals(dto1.getAddress().getStreet(), entities.get(0).getAddress().getStreet());
+        assertEquals(dto1.getAddress().getHouseNumber(), entities.get(0).getAddress().getHouseNumber());
+        assertEquals(dto1.getAddress().getBusNumber(), entities.get(0).getAddress().getBusNumber());
+        assertEquals(dto1.getAddress().getPostalCode(), entities.get(0).getAddress().getPostalCode());
+        assertEquals(dto1.getAddress().getCity(), entities.get(0).getAddress().getCity());
+        assertEquals(dto1.getAddress().getProvince(), entities.get(0).getAddress().getProvince());
+        assertEquals(dto1.getAddress().getCountry(), entities.get(0).getAddress().getCountry());
 
         // assert entity2
-        assertNotNull(entity2);
-        assertEquals(dto2.getId(), entity2.getId());
-        assertEquals(dto2.getName(), entity2.getName());
+        assertEquals(dto2.getId(), entities.get(1).getId());
+        assertEquals(dto2.getName(), entities.get(1).getName());
         // assert Address entity for dto2
-        assertEquals(dto2.getAddress().getId(), entity2.getAddress().getId());
-        assertEquals(dto2.getAddress().getStreet(), entity2.getAddress().getStreet());
-        assertEquals(dto2.getAddress().getHouseNumber(), entity2.getAddress().getHouseNumber());
-        assertEquals(dto2.getAddress().getBusNumber(), entity2.getAddress().getBusNumber());
-        assertEquals(dto2.getAddress().getPostalCode(), entity2.getAddress().getPostalCode());
-        assertEquals(dto2.getAddress().getCity(), entity2.getAddress().getCity());
-        assertEquals(dto2.getAddress().getProvince(), entity2.getAddress().getProvince());
-        assertEquals(dto2.getAddress().getCountry(), entity2.getAddress().getCountry());
+        assertEquals(dto2.getAddress().getId(), entities.get(1).getAddress().getId());
+        assertEquals(dto2.getAddress().getStreet(), entities.get(1).getAddress().getStreet());
+        assertEquals(dto2.getAddress().getHouseNumber(), entities.get(1).getAddress().getHouseNumber());
+        assertEquals(dto2.getAddress().getBusNumber(), entities.get(1).getAddress().getBusNumber());
+        assertEquals(dto2.getAddress().getPostalCode(), entities.get(1).getAddress().getPostalCode());
+        assertEquals(dto2.getAddress().getCity(), entities.get(1).getAddress().getCity());
+        assertEquals(dto2.getAddress().getProvince(), entities.get(1).getAddress().getProvince());
+        assertEquals(dto2.getAddress().getCountry(), entities.get(1).getAddress().getCountry());
+
     }
 
 }
