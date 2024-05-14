@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class PropertyDTO {
+
     private Long id;
     private String name;
     private AddressDTO address;
+
 }

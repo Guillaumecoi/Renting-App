@@ -8,6 +8,7 @@ import coigniez.rentapp.model.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.interfaces.Mapper;
 
 public class PropertyMapper implements Mapper<Property, PropertyDTO> {
+
     private final AddressMapper addressMapper = new AddressMapper();
 
     public PropertyDTO entityToDto(Property property) {
