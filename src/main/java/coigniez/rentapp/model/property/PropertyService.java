@@ -69,4 +69,14 @@ public class PropertyService {
     public void deleteProperty(Long id) {
         propertyRepository.deleteById(id);
     }
+
+    /**
+     * Delete a property from the database
+     * 
+     * @param property the property to delete
+     * @throws InvalidAddressException if the postal code or country is invalid
+     */
+    public void deleteProperty(PropertyDTO property) throws InvalidAddressException {
+        propertyRepository.delete(propertyMapper.dtoToEntity(property));
+    }
 }

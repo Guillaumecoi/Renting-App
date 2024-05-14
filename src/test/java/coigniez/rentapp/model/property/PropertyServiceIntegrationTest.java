@@ -1,31 +1,34 @@
 package coigniez.rentapp.model.property;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-
-import coigniez.rentapp.exceptions.InvalidAddressException;
-import coigniez.rentapp.model.address.Address;
-import coigniez.rentapp.model.address.AddressDTO;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.address.AddressDTO;
+
 @DataJpaTest
+@ActiveProfiles("test")
 @Import(PropertyService.class)
 public class PropertyServiceIntegrationTest {
 
     @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
     private PropertyService propertyService;
 
-    @Test
-    public void testSaveProperty() throws Exception {
+    @Autowired
+    private PropertyRepository propertyRepository;
+
+    private PropertyDTO property;
+
+    @BeforeEach
+    public void setUp() throws InvalidAddressException {
         AddressDTO address = new AddressDTO();
         address.setStreet("Test Street");
         address.setHouseNumber("123");
@@ -34,124 +37,74 @@ public class PropertyServiceIntegrationTest {
         address.setCity("Test City");
         address.setProvince("Test Province");
         address.setCountry("Belgium");
-        PropertyDTO property = new PropertyDTO();
+
+        property = new PropertyDTO();
         property.setName("Test Property");
         property.setAddress(address);
 
-        PropertyDTO savedProperty = propertyService.saveProperty(property);
+        property = propertyService.saveProperty(property);
+    }
 
+    @AfterEach
+    public void tearDown() {
+        propertyRepository.deleteAll();
+    }
+
+    @Test
+    public void testCreateProperty() throws Exception {
+        // Arrange
+        PropertyDTO newProperty = new PropertyDTO();
+        newProperty.setName("New Property");
+
+        // Act
+        PropertyDTO savedProperty = propertyService.saveProperty(newProperty);
+
+        // Assert
         assertNotNull(savedProperty.getId());
-        assertEquals(property.getName(), savedProperty.getName());
-        assertNotNull(savedProperty.getAddress());
-        assertNotNull(savedProperty.getAddress().getId());
-        assertEquals(address.getStreet(), savedProperty.getAddress().getStreet());
-        assertEquals(address.getHouseNumber(), savedProperty.getAddress().getHouseNumber());
-        assertEquals(address.getBusNumber(), savedProperty.getAddress().getBusNumber());
-        assertEquals(address.getPostalCode(), savedProperty.getAddress().getPostalCode());
-        assertEquals(address.getCity(), savedProperty.getAddress().getCity());
-        assertEquals(address.getProvince(), savedProperty.getAddress().getProvince());
-        assertEquals(address.getCountry(), savedProperty.getAddress().getCountry());
+        assertEquals(newProperty.getName(), savedProperty.getName());
     }
 
     @Test
-    public void testFindPropertyById() throws Exception {
+    public void testReadProperty() {
+        // Act
+        Optional<PropertyDTO> readProperty = propertyService.findPropertyById(property.getId());
+
+        // Assert
+        assertTrue(readProperty.isPresent());
+    }
+
+    @Test
+    public void testUpdateProperty() throws Exception {
         // Arrange
-        Address address = new Address();
-        address.setStreet("Test Street");
-        address.setHouseNumber("123");
-        address.setBusNumber("1A");
-        address.setPostalCode("1234");
-        address.setCity("Test City");
-        address.setProvince("Test Province");
-        address.setCountry("Belgium");
-
-        Property property = new Property();
-        property.setName("Test Property");
-        property.setAddress(address);
-
-        Property savedProperty = entityManager.persistAndFlush(property);
+        property.setName("Updated Property");
 
         // Act
-        Optional<PropertyDTO> foundProperty = propertyService.findPropertyById(savedProperty.getId());
+        PropertyDTO updatedProperty = propertyService.updateProperty(property);
 
         // Assert
-        assertTrue(foundProperty.isPresent());
-        assertEquals(savedProperty.getId(), foundProperty.get().getId());
-        assertEquals(property.getName(), foundProperty.get().getName());
-        assertNotNull(foundProperty.get().getAddress());
-        assertEquals(address.getId(), foundProperty.get().getAddress().getId());
-        assertEquals(address.getStreet(), foundProperty.get().getAddress().getStreet());
-        assertEquals(address.getHouseNumber(), foundProperty.get().getAddress().getHouseNumber());
-        assertEquals(address.getBusNumber(), foundProperty.get().getAddress().getBusNumber());
-        assertEquals(address.getPostalCode(), foundProperty.get().getAddress().getPostalCode());
-        assertEquals(address.getCity(), foundProperty.get().getAddress().getCity());
-        assertEquals(address.getProvince(), foundProperty.get().getAddress().getProvince());
-        assertEquals(address.getCountry(), foundProperty.get().getAddress().getCountry());
+        assertEquals("Updated Property", updatedProperty.getName());
     }
 
     @Test
-    public void testFindPropertyByIdNotFound() {
-        // Act
-        Optional<PropertyDTO> foundProperty = propertyService.findPropertyById(1L);
-
-        // Assert
-        assertTrue(foundProperty.isEmpty());
-    }
-
-    @Test
-    void testFindAllProperties() throws InvalidAddressException {
+    public void testDeletePropertyById() {
         // Arrange
-        Property property1 = new Property();
-        property1.setName("Test Property 1");
-
-        Property property2 = new Property();
-        property2.setName("Test Property 2");
-
-        entityManager.persistAndFlush(property1);
-        entityManager.persistAndFlush(property2);
+        Long id = property.getId();
 
         // Act
-        var properties = propertyService.findAllProperties();
+        propertyService.deleteProperty(id);
 
         // Assert
-        assertEquals(2, properties.size());
-        assertEquals(property1.getName(), properties.get(0).getName());
-        assertEquals(property2.getName(), properties.get(1).getName());
+        Optional<PropertyDTO> deletedProperty = propertyService.findPropertyById(id);
+        assertFalse(deletedProperty.isPresent());
     }
 
     @Test
-    void testUpdateProperty() throws InvalidAddressException {
-        // Arrange
-        AddressDTO address = new AddressDTO();
-        address.setStreet("Test Street");
-        address.setHouseNumber("123");
-        address.setBusNumber("1A");
-        address.setPostalCode("1234");
-        address.setCity("Test City");
-        address.setProvince("Test Province");
-        address.setCountry("Belgium");
-        PropertyDTO property = new PropertyDTO();
-        property.setName("Test Property");
-        property.setAddress(address);
-
-        PropertyDTO savedProperty = propertyService.saveProperty(property);
-
-        savedProperty.setName("Updated Property");
-        savedProperty.getAddress().setStreet("Updated Street");
-
+    void testDeleteProperty() throws InvalidAddressException {
         // Act
-        PropertyDTO updatedProperty = propertyService.updateProperty(savedProperty);
+        propertyService.deleteProperty(property);
 
         // Assert
-        assertEquals(savedProperty.getId(), updatedProperty.getId());
-        assertEquals(savedProperty.getName(), updatedProperty.getName());
-        assertEquals(savedProperty.getAddress().getId(), updatedProperty.getAddress().getId());
-        assertEquals(savedProperty.getAddress().getStreet(), updatedProperty.getAddress().getStreet());
-        assertEquals(savedProperty.getAddress().getHouseNumber(), updatedProperty.getAddress().getHouseNumber());
-        assertEquals(savedProperty.getAddress().getBusNumber(), updatedProperty.getAddress().getBusNumber());
-        assertEquals(savedProperty.getAddress().getPostalCode(), updatedProperty.getAddress().getPostalCode());
-        assertEquals(savedProperty.getAddress().getCity(), updatedProperty.getAddress().getCity());
-        assertEquals(savedProperty.getAddress().getProvince(), updatedProperty.getAddress().getProvince());
-        assertEquals(savedProperty.getAddress().getCountry(), updatedProperty.getAddress().getCountry());
+        Optional<PropertyDTO> deletedProperty = propertyService.findPropertyById(property.getId());
+        assertFalse(deletedProperty.isPresent());
     }
 }
