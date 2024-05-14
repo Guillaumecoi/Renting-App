@@ -1,8 +1,9 @@
 package coigniez.rentapp.model.address;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import coigniez.rentapp.exceptions.InvalidAddressException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

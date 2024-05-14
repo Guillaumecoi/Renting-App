@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.Address;
 import coigniez.rentapp.model.address.AddressDTO;
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
 
 public class PropertyMapperTest {
 

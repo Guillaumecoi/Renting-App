@@ -2,7 +2,7 @@ package coigniez.rentapp.model.address;
 
 import org.junit.jupiter.api.Test;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.exceptions.InvalidAddressException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,19 +27,20 @@ public class CountryTest {
 
     @Test
     void testValues() {
-        Country[] expected = {Country.BELGIUM, Country.FRANCE, Country.GERMANY, Country.NETHERLANDS, Country.UNITED_KINGDOM};
+        Country[] expected = { Country.BELGIUM, Country.FRANCE, Country.GERMANY, Country.NETHERLANDS,
+                Country.UNITED_KINGDOM };
         assertArrayEquals(expected, Country.values());
     }
 
     @Test
     void testGetNames() {
-        String[] expected = {"Belgium", "France", "Germany", "Netherlands", "United Kingdom"};
+        String[] expected = { "Belgium", "France", "Germany", "Netherlands", "United Kingdom" };
         assertArrayEquals(expected, Country.getNames());
     }
 
     @Test
     void testGetCodes() {
-        String[] expected = {"BE", "FR", "DE", "NL", "UK"};
+        String[] expected = { "BE", "FR", "DE", "NL", "UK" };
         assertArrayEquals(expected, Country.getCodes());
     }
 

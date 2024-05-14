@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.exceptions.InvalidAddressException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AddressMapperTest {
 

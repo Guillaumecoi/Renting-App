@@ -3,13 +3,14 @@ package coigniez.rentapp.model.address;
 import java.util.ArrayList;
 import java.util.List;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
-import coigniez.rentapp.model.interfaces.Mapper;
+import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.interfaces.Mapper;
 
-public class AddressMapper implements Mapper<Address, AddressDTO>{
+public class AddressMapper implements Mapper<Address, AddressDTO> {
 
     /**
      * Maps an Address entity to an AddressDTO
+     * 
      * @param address Address entity
      * @return AddressDTO
      */
@@ -31,6 +32,7 @@ public class AddressMapper implements Mapper<Address, AddressDTO>{
 
     /**
      * Maps a list of Address entities to a list of AddressDTOs
+     * 
      * @param addresses List of Address entities
      * @return List of AddressDTOs
      */
@@ -49,6 +51,7 @@ public class AddressMapper implements Mapper<Address, AddressDTO>{
 
     /**
      * Maps an AddressDTO to an Address entity
+     * 
      * @param dto AddressDTO
      * @return Address entity
      * @throws InvalidAddressException if the postal code or country is invalid
@@ -71,6 +74,7 @@ public class AddressMapper implements Mapper<Address, AddressDTO>{
 
     /**
      * Maps a list of AddressDTOs to a list of Address entities
+     * 
      * @param dtos List of AddressDTOs
      * @return List of Address entities
      * @throws InvalidAddressException if the postal code or country is invalid

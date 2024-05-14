@@ -2,7 +2,7 @@ package coigniez.rentapp.model.property;
 
 import org.springframework.stereotype.Service;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.exceptions.InvalidAddressException;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,8 @@ public class PropertyService {
 
     /**
      * Save a property to the database
-     * @param property the property to save 
+     * 
+     * @param property the property to save
      * @return the saved property
      * @throws InvalidAddressException if the postal code or country is invalid
      */
@@ -30,6 +31,7 @@ public class PropertyService {
 
     /**
      * Find a property by its id
+     * 
      * @param id the id of the property
      * @return the property if found
      */
@@ -39,6 +41,7 @@ public class PropertyService {
 
     /**
      * Find all properties in the database
+     * 
      * @return a list of all properties
      */
     public List<PropertyDTO> findAllProperties() {
@@ -48,6 +51,7 @@ public class PropertyService {
 
     /**
      * Update a property in the database
+     * 
      * @param property the property to update
      * @return the updated property
      * @throws InvalidAddressException if the postal code or country is invalid
@@ -59,6 +63,7 @@ public class PropertyService {
 
     /**
      * Delete a property from the database
+     * 
      * @param id the id of the property to delete
      */
     public void deleteProperty(Long id) {

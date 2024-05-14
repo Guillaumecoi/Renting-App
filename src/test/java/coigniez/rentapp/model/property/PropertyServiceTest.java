@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.exceptions.InvalidAddressException;
 
 import java.util.Arrays;
 import java.util.List;

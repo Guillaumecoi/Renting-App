@@ -16,7 +16,7 @@ import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 
@@ -36,13 +36,12 @@ public class AddPropertyController {
     @FXML
     public void initialize() {
         nameField = Field.ofStringType("Name")
-            .label("Name")
-            .required("This field can’t be empty");
+                .label("Name")
+                .required("This field can’t be empty");
 
         // Create the form
         form = Form.of(
-            Group.of(nameField)
-        ).title("Property Form");
+                Group.of(nameField)).title("Property Form");
 
         // Render the form
         formField.getChildren().add(new FormRenderer(form));

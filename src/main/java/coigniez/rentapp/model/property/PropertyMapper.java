@@ -3,9 +3,9 @@ package coigniez.rentapp.model.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.interfaces.Mapper;
 import coigniez.rentapp.model.address.AddressMapper;
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
-import coigniez.rentapp.model.interfaces.Mapper;
 
 public class PropertyMapper implements Mapper<Property, PropertyDTO> {
 

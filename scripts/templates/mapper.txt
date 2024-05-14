@@ -3,7 +3,7 @@ package coigniez.rentapp.model.$LOWERCASE_ENTITY;
 import java.util.ArrayList;
 import java.util.List;
 
-import coigniez.rentapp.model.interfaces.Mapper;
+import coigniez.rentapp.interfaces.Mapper;
 
 public class $ENTITYMapper implements Mapper<$ENTITY, $ENTITYDTO> {
 

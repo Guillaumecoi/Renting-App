@@ -2,14 +2,17 @@ package coigniez.rentapp.model.address;
 
 import java.util.Arrays;
 
-import coigniez.rentapp.model.exceptions.InvalidAddressException;
+import coigniez.rentapp.exceptions.InvalidAddressException;
 import lombok.Getter;
 
 /**
  * Enum representing various countries.
- * Each country has a code, a name, and a postal code regular expression for validation.
- * The {@link #get(String)} method can be used to get a country by its code or name.
- * The {@link #validatePostalCode(String)} method can be used to validate a postal code for a country.
+ * Each country has a code, a name, and a postal code regular expression for
+ * validation.
+ * The {@link #get(String)} method can be used to get a country by its code or
+ * name.
+ * The {@link #validatePostalCode(String)} method can be used to validate a
+ * postal code for a country.
  */
 @Getter
 public enum Country {
@@ -32,11 +35,11 @@ public enum Country {
         this.postalCodeRegex = postalCodeRegex;
     }
 
-
     // Methods
 
     /**
      * Get the country enum by its code or name.
+     * 
      * @param codeOrName The code or name of the country.
      * @return The country enum.
      * @throws InvalidAddressException If the code or name is not in the enum list.
@@ -50,6 +53,7 @@ public enum Country {
 
     /**
      * Get the names of all countries.
+     * 
      * @return An array of country names.
      */
     public static String[] getNames() {
@@ -60,6 +64,7 @@ public enum Country {
 
     /**
      * Get the codes of all countries.
+     * 
      * @return An array of country codes.
      */
     public static String[] getCodes() {
@@ -70,6 +75,7 @@ public enum Country {
 
     /**
      * Validate the postal code of the country based on the postal code regex.
+     * 
      * @param postalCode The postal code to validate.
      * @throws InvalidAddressException If the postal code is invalid.
      */
