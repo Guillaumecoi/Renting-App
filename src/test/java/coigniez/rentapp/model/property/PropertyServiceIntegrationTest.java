@@ -28,7 +28,7 @@ public class PropertyServiceIntegrationTest {
     private PropertyDTO property;
 
     @BeforeEach
-    public void setUp() throws InvalidAddressException {
+    void setUp() throws InvalidAddressException {
         AddressDTO address = new AddressDTO();
         address.setStreet("Test Street");
         address.setHouseNumber("123");
@@ -46,12 +46,12 @@ public class PropertyServiceIntegrationTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         propertyRepository.deleteAll();
     }
 
     @Test
-    public void testCreateProperty() throws Exception {
+    void testCreateProperty() throws Exception {
         // Arrange
         PropertyDTO newProperty = new PropertyDTO();
         newProperty.setName("New Property");
@@ -65,7 +65,7 @@ public class PropertyServiceIntegrationTest {
     }
 
     @Test
-    public void testReadProperty() {
+    void testReadProperty() {
         // Act
         Optional<PropertyDTO> readProperty = propertyService.findPropertyById(property.getId());
 
@@ -74,7 +74,7 @@ public class PropertyServiceIntegrationTest {
     }
 
     @Test
-    public void testUpdateProperty() throws Exception {
+    void testUpdateProperty() throws Exception {
         // Arrange
         property.setName("Updated Property");
 
@@ -86,7 +86,7 @@ public class PropertyServiceIntegrationTest {
     }
 
     @Test
-    public void testDeletePropertyById() {
+    void testDeletePropertyById() {
         // Arrange
         Long id = property.getId();
 
