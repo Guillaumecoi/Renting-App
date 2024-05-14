@@ -94,4 +94,13 @@ public class PropertyRepositoryTest {
         Optional<Property> deletedProperty = propertyRepository.findById(id);
         assertFalse(deletedProperty.isPresent());
     }
+
+    @Test
+    void testFindByName() {
+        // Act
+        Optional<Property> foundProperty = propertyRepository.findByName(property.getName());
+
+        // Assert
+        assertTrue(foundProperty.isPresent());
+    }
 }
