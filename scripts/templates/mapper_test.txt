@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class $ENTITYMapperTest {
 
-    private final $ENTITYMapper $LOWERCASE_ENTITYMapper new $ENTITYMapper();
+    private final $ENTITYMapper $LOWERCASE_ENTITYMapper = new $ENTITYMapper();
 
     @Test
     void entityToDto() {
