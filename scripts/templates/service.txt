@@ -5,30 +5,70 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service class for managing $ENTITYs.
+ */
 @Service
 public class $ENTITYService {
     private final $ENTITYRepository $LOWERCASE_ENTITYRepository;
+    private final $ENTITYMapper $LOWERCASE_ENTITYMapper = new $ENTITYMapper();
 
+    /**
+     * Constructor for $ENTITYService.
+     *
+     * @param $LOWERCASE_ENTITYRepository The repository for $ENTITY.
+     */
     public $ENTITYService($ENTITYRepository $LOWERCASE_ENTITYRepository) {
         this.$LOWERCASE_ENTITYRepository = $LOWERCASE_ENTITYRepository;
     }
 
-    public $ENTITY save$ENTITY($ENTITY $LOWERCASE_ENTITY) {
-        return $LOWERCASE_ENTITYRepository.save($LOWERCASE_ENTITY);
+    /**
+     * Save a $ENTITY.
+     *
+     * @param $LOWERCASE_ENTITY The $ENTITYDTO to save.
+     * @return The saved $ENTITYDTO.
+     */
+    public $ENTITYDTO save$ENTITY($ENTITYDTO $LOWERCASE_ENTITY) {
+        $ENTITY saved$ENTITY = $LOWERCASE_ENTITYRepository.save($LOWERCASE_ENTITYMapper.dtoToEntity($LOWERCASE_ENTITY));
+        return $LOWERCASE_ENTITYMapper.entityToDto(saved$ENTITY);
     }
 
-    public Optional<$ENTITY> find$ENTITYById(Long id) {
-        return $LOWERCASE_ENTITYRepository.findById(id);
+    /**
+     * Find a $ENTITY by id.
+     *
+     * @param id The id of the $ENTITY to find.
+     * @return The found $ENTITYDTO.
+     */
+    public Optional<$ENTITYDTO> find$ENTITYById(Long id) {
+        return $LOWERCASE_ENTITYRepository.findById(id).map($LOWERCASE_ENTITYMapper::entityToDto);
     }
 
-    public List<$ENTITY> findAll$ENTITYs() {
-        return $LOWERCASE_ENTITYRepository.findAll();
+    /**
+     * Find all $ENTITYs.
+     *
+     * @return A list of all $ENTITYDTOs.
+     */
+    public List<$ENTITYDTO> findAll$ENTITYs() {
+        List<$ENTITY> $LOWERCASE_ENTITYs = $LOWERCASE_ENTITYRepository.findAll();
+        return $LOWERCASE_ENTITYMapper.entitiesToDtos($LOWERCASE_ENTITYs);
     }
 
-    public $ENTITY update$ENTITY($ENTITY $LOWERCASE_ENTITY) {
-        return $LOWERCASE_ENTITYRepository.save($LOWERCASE_ENTITY);
+    /**
+     * Update a $ENTITY.
+     *
+     * @param $LOWERCASE_ENTITY The $ENTITYDTO to update.
+     * @return The updated $ENTITYDTO.
+     */
+    public $ENTITYDTO update$ENTITY($ENTITYDTO $LOWERCASE_ENTITY) {
+        $ENTITY updated$ENTITY = $LOWERCASE_ENTITYRepository.save($LOWERCASE_ENTITYMapper.dtoToEntity($LOWERCASE_ENTITY));
+        return $LOWERCASE_ENTITYMapper.entityToDto(updated$ENTITY);
     }
 
+    /**
+     * Delete a $ENTITY by id.
+     *
+     * @param id The id of the $ENTITY to delete.
+     */
     public void delete$ENTITY(Long id) {
         $LOWERCASE_ENTITYRepository.deleteById(id);
     }

@@ -1,0 +1,12 @@
+package coigniez.rentapp.model.$LOWERCASE_ENTITY;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class $ENTITYDTO {
+    private Long id;
+}

@@ -1,0 +1,94 @@
+package coigniez.rentapp.model.$LOWERCASE_ENTITY;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class $ENTITYMapperTest {
+
+    private final $ENTITYMapper $LOWERCASE_ENTITYMapper new $ENTITYMapper();
+
+    @Test
+    void entityToDto() {
+        // Arrange
+        $ENTITY entity = new $ENTITY();
+        entity.setId(1L);
+
+        // Act
+        $ENTITYDTO dto = $LOWERCASE_ENTITYMapper.entityToDto(entity);
+
+        // Assert
+        assertNotNull(dto);
+        assertEquals(entity.getId(), dto.getId());
+    }
+
+    @Test
+    void entityToDtoNull() {
+        assertNull($LOWERCASE_ENTITYMapper.entityToDto(null));
+    }
+
+    @Test
+    void testEntitiesToDtos() {
+        // Arrange
+        $ENTITY entity1 = new $ENTITY();
+        entity1.setId(1L);
+        $ENTITY entity2 = new $ENTITY();
+        entity2.setId(2L);
+
+        List<$ENTITY> entities = new ArrayList<>();
+        entities.add(entity1);
+        entities.add(entity2);
+
+        // Act
+        List<$ENTITYDTO> dtos = $LOWERCASE_ENTITYMapper.entitiesToDtos(entities);
+
+        // Assert
+        assertNotNull(dtos);
+        assertEquals(2, dtos.size());
+        assertEquals(entity1.getId(), dtos.get(0).getId());
+        assertEquals(entity2.getId(), dtos.get(1).getId());
+    }
+
+    @Test
+    void dtoToEntity() {
+        // Arrange
+        $ENTITYDTO dto = new $ENTITYDTO();
+        dto.setId(1L);
+
+        // Act
+        $ENTITY entity = $LOWERCASE_ENTITYMapper.dtoToEntity(dto);
+
+        // Assert
+        assertNotNull(entity);
+        assertEquals(dto.getId(), entity.getId());
+    }
+
+    @Test
+    void dtoToEntityNull() {
+        assertNull($LOWERCASE_ENTITYMapper.dtoToEntity(null));
+    }
+
+    @Test
+    void testDtosToEntities() {
+        // Arrange
+        $ENTITYDTO dto1 = new $ENTITYDTO();
+        dto1.setId(1L);
+        $ENTITYDTO dto2 = new $ENTITYDTO();
+        dto2.setId(2L);
+
+        List<$ENTITYDTO> dtos = new ArrayList<>();
+        dtos.add(dto1);
+        dtos.add(dto2);
+
+        // Act
+        List<$ENTITY> entities = $LOWERCASE_ENTITYMapper.dtosToEntities(dtos);
+
+        // Assert
+        assertNotNull(entities);
+        assertEquals(2, entities.size());
+        assertEquals(dto1.getId(), entities.get(0).getId());
+        assertEquals(dto2.getId(), entities.get(1).getId());
+    }
+}

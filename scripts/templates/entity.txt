@@ -17,7 +17,7 @@ import lombok.ToString;
 @Data
 @ToString
 public class $ENTITY {
-    
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 }

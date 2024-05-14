@@ -1,0 +1,57 @@
+package coigniez.rentapp.model.$LOWERCASE_ENTITY;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import coigniez.rentapp.model.interfaces.Mapper;
+
+public class $ENTITYMapper implements Mapper<$ENTITY, $ENTITYDTO> {
+
+    public $ENTITYDTO entityToDto($ENTITY entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        $ENTITYDTO dto = new $ENTITYDTO();
+        dto.setId(entity.getId());
+
+        return dto;
+    }
+
+    public List<$ENTITYDTO> entitiesToDtos(List<$ENTITY> entities) {
+        if (entities == null) {
+            return null;
+        }
+
+        List<$ENTITYDTO> dtos = new ArrayList<>();
+        for ($ENTITY entity : entities) {
+            dtos.add(entityToDto(entity));
+        }
+
+        return dtos;
+    }
+
+    public $ENTITY dtoToEntity($ENTITYDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        $ENTITY entity = new $ENTITY();
+        entity.setId(dto.getId());
+
+        return entity;
+    }
+
+    public List<$ENTITY> dtosToEntities(List<$ENTITYDTO> dtos) {
+        if (dtos == null) {
+            return null;
+        }
+
+        List<$ENTITY> entities = new ArrayList<>();
+        for ($ENTITYDTO dto : dtos) {
+            entities.add(dtoToEntity(dto));
+        }
+
+        return entities;
+    }
+}
