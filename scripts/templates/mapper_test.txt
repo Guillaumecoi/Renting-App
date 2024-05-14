@@ -15,6 +15,7 @@ class $ENTITYMapperTest {
         // Arrange
         $ENTITY entity = new $ENTITY();
         entity.setId(1L);
+        entity.setName("name");
 
         // Act
         $ENTITYDTO dto = $LOWERCASE_ENTITYMapper.entityToDto(entity);
@@ -22,6 +23,7 @@ class $ENTITYMapperTest {
         // Assert
         assertNotNull(dto);
         assertEquals(entity.getId(), dto.getId());
+        assertEquals(entity.getName(), dto.getName());
     }
 
     @Test
@@ -34,8 +36,10 @@ class $ENTITYMapperTest {
         // Arrange
         $ENTITY entity1 = new $ENTITY();
         entity1.setId(1L);
+        entity1.setName("name1");
         $ENTITY entity2 = new $ENTITY();
         entity2.setId(2L);
+        entity2.setName("name2");
 
         List<$ENTITY> entities = new ArrayList<>();
         entities.add(entity1);
@@ -48,7 +52,9 @@ class $ENTITYMapperTest {
         assertNotNull(dtos);
         assertEquals(2, dtos.size());
         assertEquals(entity1.getId(), dtos.get(0).getId());
+        assertEquals(entity1.getName(), dtos.get(0).getName());
         assertEquals(entity2.getId(), dtos.get(1).getId());
+        assertEquals(entity2.getName(), dtos.get(1).getName());
     }
 
     @Test
@@ -56,6 +62,7 @@ class $ENTITYMapperTest {
         // Arrange
         $ENTITYDTO dto = new $ENTITYDTO();
         dto.setId(1L);
+        dto.setName("name");
 
         // Act
         $ENTITY entity = $LOWERCASE_ENTITYMapper.dtoToEntity(dto);
@@ -63,6 +70,7 @@ class $ENTITYMapperTest {
         // Assert
         assertNotNull(entity);
         assertEquals(dto.getId(), entity.getId());
+        assertEquals(dto.getName(), entity.getName());
     }
 
     @Test
@@ -75,8 +83,10 @@ class $ENTITYMapperTest {
         // Arrange
         $ENTITYDTO dto1 = new $ENTITYDTO();
         dto1.setId(1L);
+        dto1.setName("name1");
         $ENTITYDTO dto2 = new $ENTITYDTO();
         dto2.setId(2L);
+        dto2.setName("name2");
 
         List<$ENTITYDTO> dtos = new ArrayList<>();
         dtos.add(dto1);
@@ -89,6 +99,8 @@ class $ENTITYMapperTest {
         assertNotNull(entities);
         assertEquals(2, entities.size());
         assertEquals(dto1.getId(), entities.get(0).getId());
+        assertEquals(dto1.getName(), entities.get(0).getName());
         assertEquals(dto2.getId(), entities.get(1).getId());
+        assertEquals(dto2.getName(), entities.get(1).getName());
     }
 }

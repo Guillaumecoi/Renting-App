@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class $ENTITYDTO {
     private Long id;
+    private String name;
 }

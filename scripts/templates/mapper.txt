@@ -14,6 +14,7 @@ public class $ENTITYMapper implements Mapper<$ENTITY, $ENTITYDTO> {
 
         $ENTITYDTO dto = new $ENTITYDTO();
         dto.setId(entity.getId());
+        dto.setName(entity.getName());
 
         return dto;
     }
@@ -38,6 +39,7 @@ public class $ENTITYMapper implements Mapper<$ENTITY, $ENTITYDTO> {
 
         $ENTITY entity = new $ENTITY();
         entity.setId(dto.getId());
+        entity.setName(dto.getName());
 
         return entity;
     }
