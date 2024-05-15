@@ -20,7 +20,7 @@ public class PropertyService {
     /**
      * Save a property to the database
      * 
-     * @param property the property to save
+     * @param property the PropertyDto to save
      * @return the saved property
      * @throws InvalidAddressException if the postal code or country is invalid
      */
@@ -52,7 +52,7 @@ public class PropertyService {
     /**
      * Update a property in the database
      * 
-     * @param property the property to update
+     * @param property the PropertyDto to update
      * @return the updated property
      * @throws InvalidAddressException if the postal code or country is invalid
      */
@@ -73,7 +73,7 @@ public class PropertyService {
     /**
      * Delete a property from the database
      * 
-     * @param property the property to delete
+     * @param property the PropertyDto to delete
      * @throws InvalidAddressException if the postal code or country is invalid
      */
     public void deleteProperty(PropertyDTO property) throws InvalidAddressException {
