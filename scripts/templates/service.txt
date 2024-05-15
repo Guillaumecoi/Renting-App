@@ -65,11 +65,20 @@ public class $ENTITYService {
     }
 
     /**
-     * Delete a $ENTITY by id.
+     * Delete a $ENTITY from the database.
      *
      * @param id The id of the $ENTITY to delete.
      */
     public void delete$ENTITY(Long id) {
         $LOWERCASE_ENTITYRepository.deleteById(id);
+    }
+
+    /**
+     * Delete a $ENTITY from the database.
+     *
+     * @param $LOWERCASE_ENTITY The $ENTITYDTO to delete.
+     */
+    public void delete$ENTITY($ENTITYDTO $LOWERCASE_ENTITY) {
+        $LOWERCASE_ENTITYRepository.delete($LOWERCASE_ENTITYMapper.dtoToEntity($LOWERCASE_ENTITY));
     }
 }

@@ -5,7 +5,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class $ENTITYTest {
     @Test
-    public void test$ENTITY() {
-        // TODO: Add tests for $ENTITY
+    public void testDummy() {
+        // Arrange
+        $ENTITY $lowercase_entity = new $ENTITY();
+        $lowercase_entity.setName("Test $ENTITY");
+
+        // Act
+        String name = $lowercase_entity.getName();
+
+        // Assert
+        assertEquals("Test $ENTITY", name);
     }
 }

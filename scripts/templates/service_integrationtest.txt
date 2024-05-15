@@ -1,0 +1,99 @@
+package coigniez.rentapp.model.$LOWERCASE_ENTITY;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.*;
+
+@DataJpaTest
+@ActiveProfiles("test")
+@Import($ENTITYService.class)
+public class $ENTITYServiceIntegrationTest {
+
+    @Autowired
+    private $ENTITYService $lowercase_entityService;
+
+    @Autowired
+    private $ENTITYRepository $lowercase_entityRepository;
+
+    private $ENTITYDTO $lowercase_entity;
+
+    @BeforeEach
+    void setUp() {
+        $lowercase_entity = new $ENTITYDTO();
+        $lowercase_entity.setName("Test $ENTITY");
+        $lowercase_entity = $lowercase_entityService.save$ENTITY($lowercase_entity);
+    }
+
+    @AfterEach
+    void tearDown() {
+        $lowercase_entityRepository.deleteAll();
+    }
+
+    @Test
+    void testCreate$ENTITY() {
+        // Arrange
+        $ENTITYDTO new$ENTITY = new $ENTITYDTO();
+        new$ENTITY.setName("New $ENTITY");
+
+        // Act
+        $ENTITYDTO saved$ENTITY = $lowercase_entityService.save$ENTITY(new$ENTITY);
+
+        // Assert
+        assertNotNull(saved$ENTITY.getId());
+        assertEquals(new$ENTITY.getName(), saved$ENTITY.getName());
+        assertNotEquals($lowercase_entity.getId(), saved$ENTITY.getId());
+    }
+
+    @Test
+    void testRead$ENTITY() {
+        // Act
+        Optional<$ENTITYDTO> read$ENTITY = $lowercase_entityService.find$ENTITYById($lowercase_entity.getId());
+
+        // Assert
+        assertTrue(read$ENTITY.isPresent());
+        assertEquals($lowercase_entity.getId(), read$ENTITY.get().getId());
+    }
+
+    @Test
+    void testUpdate$ENTITY() {
+        // Arrange
+        String updatedName = "Updated $ENTITY";
+        $lowercase_entity.setName(updatedName);
+
+        // Act
+        $ENTITYDTO updated$ENTITY = $lowercase_entityService.update$ENTITY($lowercase_entity);
+
+        // Assert
+        assertEquals(updatedName, updated$ENTITY.getName());
+    }
+
+    @Test
+    void testDelete$ENTITYById() {
+        // Arrange
+        Long id = $lowercase_entity.getId();
+
+        // Act
+        $lowercase_entityService.delete$ENTITY(id);
+
+        // Assert
+        Optional<$ENTITYDTO> deleted$ENTITY = $lowercase_entityService.find$ENTITYById(id);
+        assertFalse(deleted$ENTITY.isPresent());
+    }
+
+    @Test
+    void testDelete$ENTITY() {
+        // Act
+        $lowercase_entityService.delete$ENTITY($lowercase_entity);
+
+        // Assert
+        Optional<$ENTITYDTO> deleted$ENTITY = $lowercase_entityService.find$ENTITYById($lowercase_entity.getId());
+        assertFalse(deleted$ENTITY.isPresent());
+    }
+}

@@ -1,11 +1,109 @@
 package coigniez.rentapp.model.$LOWERCASE_ENTITY;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class $ENTITYServiceTest {
+
+    private $ENTITYRepository $lowercase_entityRepository;
+    private $ENTITYService $lowercase_entityService;
+
+    @BeforeEach
+    void setUp() {
+        $lowercase_entityRepository = Mockito.mock($ENTITYRepository.class);
+        $lowercase_entityService = new $ENTITYService($lowercase_entityRepository);
+    }
+
     @Test
-    public void testService() {
-        // TODO: Add tests for $ENTITYService
+    void testSave$ENTITY() {
+        // Arrange
+        $ENTITYDTO $lowercase_entity = new $ENTITYDTO();
+        $ENTITY $lowercase_entityEntity = new $ENTITY();
+        when($lowercase_entityRepository.save(any($ENTITY.class))).thenReturn($lowercase_entityEntity);
+
+        // Act
+        $ENTITYDTO saved$ENTITY = $lowercase_entityService.save$ENTITY($lowercase_entity);
+
+        // Assert
+        assertEquals($lowercase_entity, saved$ENTITY);
+        verify($lowercase_entityRepository, times(1)).save($lowercase_entityEntity);
+    }
+
+    @Test
+    void testFind$ENTITYById() {
+        // Arrange
+        $ENTITY $lowercase_entity = new $ENTITY();
+        $lowercase_entity.setId(1L);
+        when($lowercase_entityRepository.findById(1L)).thenReturn(Optional.of($lowercase_entity));
+
+        // Act
+        Optional<$ENTITYDTO> found$ENTITY = $lowercase_entityService.find$ENTITYById(1L);
+
+        // Assert
+        assertEquals($lowercase_entity.getId(), found$ENTITY.get().getId());
+        verify($lowercase_entityRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testFindAll$ENTITYs() {
+        // Arrange
+        $ENTITY $lowercase_entity1 = new $ENTITY();
+        $ENTITY $lowercase_entity2 = new $ENTITY();
+        when($lowercase_entityRepository.findAll()).thenReturn(Arrays.asList($lowercase_entity1, $lowercase_entity2));
+
+        // Act
+        List<$ENTITYDTO> $lowercase_entitys = $lowercase_entityService.findAll$ENTITYs();
+
+        // Assert
+        assertEquals(2, $lowercase_entitys.size());
+        verify($lowercase_entityRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testUpdate$ENTITY() {
+        // Arrange
+        $ENTITYDTO $lowercase_entity = new $ENTITYDTO();
+        $ENTITY $lowercase_entityEntity = new $ENTITY();
+        when($lowercase_entityRepository.save(any($ENTITY.class))).thenReturn($lowercase_entityEntity);
+
+        // Act
+        $ENTITYDTO updated$ENTITY = $lowercase_entityService.update$ENTITY($lowercase_entity);
+
+        // Assert
+        assertEquals($lowercase_entity, updated$ENTITY);
+        verify($lowercase_entityRepository, times(1)).save($lowercase_entityEntity);
+    }
+
+    @Test
+    void testDelete$ENTITYById() {
+        // Arrange
+        Long id = 1L;
+
+        // Act
+        $lowercase_entityService.delete$ENTITY(id);
+
+        // Assert
+        verify($lowercase_entityRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void testDelete$ENTITYBy$ENTITY() {
+        // Arrange
+        $ENTITYDTO $lowercase_entity = new $ENTITYDTO();
+        $ENTITY $lowercase_entityEntity = new $ENTITY();
+
+        // Act
+        $lowercase_entityService.delete$ENTITY($lowercase_entity);
+
+        // Assert
+        verify($lowercase_entityRepository, times(1)).delete($lowercase_entityEntity);
     }
 }
