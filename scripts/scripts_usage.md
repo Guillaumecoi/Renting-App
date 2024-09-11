@@ -36,8 +36,9 @@ Remember to replace `EntityName` with the actual name of the entity you want to 
 cd scripts
 ```
 
-2. Run the Python script. It will prompt you to enter the name of the entity.
+2. Run the Python script. It will prompt you to enter the name of the entity (use python without 3 on windows).
 
 ```bash
+python3 add_entity.py
 python add_entity.py
 ```
