@@ -1,5 +1,7 @@
 package coigniez.rentapp.model.property;
 
+import java.util.List;
+
 import coigniez.rentapp.model.address.Address;
 
 import jakarta.persistence.CascadeType;
@@ -28,7 +30,7 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 200, unique = true)
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
