@@ -1,7 +1,9 @@
 package coigniez.rentapp.model.property.tag;
 
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +61,32 @@ class TagMapperTest {
     }
 
     @Test
+    void testEntitiesToDtosSet() {
+        // Arrange
+        Tag entity1 = new Tag();
+        entity1.setId(1L);
+        entity1.setName("name1");
+        Tag entity2 = new Tag();
+        entity2.setId(2L);
+        entity2.setName("name2");
+
+        Set<Tag> entities = new HashSet<>();
+        entities.add(entity1);
+        entities.add(entity2);
+
+        // Act
+        Set<TagDTO> dtos = tagMapper.entitiesToDtos(entities);
+
+        // Assert
+        assertNotNull(dtos);
+        assertEquals(2, dtos.size());
+        assertTrue(dtos.stream().anyMatch(dto -> dto.getId().equals(entity1.getId())));
+        assertTrue(dtos.stream().anyMatch(dto -> dto.getName().equals(entity1.getName())));
+        assertTrue(dtos.stream().anyMatch(dto -> dto.getId().equals(entity2.getId())));
+        assertTrue(dtos.stream().anyMatch(dto -> dto.getName().equals(entity2.getName())));
+    }
+
+    @Test
     void dtoToEntity() {
         // Arrange
         TagDTO dto = new TagDTO();
@@ -103,5 +131,31 @@ class TagMapperTest {
         assertEquals(dto1.getName(), entities.get(0).getName());
         assertEquals(dto2.getId(), entities.get(1).getId());
         assertEquals(dto2.getName(), entities.get(1).getName());
+    }
+
+    @Test
+    void testDtosToEntitiesSet() {
+        // Arrange
+        TagDTO dto1 = new TagDTO();
+        dto1.setId(1L);
+        dto1.setName("name1");
+        TagDTO dto2 = new TagDTO();
+        dto2.setId(2L);
+        dto2.setName("name2");
+
+        Set<TagDTO> dtos = new HashSet<>();
+        dtos.add(dto1);
+        dtos.add(dto2);
+
+        // Act
+        Set<Tag> entities = tagMapper.dtosToEntities(dtos);
+
+        // Assert
+        assertNotNull(entities);
+        assertEquals(2, entities.size());
+        assertTrue(entities.stream().anyMatch(entity -> entity.getId().equals(dto1.getId())));
+        assertTrue(entities.stream().anyMatch(entity -> entity.getName().equals(dto1.getName())));
+        assertTrue(entities.stream().anyMatch(entity -> entity.getId().equals(dto2.getId())));
+        assertTrue(entities.stream().anyMatch(entity -> entity.getName().equals(dto2.getName())));
     }
 }

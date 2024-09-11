@@ -9,10 +9,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.AddressDTO;
+import coigniez.rentapp.model.property.tag.Tag;
+import coigniez.rentapp.model.property.tag.TagDTO;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -38,9 +42,17 @@ public class PropertyServiceIntegrationTest {
         address.setProvince("Test Province");
         address.setCountry("Belgium");
 
+        TagDTO tag1 = new TagDTO();
+        tag1.setId(1L);
+        tag1.setName("Test Tag");
+        TagDTO tag2 = new TagDTO();
+        tag2.setId(2L);
+        tag2.setName("Second Test Tag");
+
         property = new PropertyDTO();
         property.setName("Test Property");
         property.setAddress(address);
+        property.setTags(Set.of(tag1, tag2));
 
         property = propertyService.saveProperty(property);
     }

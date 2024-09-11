@@ -1,7 +1,9 @@
 package coigniez.rentapp.model.property.tag;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import coigniez.rentapp.interfaces.Mapper;
 
@@ -32,6 +34,19 @@ public class TagMapper implements Mapper<Tag, TagDTO> {
         return dtos;
     }
 
+    public Set<TagDTO> entitiesToDtos(Set<Tag> entities) {
+        if (entities == null) {
+            return null;
+        }
+
+        Set<TagDTO> dtos = new HashSet<>();
+        for (Tag entity : entities) {
+            dtos.add(entityToDto(entity));
+        }
+
+        return dtos;
+    }
+
     public Tag dtoToEntity(TagDTO dto) {
         if (dto == null) {
             return null;
@@ -50,6 +65,19 @@ public class TagMapper implements Mapper<Tag, TagDTO> {
         }
 
         List<Tag> entities = new ArrayList<>();
+        for (TagDTO dto : dtos) {
+            entities.add(dtoToEntity(dto));
+        }
+
+        return entities;
+    }
+
+    public Set<Tag> dtosToEntities(Set<TagDTO> dtos) {
+        if (dtos == null) {
+            return null;
+        }
+
+        Set<Tag> entities = new HashSet<>();
         for (TagDTO dto : dtos) {
             entities.add(dtoToEntity(dto));
         }

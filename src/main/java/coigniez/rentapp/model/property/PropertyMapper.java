@@ -6,10 +6,12 @@ import java.util.List;
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.interfaces.Mapper;
 import coigniez.rentapp.model.address.AddressMapper;
+import coigniez.rentapp.model.property.tag.TagMapper;
 
 public class PropertyMapper implements Mapper<Property, PropertyDTO> {
 
     private final AddressMapper addressMapper = new AddressMapper();
+    private final TagMapper tagMapper = new TagMapper();
 
     public PropertyDTO entityToDto(Property property) {
         if (property == null) {
@@ -20,6 +22,7 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         dto.setId(property.getId());
         dto.setName(property.getName());
         dto.setAddress(addressMapper.entityToDto(property.getAddress()));
+        dto.setTags(tagMapper.entitiesToDtos(property.getTags()));
 
         return dto;
     }
@@ -46,6 +49,7 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         property.setId(dto.getId());
         property.setName(dto.getName());
         property.setAddress(addressMapper.dtoToEntity(dto.getAddress()));
+        property.setTags(tagMapper.dtosToEntities(dto.getTags()));
 
         return property;
     }
