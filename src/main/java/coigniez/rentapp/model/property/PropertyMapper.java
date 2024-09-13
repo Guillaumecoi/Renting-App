@@ -3,15 +3,16 @@ package coigniez.rentapp.model.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.interfaces.Mapper;
 import coigniez.rentapp.model.address.AddressMapper;
-import coigniez.rentapp.model.property.tag.TagMapper;
 
+@Component
 public class PropertyMapper implements Mapper<Property, PropertyDTO> {
 
     private final AddressMapper addressMapper = new AddressMapper();
-    private final TagMapper tagMapper = new TagMapper();
 
     public PropertyDTO entityToDto(Property property) {
         if (property == null) {
@@ -22,7 +23,7 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         dto.setId(property.getId());
         dto.setName(property.getName());
         dto.setAddress(addressMapper.entityToDto(property.getAddress()));
-        dto.setTags(tagMapper.entitiesToDtos(property.getTags()));
+        dto.setTags(property.getTags());
 
         return dto;
     }
@@ -49,7 +50,7 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         property.setId(dto.getId());
         property.setName(dto.getName());
         property.setAddress(addressMapper.dtoToEntity(dto.getAddress()));
-        property.setTags(tagMapper.dtosToEntities(dto.getTags()));
+        property.setTags(dto.getTags());
 
         return property;
     }

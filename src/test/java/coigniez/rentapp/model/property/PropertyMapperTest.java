@@ -10,13 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.Address;
 import coigniez.rentapp.model.address.AddressDTO;
-import coigniez.rentapp.model.property.tag.Tag;
-import coigniez.rentapp.model.property.tag.TagMapper;
 
 public class PropertyMapperTest {
 
     private final PropertyMapper propertyMapper = new PropertyMapper();
-    private final TagMapper tagMapper = new TagMapper();
 
     @Test
     void testEntityToDto() throws InvalidAddressException {
@@ -36,13 +33,7 @@ public class PropertyMapperTest {
         address.setCountry("Belgium");
         entity.setAddress(address);
         // set Tags for entity
-        Tag tag1 = new Tag();
-        tag1.setId(1L);
-        tag1.setName("Tag 1");
-        Tag tag2 = new Tag();
-        tag2.setId(2L);
-        tag2.setName("Tag 2");
-        Set<Tag> tags = Set.of(tag1, tag2);
+        Set<String> tags = Set.of("tag1", "tag2");
         entity.setTags(tags);
 
         // Act
@@ -63,8 +54,8 @@ public class PropertyMapperTest {
         assertEquals(entity.getAddress().getCountry(), dto.getAddress().getCountry());
         // assert Tags
         assertEquals(entity.getTags().size(), dto.getTags().size());
-        assertTrue(dto.getTags().contains(tagMapper.entityToDto(tag1)));
-        assertTrue(dto.getTags().contains(tagMapper.entityToDto(tag2)));
+        assertTrue(dto.getTags().contains("tag1"));
+        assertTrue(dto.getTags().contains("tag2"));
     }
 
     @Test
@@ -90,13 +81,7 @@ public class PropertyMapperTest {
         address1.setCountry("Belgium");
         entity1.setAddress(address1);
         // set Tags for entity1
-        Tag tag1 = new Tag();
-        tag1.setId(1L);
-        tag1.setName("Tag 1");
-        Tag tag2 = new Tag();
-        tag2.setId(2L);
-        tag2.setName("Tag 2");
-        entity1.setTags(Set.of(tag1, tag2));
+        entity1.setTags(Set.of("tag1", "tag2"));
 
         Property entity2 = new Property();
         entity2.setId(2L);
@@ -113,10 +98,7 @@ public class PropertyMapperTest {
         address2.setCountry("Belgium");
         entity2.setAddress(address2);
         // set Tags for entity2
-        Tag tag3 = new Tag();
-        tag3.setId(3L);
-        tag3.setName("Tag 3");
-        entity2.setTags(Set.of(tag3, tag1));
+        entity2.setTags(Set.of("tag3", "tag1"));
 
         List<Property> entities = new ArrayList<>();
         entities.add(entity1);
@@ -141,8 +123,8 @@ public class PropertyMapperTest {
         assertEquals(entity1.getAddress().getCountry(), dtos.get(0).getAddress().getCountry());
         // assert Tags for entity1
         assertEquals(entity1.getTags().size(), dtos.get(0).getTags().size());
-        assertTrue(dtos.get(0).getTags().contains(tagMapper.entityToDto(tag1)));
-        assertTrue(dtos.get(0).getTags().contains(tagMapper.entityToDto(tag2)));
+        assertTrue(dtos.get(0).getTags().contains("tag1"));
+        assertTrue(dtos.get(0).getTags().contains("tag2"));
 
         // assert entity2
         assertEquals(entity2.getId(), dtos.get(1).getId());
@@ -158,8 +140,8 @@ public class PropertyMapperTest {
         assertEquals(entity2.getAddress().getCountry(), dtos.get(1).getAddress().getCountry());
         // assert Tags for entity2
         assertEquals(entity2.getTags().size(), dtos.get(1).getTags().size());
-        assertTrue(dtos.get(1).getTags().contains(tagMapper.entityToDto(tag3)));
-        assertTrue(dtos.get(1).getTags().contains(tagMapper.entityToDto(tag1)));
+        assertTrue(dtos.get(1).getTags().contains("tag3"));
+        assertTrue(dtos.get(1).getTags().contains("tag1"));
 
     }
 
