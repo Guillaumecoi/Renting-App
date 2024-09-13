@@ -22,10 +22,8 @@ public class TagTest {
     public void testEquals() {
         // Arrange
         Tag entity1 = new Tag();
-        entity1.setId(1L);
         entity1.setName("name1");
         Tag entity2 = new Tag();
-        entity2.setId(1L);
         entity2.setName("name1");
 
         // Act & Assert

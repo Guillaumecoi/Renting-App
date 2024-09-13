@@ -14,97 +14,82 @@ import static org.mockito.Mockito.*;
 
 public class TagServiceTest {
 
-    private TagRepository $lowercase_entityRepository;
-    private TagService $lowercase_entityService;
+    private TagRepository tagRepository;
+    private TagService tagService;
 
     @BeforeEach
     void setUp() {
-        $lowercase_entityRepository = Mockito.mock(TagRepository.class);
-        $lowercase_entityService = new TagService($lowercase_entityRepository);
+        tagRepository = Mockito.mock(TagRepository.class);
+        tagService = new TagService(tagRepository);
     }
 
     @Test
     void testSaveTag() {
         // Arrange
-        TagDTO $lowercase_entity = new TagDTO();
-        Tag $lowercase_entityEntity = new Tag();
-        when($lowercase_entityRepository.save(any(Tag.class))).thenReturn($lowercase_entityEntity);
+        TagDTO tag = new TagDTO();
+        Tag tagEntity = new Tag();
+        when(tagRepository.save(any(Tag.class))).thenReturn(tagEntity);
 
         // Act
-        TagDTO savedTag = $lowercase_entityService.saveTag($lowercase_entity);
+        TagDTO savedTag = tagService.saveTag(tag);
 
         // Assert
-        assertEquals($lowercase_entity, savedTag);
-        verify($lowercase_entityRepository, times(1)).save($lowercase_entityEntity);
+        assertEquals(tag, savedTag);
+        verify(tagRepository, times(1)).save(tagEntity);
     }
 
     @Test
     void testFindTagById() {
         // Arrange
-        Tag $lowercase_entity = new Tag();
-        $lowercase_entity.setId(1L);
-        when($lowercase_entityRepository.findById(1L)).thenReturn(Optional.of($lowercase_entity));
+        Tag tag = new Tag();
+        tag.setName("1");
+        when(tagRepository.findById("1")).thenReturn(Optional.of(tag));
 
         // Act
-        Optional<TagDTO> foundTag = $lowercase_entityService.findTagById(1L);
+        Optional<TagDTO> foundTag = tagService.findTagByName("1");
 
         // Assert
-        assertEquals($lowercase_entity.getId(), foundTag.get().getId());
-        verify($lowercase_entityRepository, times(1)).findById(1L);
+        assertEquals(tag.getName(), foundTag.get().getName());
+        verify(tagRepository, times(1)).findById("1");
     }
 
     @Test
     void testFindAllTags() {
         // Arrange
-        Tag $lowercase_entity1 = new Tag();
-        Tag $lowercase_entity2 = new Tag();
-        when($lowercase_entityRepository.findAll()).thenReturn(Arrays.asList($lowercase_entity1, $lowercase_entity2));
+        Tag tag1 = new Tag();
+        Tag tag2 = new Tag();
+        when(tagRepository.findAll()).thenReturn(Arrays.asList(tag1, tag2));
 
         // Act
-        List<TagDTO> $lowercase_entitys = $lowercase_entityService.findAllTags();
+        List<TagDTO> $lowercase_entitys = tagService.findAllTags();
 
         // Assert
         assertEquals(2, $lowercase_entitys.size());
-        verify($lowercase_entityRepository, times(1)).findAll();
-    }
-
-    @Test
-    void testUpdateTag() {
-        // Arrange
-        TagDTO $lowercase_entity = new TagDTO();
-        Tag $lowercase_entityEntity = new Tag();
-        when($lowercase_entityRepository.save(any(Tag.class))).thenReturn($lowercase_entityEntity);
-
-        // Act
-        TagDTO updatedTag = $lowercase_entityService.updateTag($lowercase_entity);
-
-        // Assert
-        assertEquals($lowercase_entity, updatedTag);
-        verify($lowercase_entityRepository, times(1)).save($lowercase_entityEntity);
+        verify(tagRepository, times(1)).findAll();
     }
 
     @Test
     void testDeleteTagById() {
         // Arrange
-        Long id = 1L;
+        String id = "1";
 
         // Act
-        $lowercase_entityService.deleteTag(id);
+        tagService.deleteTag(id);
 
         // Assert
-        verify($lowercase_entityRepository, times(1)).deleteById(id);
+        verify(tagRepository, times(1)).deleteById(id);
     }
 
     @Test
     void testDeleteTagByTag() {
         // Arrange
-        TagDTO $lowercase_entity = new TagDTO();
-        Tag $lowercase_entityEntity = new Tag();
+        TagDTO tag = new TagDTO();
+        Tag tagEntity = new Tag();
 
         // Act
-        $lowercase_entityService.deleteTag($lowercase_entity);
+        tagService.deleteTag(tag);
 
         // Assert
-        verify($lowercase_entityRepository, times(1)).delete($lowercase_entityEntity);
+        verify(tagRepository, times(1)).delete(tagEntity);
     }
 }

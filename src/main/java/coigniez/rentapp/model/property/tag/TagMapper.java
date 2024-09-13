@@ -15,7 +15,6 @@ public class TagMapper implements Mapper<Tag, TagDTO> {
         }
 
         TagDTO dto = new TagDTO();
-        dto.setId(entity.getId());
         dto.setName(entity.getName());
 
         return dto;
@@ -53,7 +52,6 @@ public class TagMapper implements Mapper<Tag, TagDTO> {
         }
 
         Tag entity = new Tag();
-        entity.setId(dto.getId());
         entity.setName(dto.getName());
 
         return entity;

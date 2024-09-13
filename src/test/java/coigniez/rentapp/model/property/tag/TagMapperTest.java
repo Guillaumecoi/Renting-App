@@ -17,7 +17,6 @@ class TagMapperTest {
     void entityToDto() {
         // Arrange
         Tag entity = new Tag();
-        entity.setId(1L);
         entity.setName("name");
 
         // Act
@@ -25,7 +24,6 @@ class TagMapperTest {
 
         // Assert
         assertNotNull(dto);
-        assertEquals(entity.getId(), dto.getId());
         assertEquals(entity.getName(), dto.getName());
     }
 
@@ -38,10 +36,8 @@ class TagMapperTest {
     void testEntitiesToDtos() {
         // Arrange
         Tag entity1 = new Tag();
-        entity1.setId(1L);
         entity1.setName("name1");
         Tag entity2 = new Tag();
-        entity2.setId(2L);
         entity2.setName("name2");
 
         List<Tag> entities = new ArrayList<>();
@@ -54,9 +50,7 @@ class TagMapperTest {
         // Assert
         assertNotNull(dtos);
         assertEquals(2, dtos.size());
-        assertEquals(entity1.getId(), dtos.get(0).getId());
         assertEquals(entity1.getName(), dtos.get(0).getName());
-        assertEquals(entity2.getId(), dtos.get(1).getId());
         assertEquals(entity2.getName(), dtos.get(1).getName());
     }
 
@@ -64,10 +58,8 @@ class TagMapperTest {
     void testEntitiesToDtosSet() {
         // Arrange
         Tag entity1 = new Tag();
-        entity1.setId(1L);
         entity1.setName("name1");
         Tag entity2 = new Tag();
-        entity2.setId(2L);
         entity2.setName("name2");
 
         Set<Tag> entities = new HashSet<>();
@@ -80,9 +72,7 @@ class TagMapperTest {
         // Assert
         assertNotNull(dtos);
         assertEquals(2, dtos.size());
-        assertTrue(dtos.stream().anyMatch(dto -> dto.getId().equals(entity1.getId())));
         assertTrue(dtos.stream().anyMatch(dto -> dto.getName().equals(entity1.getName())));
-        assertTrue(dtos.stream().anyMatch(dto -> dto.getId().equals(entity2.getId())));
         assertTrue(dtos.stream().anyMatch(dto -> dto.getName().equals(entity2.getName())));
     }
 
@@ -90,7 +80,6 @@ class TagMapperTest {
     void dtoToEntity() {
         // Arrange
         TagDTO dto = new TagDTO();
-        dto.setId(1L);
         dto.setName("name");
 
         // Act
@@ -98,7 +87,6 @@ class TagMapperTest {
 
         // Assert
         assertNotNull(entity);
-        assertEquals(dto.getId(), entity.getId());
         assertEquals(dto.getName(), entity.getName());
     }
 
@@ -111,10 +99,8 @@ class TagMapperTest {
     void testDtosToEntities() {
         // Arrange
         TagDTO dto1 = new TagDTO();
-        dto1.setId(1L);
         dto1.setName("name1");
         TagDTO dto2 = new TagDTO();
-        dto2.setId(2L);
         dto2.setName("name2");
 
         List<TagDTO> dtos = new ArrayList<>();
@@ -127,9 +113,7 @@ class TagMapperTest {
         // Assert
         assertNotNull(entities);
         assertEquals(2, entities.size());
-        assertEquals(dto1.getId(), entities.get(0).getId());
         assertEquals(dto1.getName(), entities.get(0).getName());
-        assertEquals(dto2.getId(), entities.get(1).getId());
         assertEquals(dto2.getName(), entities.get(1).getName());
     }
 
@@ -137,10 +121,8 @@ class TagMapperTest {
     void testDtosToEntitiesSet() {
         // Arrange
         TagDTO dto1 = new TagDTO();
-        dto1.setId(1L);
         dto1.setName("name1");
         TagDTO dto2 = new TagDTO();
-        dto2.setId(2L);
         dto2.setName("name2");
 
         Set<TagDTO> dtos = new HashSet<>();
@@ -153,9 +135,7 @@ class TagMapperTest {
         // Assert
         assertNotNull(entities);
         assertEquals(2, entities.size());
-        assertTrue(entities.stream().anyMatch(entity -> entity.getId().equals(dto1.getId())));
         assertTrue(entities.stream().anyMatch(entity -> entity.getName().equals(dto1.getName())));
-        assertTrue(entities.stream().anyMatch(entity -> entity.getId().equals(dto2.getId())));
         assertTrue(entities.stream().anyMatch(entity -> entity.getName().equals(dto2.getName())));
     }
 }

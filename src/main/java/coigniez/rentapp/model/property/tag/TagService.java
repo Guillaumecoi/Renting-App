@@ -39,8 +39,12 @@ public class TagService {
      * @param id The id of the Tag to find.
      * @return The found TagDTO.
      */
-    public Optional<TagDTO> findTagById(Long id) {
-        return tagRepository.findById(id).map(tagMapper::entityToDto);
+    public Optional<TagDTO> findTagByName(String name) {
+        if (name == null) {
+            return Optional.empty();
+        } else {
+            return tagRepository.findById(name).map(tagMapper::entityToDto);
+        }
     }
 
     /**
@@ -69,8 +73,10 @@ public class TagService {
      *
      * @param id The id of the Tag to delete.
      */
-    public void deleteTag(Long id) {
-        tagRepository.deleteById(id);
+    public void deleteTag(String name) {
+        if (name != null) {
+            tagRepository.deleteById(name);
+        }
     }
 
     /**

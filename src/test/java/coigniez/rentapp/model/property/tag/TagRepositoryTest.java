@@ -17,21 +17,21 @@ import java.util.Optional;
 public class TagRepositoryTest {
 
     @Autowired
-    private TagRepository $lowercase_entityRepository;
+    private TagRepository tagRepository;
 
-    private Tag $lowercase_entity;
+    private Tag tag;
 
     @BeforeEach
     public void setUp() {
-        $lowercase_entity = new Tag();
-        $lowercase_entity.setName("Test Tag");
+        tag = new Tag();
+        tag.setName("Test Tag");
         // set properties here
-        $lowercase_entity = $lowercase_entityRepository.saveAndFlush($lowercase_entity);
+        tag = tagRepository.saveAndFlush(tag);
     }
 
     @AfterEach
     public void tearDown() {
-        $lowercase_entityRepository.deleteAll();
+        tagRepository.deleteAll();
     }
 
     @Test
@@ -41,58 +41,44 @@ public class TagRepositoryTest {
         newTag.setName("New Tag");
 
         // Act
-        Tag savedTag = $lowercase_entityRepository.save(newTag);
+        Tag savedTag = tagRepository.save(newTag);
 
         // Assert
-        assertNotNull(savedTag.getId());
         assertEquals(newTag.getName(), savedTag.getName());
     }
 
     @Test
     public void testReadTag() {
         // Act
-        Optional<Tag> readTag = $lowercase_entityRepository.findById($lowercase_entity.getId());
+        Optional<Tag> readTag = tagRepository.findById(tag.getName());
 
         // Assert
         assertTrue(readTag.isPresent());
     }
 
     @Test
-    public void testUpdateTag() {
-        // Arrange
-        $lowercase_entity.setName("Updated Tag");
-
-        // Act
-        $lowercase_entityRepository.saveAndFlush($lowercase_entity);
-
-        // Assert
-        Tag updatedTag = $lowercase_entityRepository.findById($lowercase_entity.getId()).orElse(null);
-        assertEquals("Updated Tag", updatedTag.getName());
-    }
-
-    @Test
     public void testDeleteTag() {
         // Arrange
-        Long id = $lowercase_entity.getId();
+        String name = tag.getName();
 
         // Act
-        $lowercase_entityRepository.delete($lowercase_entity);
+        tagRepository.delete(tag);
 
         // Assert
-        Optional<Tag> deletedTag = $lowercase_entityRepository.findById(id);
+        Optional<Tag> deletedTag = tagRepository.findById(name);
         assertFalse(deletedTag.isPresent());
     }
 
     @Test
     void testDeleteById() {
         // Arrange
-        Long id = $lowercase_entity.getId();
+        String name = tag.getName();
 
         // Act
-        $lowercase_entityRepository.deleteById(id);
+        tagRepository.deleteById(name);
 
         // Assert
-        Optional<Tag> deletedTag = $lowercase_entityRepository.findById(id);
+        Optional<Tag> deletedTag = tagRepository.findById(name);
         assertFalse(deletedTag.isPresent());
     }
 }
