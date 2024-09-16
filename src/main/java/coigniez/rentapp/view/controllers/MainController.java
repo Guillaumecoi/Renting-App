@@ -25,6 +25,11 @@ public class MainController {
     private AnchorPane mainAnchorPane;
 
     @FXML
+    public void initialize() {
+        mainAnchorPane.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+    }
+
+    @FXML
     public void handleAddPropertyButtonAction(ActionEvent event) {
         try {
             // Load the new FXML file for the AddPropertyController
