@@ -1,6 +1,7 @@
 package coigniez.rentapp.model.property;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -23,7 +24,9 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         dto.setId(property.getId());
         dto.setName(property.getName());
         dto.setAddress(addressMapper.entityToDto(property.getAddress()));
-        dto.setTags(property.getTags());
+        dto.setTags(property.getTags() != null ? new HashSet<>(property.getTags()) : new HashSet<>()); // Prevent null
+                                                                                                       // pointer
+                                                                                                       // exception
 
         return dto;
     }
@@ -50,7 +53,8 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         property.setId(dto.getId());
         property.setName(dto.getName());
         property.setAddress(addressMapper.dtoToEntity(dto.getAddress()));
-        property.setTags(dto.getTags());
+        property.setTags(dto.getTags() != null ? new HashSet<>(dto.getTags()) : new HashSet<>()); // Prevent null
+                                                                                                  // pointer exception
 
         return property;
     }
