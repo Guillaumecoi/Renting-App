@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import coigniez.rentapp.exceptions.InvalidAddressException;
 
 import java.util.List;
-import java.util.Set;
 import java.util.Optional;
 
 @Service
@@ -87,6 +86,6 @@ public class PropertyService {
      * @return a list of all tags
      */
     public List<String> findAllTags() {
-        return null; // TODO
+        return propertyRepository.findDistinctTags();
     }
 }

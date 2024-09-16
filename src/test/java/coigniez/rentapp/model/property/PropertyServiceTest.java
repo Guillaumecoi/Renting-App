@@ -109,4 +109,18 @@ public class PropertyServiceTest {
         // Assert
         verify(propertyRepository, times(1)).delete(propertyEntity);
     }
+
+    @Test
+    void testFindAllTags() {
+        // Arrange
+        when(propertyRepository.findDistinctTags()).thenReturn(Arrays.asList("Test Tag"));
+
+        // Act
+        List<String> tags = propertyService.findAllTags();
+
+        // Assert
+        assertEquals(1, tags.size());
+        assertEquals("Test Tag", tags.get(0));
+        verify(propertyRepository, times(1)).findDistinctTags();
+    }
 }

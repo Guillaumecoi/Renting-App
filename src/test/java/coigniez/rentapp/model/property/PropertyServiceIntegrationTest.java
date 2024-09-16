@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,6 +34,11 @@ public class PropertyServiceIntegrationTest {
 
     @BeforeEach
     void setUp() throws InvalidAddressException {
+        // Arrange
+        property = new PropertyDTO();
+        property.setName("Test Property");
+
+        // set address here
         address = new AddressDTO();
         address.setStreet("Test Street");
         address.setHouseNumber("123");
@@ -41,12 +47,9 @@ public class PropertyServiceIntegrationTest {
         address.setCity("Test City");
         address.setProvince("Test Province");
         address.setCountry("Belgium");
-
-        tags = Set.of("tag1", "tag2");
-
-        property = new PropertyDTO();
-        property.setName("Test Property");
         property.setAddress(address);
+        // set tags here
+        tags = Set.of("tag1", "tag2");
         property.setTags(tags);
 
         property = propertyService.saveProperty(property);
@@ -121,5 +124,43 @@ public class PropertyServiceIntegrationTest {
         // Assert
         Optional<PropertyDTO> deletedProperty = propertyService.findPropertyById(property.getId());
         assertFalse(deletedProperty.isPresent());
+    }
+
+    @Test
+    void testFindAllTags() {
+        // Act
+        List<String> distinctTags = propertyService.findAllTags();
+
+        // Assert
+        assertEquals(2, distinctTags.size());
+        assertTrue(distinctTags.containsAll(tags));
+    }
+
+    @Test
+    void testFindAllTagsEmpty() {
+        // Arrange
+        propertyRepository.deleteAll();
+
+        // Act
+        List<String> distinctTags = propertyService.findAllTags();
+
+        // Assert
+        assertTrue(distinctTags.isEmpty());
+    }
+
+    @Test
+    void testFindAllTagsDistinct() throws InvalidAddressException {
+        // Arrange
+        PropertyDTO newProperty = new PropertyDTO();
+        newProperty.setName("New Property");
+        newProperty.setTags(Set.of("tag1", "tag3"));
+        propertyService.saveProperty(newProperty);
+
+        // Act
+        List<String> distinctTags = propertyService.findAllTags();
+
+        // Assert
+        assertEquals(3, distinctTags.size());
+        assertTrue(distinctTags.containsAll(Set.of("tag1", "tag2", "tag3")));
     }
 }
