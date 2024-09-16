@@ -24,9 +24,8 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         dto.setId(property.getId());
         dto.setName(property.getName());
         dto.setAddress(addressMapper.entityToDto(property.getAddress()));
-        dto.setTags(property.getTags() != null ? new HashSet<>(property.getTags()) : new HashSet<>()); // Prevent null
-                                                                                                       // pointer
-                                                                                                       // exception
+        // prevent null pointer exception
+        dto.setTags(property.getTags() != null ? new HashSet<>(property.getTags()) : null);
 
         return dto;
     }
@@ -53,8 +52,8 @@ public class PropertyMapper implements Mapper<Property, PropertyDTO> {
         property.setId(dto.getId());
         property.setName(dto.getName());
         property.setAddress(addressMapper.dtoToEntity(dto.getAddress()));
-        property.setTags(dto.getTags() != null ? new HashSet<>(dto.getTags()) : new HashSet<>()); // Prevent null
-                                                                                                  // pointer exception
+        // prevent null pointer exception
+        property.setTags(dto.getTags() != null ? new HashSet<>(dto.getTags()) : null);
 
         return property;
     }
