@@ -162,6 +162,8 @@ public class PropertyMapperTest {
         AddressDto.setProvince("Test Province");
         AddressDto.setCountry("Belgium");
         dto.setAddress(AddressDto);
+        // set Tags for dto
+        dto.setTags(Set.of("tag1", "tag2"));
 
         // Act
         Property entity = propertyMapper.dtoToEntity(dto);
@@ -179,6 +181,10 @@ public class PropertyMapperTest {
         assertEquals(dto.getAddress().getCity(), entity.getAddress().getCity());
         assertEquals(dto.getAddress().getProvince(), entity.getAddress().getProvince());
         assertEquals(dto.getAddress().getCountry(), entity.getAddress().getCountry());
+        // assert Tags
+        assertEquals(dto.getTags().size(), entity.getTags().size());
+        assertTrue(entity.getTags().contains("tag1"));
+        assertTrue(entity.getTags().contains("tag2"));
     }
 
     @Test
@@ -247,6 +253,8 @@ public class PropertyMapperTest {
         AddressDto1.setProvince("Test Province 1");
         AddressDto1.setCountry("Belgium");
         dto1.setAddress(AddressDto1);
+        // set Tags for dto1
+        dto1.setTags(Set.of("tag1", "tag2"));
 
         PropertyDTO dto2 = new PropertyDTO();
         dto2.setId(2L);
@@ -262,6 +270,8 @@ public class PropertyMapperTest {
         AddressDto2.setProvince("Test Province 2");
         AddressDto2.setCountry("Belgium");
         dto2.setAddress(AddressDto2);
+        // set Tags for dto2
+        dto2.setTags(Set.of("tag3", "tag1"));
 
         List<PropertyDTO> dtos = new ArrayList<>();
         dtos.add(dto1);
@@ -284,6 +294,10 @@ public class PropertyMapperTest {
         assertEquals(dto1.getAddress().getCity(), entities.get(0).getAddress().getCity());
         assertEquals(dto1.getAddress().getProvince(), entities.get(0).getAddress().getProvince());
         assertEquals(dto1.getAddress().getCountry(), entities.get(0).getAddress().getCountry());
+        // assert Tags for dto1
+        assertEquals(dto1.getTags().size(), entities.get(0).getTags().size());
+        assertTrue(entities.get(0).getTags().contains("tag1"));
+        assertTrue(entities.get(0).getTags().contains("tag2"));
 
         // assert entity2
         assertEquals(dto2.getId(), entities.get(1).getId());
@@ -297,7 +311,10 @@ public class PropertyMapperTest {
         assertEquals(dto2.getAddress().getCity(), entities.get(1).getAddress().getCity());
         assertEquals(dto2.getAddress().getProvince(), entities.get(1).getAddress().getProvince());
         assertEquals(dto2.getAddress().getCountry(), entities.get(1).getAddress().getCountry());
-
+        // assert Tags for dto2
+        assertEquals(dto2.getTags().size(), entities.get(1).getTags().size());
+        assertTrue(entities.get(1).getTags().contains("tag3"));
+        assertTrue(entities.get(1).getTags().contains("tag1"));
     }
 
 }
