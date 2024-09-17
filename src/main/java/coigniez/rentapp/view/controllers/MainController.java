@@ -3,7 +3,7 @@ package coigniez.rentapp.view.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import coigniez.rentapp.view.controllers.property.AddPropertyController;
+import coigniez.rentapp.view.controllers.property.PropertyFormController;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
 
@@ -33,7 +33,7 @@ public class MainController {
     public void handleAddPropertyButtonAction(ActionEvent event) {
         try {
             // Load the new FXML file for the AddPropertyController
-            Parent addPropertyView = fxWeaver.loadView(AddPropertyController.class);
+            Parent addPropertyView = fxWeaver.loadView(PropertyFormController.class);
 
             // Set the new FXML file as the child of the AnchorPane
             mainAnchorPane.getChildren().setAll(addPropertyView);
