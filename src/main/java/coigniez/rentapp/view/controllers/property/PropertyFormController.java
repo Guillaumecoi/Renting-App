@@ -15,8 +15,10 @@ import javafx.scene.layout.VBox;
 import net.rgielen.fxweaver.core.FxmlView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,9 +26,13 @@ import org.springframework.stereotype.Component;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.structure.SingleSelectionField;
+import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.address.AddressDTO;
 import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
@@ -64,18 +70,34 @@ public class PropertyFormController {
         formField.setSpacing(10);
     }
 
+    @SuppressWarnings("rawtypes")
     private void addProperty() {
-        try {
-            PropertyDTO property = new PropertyDTO();
-            propertyService.saveProperty(property);
-        } catch (InvalidAddressException e) {
-            e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Unable to add property");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-        }
+        PropertyDTO property = new PropertyDTO();
+        property.setName(((StringField) form.getFields().get(0)).getValue());
+        AddressDTO address = new AddressDTO();
+        address.setStreet(((StringField) form.getFields().get(1)).getValue());
+        address.setHouseNumber(((StringField) form.getFields().get(2)).getValue());
+        address.setBusNumber(((StringField) form.getFields().get(3)).getValue());
+        address.setPostalCode(((StringField) form.getFields().get(4)).getValue());
+        address.setCity(((StringField) form.getFields().get(5)).getValue());
+        address.setProvince(((StringField) form.getFields().get(6)).getValue());
+        address.setCountry((String) (((SingleSelectionField) form.getFields().get(7)).getSelection()));
+
+        property.setAddress(address);
+
+        property.setTags(new HashSet<>(selectedTags));
+
+        System.out.println(property);
+
+        // try {
+        // } catch (InvalidAddressException e) {
+        // e.printStackTrace();
+        // Alert alert = new Alert(AlertType.ERROR);
+        // alert.setTitle("Error");
+        // alert.setHeaderText("Unable to add property");
+        // alert.setContentText(e.getMessage());
+        // alert.showAndWait();
+        // }
     }
 
     private void setForm(PropertyDTO property) {
