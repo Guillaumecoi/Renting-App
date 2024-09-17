@@ -16,6 +16,7 @@ import net.rgielen.fxweaver.core.FxmlView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,10 @@ import org.springframework.stereotype.Component;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.structure.Group;
-import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 
@@ -41,40 +42,31 @@ public class PropertyFormController {
     private VBox formField;
 
     private Form form;
-    private StringField nameField;
+    private FormRenderer formRenderer;
     private FlowPane tagContainer;
-    ComboBox<String> tagComboBox;
+    private ComboBox<String> tagComboBox;
     private List<String> availableTags;
     private List<String> selectedTags = new ArrayList<>();
 
     @FXML
     public void initialize() {
-        // Set the fields of the form
-        nameField = Field.ofStringType("Property Name")
-                .label("Name")
-                .required("This field can’t be empty");
-
-        // Create the form
-        form = Form.of(
-                Group.of(nameField)).title("Property Form");
-
-        initializeTags();
-
-        // Render the form
-        formField.getChildren().add(new FormRenderer(form));
-        formField.getChildren().add(tagContainer);
-        formField.setSpacing(10);
+        createTagsPane();
+        setForm(new PropertyDTO());
 
         // Add a submit button
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(event -> addProperty());
+
+        // Add the form and the submit button to the form field
+        formField.getChildren().add(formRenderer);
+        formField.getChildren().add(tagContainer);
         formField.getChildren().add(submitButton);
+        formField.setSpacing(10);
     }
 
     private void addProperty() {
         try {
             PropertyDTO property = new PropertyDTO();
-            property.setName(nameField.getValue());
             propertyService.saveProperty(property);
         } catch (InvalidAddressException e) {
             e.printStackTrace();
@@ -86,7 +78,55 @@ public class PropertyFormController {
         }
     }
 
-    private void initializeTags() {
+    private void setForm(PropertyDTO property) {
+        List<String> countries = List.of(Country.getNames());
+
+        // Set the values of the form fields
+        String name = Objects.requireNonNullElse(property.getName(), "");
+        String street = (property.getAddress() == null || property.getAddress().getStreet() == null) ? ""
+                : property.getAddress().getStreet();
+        String houseNumber = (property.getAddress() == null || property.getAddress().getHouseNumber() == null) ? ""
+                : property.getAddress().getHouseNumber();
+        String busNumber = (property.getAddress() == null || property.getAddress().getBusNumber() == null) ? ""
+                : property.getAddress().getBusNumber();
+        String postalCode = (property.getAddress() == null || property.getAddress().getPostalCode() == null) ? ""
+                : property.getAddress().getPostalCode();
+        String city = (property.getAddress() == null || property.getAddress().getCity() == null) ? ""
+                : property.getAddress().getCity();
+        String province = (property.getAddress() == null || property.getAddress().getProvince() == null) ? ""
+                : property.getAddress().getProvince();
+        // Get the index of the country in the list if the property has a country set
+        int index = (property.getAddress() == null) ? -1
+                : countries.indexOf(property.getAddress().getCountry());
+
+        // Create the form
+        form = Form.of(
+                Group.of(
+                        Field.ofStringType(name)
+                                .label("Name")
+                                .required("Please enter a name"),
+                        Field.ofStringType(street)
+                                .label("Street"),
+                        Field.ofStringType(houseNumber)
+                                .label("House number"),
+                        Field.ofStringType(busNumber)
+                                .label("Bus number"),
+                        Field.ofStringType(postalCode)
+                                .label("Postal code"),
+                        Field.ofStringType(city)
+                                .label("City"),
+                        Field.ofStringType(province)
+                                .label("Province"),
+                        Field.ofSingleSelectionType(countries, index)
+                                .label("Country")))
+                .title("Property Form");
+
+        // Render the form
+        formRenderer = new FormRenderer(form);
+        formRenderer.setMinWidth(800);
+    }
+
+    private void createTagsPane() {
         // Get the available tags
         availableTags = propertyService.findAllTags();
 
