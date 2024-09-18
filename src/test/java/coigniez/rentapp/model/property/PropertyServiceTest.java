@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.address.AddressDTO;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,6 +40,17 @@ public class PropertyServiceTest {
         // Assert
         assertEquals(property, savedProperty);
         verify(propertyRepository, times(1)).save(propertyEntity);
+    }
+
+    @Test
+    void testSavePropertyWithInvalidAddress() {
+        // Arrange
+        PropertyDTO property = new PropertyDTO();
+        property.setAddress(new AddressDTO());
+        property.getAddress().setCountry("Invalid Country");
+
+        // Act & Assert
+        assertThrows(InvalidAddressException.class, () -> propertyService.saveProperty(property));
     }
 
     @Test

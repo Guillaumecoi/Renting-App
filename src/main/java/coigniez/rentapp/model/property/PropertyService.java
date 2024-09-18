@@ -3,6 +3,8 @@ package coigniez.rentapp.model.property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
@@ -32,6 +34,7 @@ public class PropertyService {
      * @throws InvalidAddressException if the postal code or country is invalid
      * @throws ValidationException     if the name of the property is invalid
      */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public PropertyDTO saveProperty(@Valid PropertyDTO property) throws InvalidAddressException {
         logger.info("Entering saveProperty method with property: " + property);
 

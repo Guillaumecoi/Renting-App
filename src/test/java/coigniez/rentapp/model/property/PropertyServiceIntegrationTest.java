@@ -16,10 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.AddressDTO;
+import jakarta.persistence.EntityManager;
+import jakarta.validation.ValidationException;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Import(PropertyService.class)
+@Import({ PropertyService.class })
 public class PropertyServiceIntegrationTest {
 
     @Autowired
@@ -27,6 +29,9 @@ public class PropertyServiceIntegrationTest {
 
     @Autowired
     private PropertyRepository propertyRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private PropertyDTO property;
     private AddressDTO address;
@@ -57,11 +62,27 @@ public class PropertyServiceIntegrationTest {
 
     @AfterEach
     void tearDown() {
+        entityManager.clear();
         propertyRepository.deleteAll();
     }
 
     @Test
-    void testCreateProperty() throws Exception {
+    void testCreateProperty() {
+        // Assert
+        assertNotNull(property.getId());
+        assertEquals("Test Property", property.getName());
+        assertEquals("Test Street", property.getAddress().getStreet());
+        assertEquals("123", property.getAddress().getHouseNumber());
+        assertEquals("1A", property.getAddress().getBusNumber());
+        assertEquals("1234", property.getAddress().getPostalCode());
+        assertEquals("Test City", property.getAddress().getCity());
+        assertEquals("Test Province", property.getAddress().getProvince());
+        assertEquals("Belgium", property.getAddress().getCountry());
+        assertEquals(tags, property.getTags());
+    }
+
+    @Test
+    void testCreatePropertyOnlyName() throws Exception {
         // Arrange
         PropertyDTO newProperty = new PropertyDTO();
         newProperty.setName("New Property");
@@ -74,6 +95,59 @@ public class PropertyServiceIntegrationTest {
         assertEquals(newProperty.getName(), savedProperty.getName());
         assertNull(newProperty.getAddress());
         assertNull(newProperty.getTags());
+    }
+
+    @Test
+    void testSavePropertyWithInvalidName() {
+        // Arrange
+        PropertyDTO emptyName = new PropertyDTO();
+        emptyName.setName("");
+
+        PropertyDTO nullName = new PropertyDTO();
+
+        // Act & Assert
+        assertThrows(ValidationException.class, () -> propertyService.saveProperty(emptyName));
+        assertThrows(ValidationException.class, () -> propertyService.saveProperty(nullName));
+    }
+
+    @Test
+    void testCreatePropertyWithoutTags() throws Exception {
+        // Arrange
+        PropertyDTO newProperty = new PropertyDTO();
+        newProperty.setName("New Property");
+        newProperty.setAddress(address);
+
+        // Act
+        PropertyDTO savedProperty = propertyService.saveProperty(newProperty);
+
+        // Assert
+        assertNotNull(savedProperty.getId());
+        assertEquals(newProperty.getName(), savedProperty.getName());
+        assertEquals("Test Street", savedProperty.getAddress().getStreet());
+        assertEquals("123", savedProperty.getAddress().getHouseNumber());
+        assertEquals("1A", savedProperty.getAddress().getBusNumber());
+        assertEquals("1234", savedProperty.getAddress().getPostalCode());
+        assertEquals("Test City", savedProperty.getAddress().getCity());
+        assertEquals("Test Province", savedProperty.getAddress().getProvince());
+        assertEquals("Belgium", savedProperty.getAddress().getCountry());
+        assertNull(savedProperty.getTags());
+    }
+
+    @Test
+    void testCreatePropertyWithoutAddress() throws Exception {
+        // Arrange
+        PropertyDTO newProperty = new PropertyDTO();
+        newProperty.setName("New Property");
+        newProperty.setTags(tags);
+
+        // Act
+        PropertyDTO savedProperty = propertyService.saveProperty(newProperty);
+
+        // Assert
+        assertNotNull(savedProperty.getId());
+        assertEquals(newProperty.getName(), savedProperty.getName());
+        assertNull(newProperty.getAddress());
+        assertEquals(tags, savedProperty.getTags());
     }
 
     @Test
