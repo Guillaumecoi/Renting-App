@@ -1,14 +1,21 @@
 package coigniez.rentapp.model.property;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Validated
 public class PropertyService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PropertyService.class);
 
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper = new PropertyMapper();
@@ -23,10 +30,18 @@ public class PropertyService {
      * @param property the PropertyDto to save
      * @return the saved property
      * @throws InvalidAddressException if the postal code or country is invalid
+     * @throws ValidationException     if the name of the property is invalid
      */
-    public PropertyDTO saveProperty(PropertyDTO property) throws InvalidAddressException {
+    public PropertyDTO saveProperty(@Valid PropertyDTO property) throws InvalidAddressException {
+        logger.info("Entering saveProperty method with property: " + property);
+
         Property savedProperty = propertyRepository.save(propertyMapper.dtoToEntity(property));
-        return propertyMapper.entityToDto(savedProperty);
+        logger.info("Property saved: " + savedProperty);
+
+        PropertyDTO result = propertyMapper.entityToDto(savedProperty);
+        logger.info("Returning PropertyDTO: " + result);
+
+        return result;
     }
 
     /**
@@ -56,7 +71,7 @@ public class PropertyService {
      * @return the updated property
      * @throws InvalidAddressException if the postal code or country is invalid
      */
-    public PropertyDTO updateProperty(PropertyDTO property) throws InvalidAddressException {
+    public PropertyDTO updateProperty(@Valid PropertyDTO property) throws InvalidAddressException {
         Property updatedProperty = propertyRepository.save(propertyMapper.dtoToEntity(property));
         return propertyMapper.entityToDto(updatedProperty);
     }
@@ -76,7 +91,7 @@ public class PropertyService {
      * @param property the PropertyDto to delete
      * @throws InvalidAddressException if the postal code or country is invalid
      */
-    public void deleteProperty(PropertyDTO property) throws InvalidAddressException {
+    public void deleteProperty(@Valid PropertyDTO property) throws InvalidAddressException {
         propertyRepository.delete(propertyMapper.dtoToEntity(property));
     }
 
