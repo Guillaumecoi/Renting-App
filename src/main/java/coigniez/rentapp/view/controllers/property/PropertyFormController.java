@@ -12,13 +12,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,6 @@ import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.SingleSelectionField;
 import com.dlsc.formsfx.model.structure.StringField;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.AddressDTO;
@@ -41,183 +41,203 @@ import coigniez.rentapp.model.property.PropertyService;
 @FxmlView("/views/property/PropertyForm.fxml")
 public class PropertyFormController {
 
-    @Autowired
-    private PropertyService propertyService;
+	@Autowired
+	private PropertyService propertyService;
 
-    @FXML
-    private VBox formField;
+	@Setter
+	PropertyDTO property;
 
-    private Form form;
-    private FormRenderer formRenderer;
-    private FlowPane tagContainer;
-    private ComboBox<String> tagComboBox;
-    private List<String> availableTags;
-    private List<String> selectedTags = new ArrayList<>();
+	@FXML
+	private VBox formField;
 
-    @FXML
-    public void initialize() {
-        createTagsPane();
-        setForm(new PropertyDTO());
+	private Form form;
+	private FormRenderer formRenderer;
+	private FlowPane tagContainer;
+	private ComboBox<String> tagComboBox;
+	private List<String> availableTags;
+	private List<String> selectedTags = new ArrayList<>();
 
-        // Add a submit button
-        Button submitButton = new Button("Submit");
-        submitButton.setOnAction(event -> addProperty());
+	@FXML
+	public void initialize() {
+		property = new PropertyDTO();
+		createTagsPane();
+		setForm(property);
 
-        // Add the form and the submit button to the form field
-        formField.getChildren().add(formRenderer);
-        formField.getChildren().add(tagContainer);
-        formField.getChildren().add(submitButton);
-        formField.setSpacing(10);
-    }
+		// Add a submit button
+		Button submitButton = new Button("Submit");
+		submitButton.setOnAction(event -> addProperty());
 
-    @SuppressWarnings("rawtypes")
-    private void addProperty() {
-        PropertyDTO property = new PropertyDTO();
-        property.setName(((StringField) form.getFields().get(0)).getValue());
-        AddressDTO address = new AddressDTO();
-        address.setStreet(((StringField) form.getFields().get(1)).getValue());
-        address.setHouseNumber(((StringField) form.getFields().get(2)).getValue());
-        address.setBusNumber(((StringField) form.getFields().get(3)).getValue());
-        address.setPostalCode(((StringField) form.getFields().get(4)).getValue());
-        address.setCity(((StringField) form.getFields().get(5)).getValue());
-        address.setProvince(((StringField) form.getFields().get(6)).getValue());
-        address.setCountry((String) (((SingleSelectionField) form.getFields().get(7)).getSelection()));
+		// Add the form and the submit button to the form field
+		formField.getChildren().add(formRenderer);
+		formField.getChildren().add(tagContainer);
+		formField.getChildren().add(submitButton);
+		formField.setSpacing(10);
+	}
 
-        property.setAddress(address);
+	@SuppressWarnings("rawtypes")
+	private void addProperty() {
+		// Get the values from the form fields
+		String name = nullIfEmpty(((StringField) form.getFields().get(0)).getValue());
+		String street = nullIfEmpty(((StringField) form.getFields().get(1)).getValue());
+		String houseNumber = nullIfEmpty(((StringField) form.getFields().get(2)).getValue());
+		String busNumber = nullIfEmpty(((StringField) form.getFields().get(3)).getValue());
+		String postalCode = nullIfEmpty(((StringField) form.getFields().get(4)).getValue());
+		String city = nullIfEmpty(((StringField) form.getFields().get(5)).getValue());
+		String province = nullIfEmpty(((StringField) form.getFields().get(6)).getValue());
+		String country = nullIfEmpty((String) (((SingleSelectionField) form.getFields().get(7)).getSelection()));
 
-        property.setTags(new HashSet<>(selectedTags));
+		// Address is null if all fields are empty
+		AddressDTO address = Arrays.asList(street, houseNumber, busNumber, postalCode, city, province, country)
+				.stream().allMatch(Objects::isNull)
+						? null
+						: new AddressDTO(null, street, houseNumber, busNumber, postalCode, city, province, country);
 
-        System.out.println(property);
+		// Set the attributes of the property
+		property.setName(name);
+		property.setAddress(address);
+		property.setTags(new HashSet<>(selectedTags));
 
-        // try {
-        // } catch (InvalidAddressException e) {
-        // e.printStackTrace();
-        // Alert alert = new Alert(AlertType.ERROR);
-        // alert.setTitle("Error");
-        // alert.setHeaderText("Unable to add property");
-        // alert.setContentText(e.getMessage());
-        // alert.showAndWait();
-        // }
-    }
+		System.out.println("The following property is submitted:" + property);
 
-    private void setForm(PropertyDTO property) {
-        List<String> countries = List.of(Country.getNames());
+		try {
+			propertyService.saveProperty(property);
+		} catch (InvalidAddressException e) {
+			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Unable to add property");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
+	}
 
-        // Set the values of the form fields
-        String name = Objects.requireNonNullElse(property.getName(), "");
-        String street = (property.getAddress() == null || property.getAddress().getStreet() == null) ? ""
-                : property.getAddress().getStreet();
-        String houseNumber = (property.getAddress() == null || property.getAddress().getHouseNumber() == null) ? ""
-                : property.getAddress().getHouseNumber();
-        String busNumber = (property.getAddress() == null || property.getAddress().getBusNumber() == null) ? ""
-                : property.getAddress().getBusNumber();
-        String postalCode = (property.getAddress() == null || property.getAddress().getPostalCode() == null) ? ""
-                : property.getAddress().getPostalCode();
-        String city = (property.getAddress() == null || property.getAddress().getCity() == null) ? ""
-                : property.getAddress().getCity();
-        String province = (property.getAddress() == null || property.getAddress().getProvince() == null) ? ""
-                : property.getAddress().getProvince();
-        // Get the index of the country in the list if the property has a country set
-        int index = (property.getAddress() == null) ? -1
-                : countries.indexOf(property.getAddress().getCountry());
+	private void setForm(PropertyDTO property) {
+		List<String> countries = List.of(Country.getNames());
 
-        // Create the form
-        form = Form.of(
-                Group.of(
-                        Field.ofStringType(name)
-                                .label("Name")
-                                .required("Please enter a name"),
-                        Field.ofStringType(street)
-                                .label("Street"),
-                        Field.ofStringType(houseNumber)
-                                .label("House number"),
-                        Field.ofStringType(busNumber)
-                                .label("Bus number"),
-                        Field.ofStringType(postalCode)
-                                .label("Postal code"),
-                        Field.ofStringType(city)
-                                .label("City"),
-                        Field.ofStringType(province)
-                                .label("Province"),
-                        Field.ofSingleSelectionType(countries, index)
-                                .label("Country")))
-                .title("Property Form");
+		// Set the values of the form fields
+		String name = Objects.requireNonNullElse(property.getName(), "");
+		String street = (property.getAddress() == null || property.getAddress().getStreet() == null) ? ""
+				: property.getAddress().getStreet();
+		String houseNumber = (property.getAddress() == null || property.getAddress().getHouseNumber() == null)
+				? ""
+				: property.getAddress().getHouseNumber();
+		String busNumber = (property.getAddress() == null || property.getAddress().getBusNumber() == null) ? ""
+				: property.getAddress().getBusNumber();
+		String postalCode = (property.getAddress() == null || property.getAddress().getPostalCode() == null)
+				? ""
+				: property.getAddress().getPostalCode();
+		String city = (property.getAddress() == null || property.getAddress().getCity() == null) ? ""
+				: property.getAddress().getCity();
+		String province = (property.getAddress() == null || property.getAddress().getProvince() == null) ? ""
+				: property.getAddress().getProvince();
+		// Get the index of the country in the list if the property has a country set
+		int index = (property.getAddress() == null) ? -1
+				: countries.indexOf(property.getAddress().getCountry());
 
-        // Render the form
-        formRenderer = new FormRenderer(form);
-        formRenderer.setMinWidth(800);
-    }
+		// Create the form
+		form = Form.of(
+				Group.of(
+						Field.ofStringType(name)
+								.label("Name")
+								.required("Please enter a name"),
+						Field.ofStringType(street)
+								.label("Street"),
+						Field.ofStringType(houseNumber)
+								.label("House number"),
+						Field.ofStringType(busNumber)
+								.label("Bus number"),
+						Field.ofStringType(postalCode)
+								.label("Postal code"),
+						Field.ofStringType(city)
+								.label("City"),
+						Field.ofStringType(province)
+								.label("Province"),
+						Field.ofSingleSelectionType(countries, index)
+								.label("Country")))
+				.title("Property Form");
 
-    private void createTagsPane() {
-        // Get the available tags
-        availableTags = propertyService.findAllTags();
+		// Render the form
+		formRenderer = new FormRenderer(form);
+		formRenderer.setMinWidth(800);
+	}
 
-        // Set the attributes for the tag input field
-        HBox tagBox = new HBox();
-        Label tagInuptLabel = new Label("Tags:");
-        Label tagListLabel = new Label("Selected tags:");
-        tagComboBox = new ComboBox<>();
-        tagComboBox.setTooltip(new Tooltip("Press enter to add the tag"));
-        tagComboBox.getItems().addAll(availableTags);
-        tagComboBox.setEditable(true);
+	private void createTagsPane() {
+		// Get the available tags
+		availableTags = propertyService.findAllTags();
 
-        // Add the tag to the selected tags list when the user presses enter
-        tagComboBox.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                // Get the text from the input field
-                String tag = tagComboBox.getEditor().getText();
+		// Set the attributes for the tag input field
+		HBox tagBox = new HBox();
+		Label tagInuptLabel = new Label("Tags:");
+		Label tagListLabel = new Label("Selected tags:");
+		tagComboBox = new ComboBox<>();
+		tagComboBox.setTooltip(new Tooltip("Press enter to add the tag"));
+		tagComboBox.getItems().addAll(availableTags);
+		tagComboBox.setEditable(true);
 
-                // If the text is empty, return
-                if (tag.isEmpty()) {
-                    return;
-                }
+		// Add the tag to the selected tags list when the user presses enter
+		tagComboBox.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				// Get the text from the input field
+				String tag = tagComboBox.getEditor().getText();
 
-                if (availableTags.contains(tag)) {
-                    // Remove the tag from the combobox
-                    tagComboBox.getItems().remove(tag);
-                }
+				// If the text is empty, return
+				if (tag.isEmpty()) {
+					return;
+				}
 
-                // Add the tag to the selected tags list and create a button for it
-                selectedTags.add(tag);
-                tagContainer.getChildren().add(createTagLabelButton(tag));
+				if (availableTags.contains(tag)) {
+					// Remove the tag from the combobox
+					tagComboBox.getItems().remove(tag);
+				}
 
-                // Clear the input field
-                tagComboBox.getEditor().clear();
-                tagComboBox.setValue(null);
-            }
-        });
+				// Add the tag to the selected tags list and create a button for it
+				selectedTags.add(tag);
+				tagContainer.getChildren().add(createTagLabelButton(tag));
 
-        tagBox.getChildren().addAll(tagInuptLabel, tagComboBox);
-        tagBox.setSpacing(10);
-        tagBox.setPadding(new javafx.geometry.Insets(0, 30, 0, 20));
+				// Clear the input field
+				tagComboBox.getEditor().clear();
+				tagComboBox.setValue(null);
+			}
+		});
 
-        tagContainer = new FlowPane();
-        tagContainer.setHgap(10);
-        tagContainer.setVgap(5);
-        tagContainer.getChildren().addAll(tagBox, tagListLabel);
-    }
+		tagBox.getChildren().addAll(tagInuptLabel, tagComboBox);
+		tagBox.setSpacing(10);
+		tagBox.setPadding(new javafx.geometry.Insets(0, 30, 0, 20));
 
-    /**
-     * Create a button for a tag that will be displayed in the UI
-     * The bottom will remove the tag from the selected tags list when clicked
-     */
-    private Button createTagLabelButton(String name) {
-        Button button = new Button(name);
-        // Remove the tag from the selected tags list when the button is clicked
-        button.setOnAction(event -> {
-            if (selectedTags.contains(name)) {
-                selectedTags.remove(name);
-                if (availableTags.contains(name)) {
-                    tagComboBox.getItems().add(name);
-                }
-            }
-            tagContainer.getChildren().remove(button);
-        });
+		tagContainer = new FlowPane();
+		tagContainer.setHgap(10);
+		tagContainer.setVgap(5);
+		tagContainer.getChildren().addAll(tagBox, tagListLabel);
+	}
 
-        // Set the style of the button and add a tooltip
-        button.getStyleClass().add("tag-button");
-        button.setTooltip(new Tooltip("Click to remove the tag"));
+	/**
+	 * Create a button for a tag that will be displayed in the UI
+	 * The bottom will remove the tag from the selected tags list when clicked
+	 */
+	private Button createTagLabelButton(String name) {
+		Button button = new Button(name);
+		// Remove the tag from the selected tags list when the button is clicked
+		button.setOnAction(event -> {
+			if (selectedTags.contains(name)) {
+				selectedTags.remove(name);
+				if (availableTags.contains(name)) {
+					tagComboBox.getItems().add(name);
+				}
+			}
+			tagContainer.getChildren().remove(button);
+		});
 
-        return button;
-    }
+		// Set the style of the button and add a tooltip
+		button.getStyleClass().add("tag-button");
+		button.setTooltip(new Tooltip("Click to remove the tag"));
+
+		return button;
+	}
+
+	/**
+	 * Return null if the value is empty or null
+	 */
+	private String nullIfEmpty(String value) {
+		return (value == null || value.isEmpty()) ? null : value;
+	}
 }
