@@ -1,22 +1,23 @@
 package coigniez.rentapp.model.property;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.Address;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -217,7 +218,7 @@ public class PropertyRepositoryTest {
         Property property2 = new Property();
         property2.setName("Test Property 2");
         property2.setTags(new HashSet<>(Arrays.asList("Test Tag 2", "Test Tag 3")));
-        property2 = propertyRepository.saveAndFlush(property2);
+        propertyRepository.saveAndFlush(property2);
 
         // Act
         List<String> tags = propertyRepository.findDistinctTags();
