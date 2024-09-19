@@ -1,6 +1,15 @@
 package coigniez.rentapp.model.property;
 
+import java.util.Optional;
+import java.util.Set;
+
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,20 +17,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.AddressDTO;
+import coigniez.rentapp.model.property.tag.TagDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ValidationException;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Import({ PropertyService.class })
+@Import({PropertyService.class})
 public class PropertyServiceIntegrationTest {
 
     @Autowired
@@ -35,7 +39,7 @@ public class PropertyServiceIntegrationTest {
 
     private PropertyDTO property;
     private AddressDTO address;
-    private Set<String> tags;
+    private Set<TagDTO> tags;
 
     @BeforeEach
     void setUp() throws InvalidAddressException {
@@ -54,7 +58,7 @@ public class PropertyServiceIntegrationTest {
         address.setCountry("Belgium");
         property.setAddress(address);
         // set tags here
-        tags = Set.of("tag1", "tag2");
+        tags = Set.of(new TagDTO("tag1"), new TagDTO("tag2"));
         property.setTags(tags);
 
         property = propertyService.saveProperty(property);
@@ -203,11 +207,12 @@ public class PropertyServiceIntegrationTest {
     @Test
     void testFindAllTags() {
         // Act
-        List<String> distinctTags = propertyService.findAllTags();
+        Set<TagDTO> distinctTags = propertyService.findAllTags();
 
         // Assert
         assertEquals(2, distinctTags.size());
-        assertTrue(distinctTags.containsAll(tags));
+        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag1")));
+        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag2")));
     }
 
     @Test
@@ -216,7 +221,7 @@ public class PropertyServiceIntegrationTest {
         propertyRepository.deleteAll();
 
         // Act
-        List<String> distinctTags = propertyService.findAllTags();
+        Set<TagDTO> distinctTags = propertyService.findAllTags();
 
         // Assert
         assertTrue(distinctTags.isEmpty());
@@ -227,14 +232,16 @@ public class PropertyServiceIntegrationTest {
         // Arrange
         PropertyDTO newProperty = new PropertyDTO();
         newProperty.setName("New Property");
-        newProperty.setTags(Set.of("tag1", "tag3"));
+        newProperty.setTags(Set.of(new TagDTO("tag1"), new TagDTO("tag3")));
         propertyService.saveProperty(newProperty);
 
         // Act
-        List<String> distinctTags = propertyService.findAllTags();
+        Set<TagDTO> distinctTags = propertyService.findAllTags();
 
         // Assert
         assertEquals(3, distinctTags.size());
-        assertTrue(distinctTags.containsAll(Set.of("tag1", "tag2", "tag3")));
+        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag1")));
+        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag2")));
+        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag3")));
     }
 }

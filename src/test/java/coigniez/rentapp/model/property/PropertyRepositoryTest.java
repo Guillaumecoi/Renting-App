@@ -2,8 +2,8 @@ package coigniez.rentapp.model.property;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.Address;
+import coigniez.rentapp.model.property.tag.Tag;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -43,7 +44,7 @@ public class PropertyRepositoryTest {
         address.setCountry("Belgium");
         property.setAddress(address);
         // set tags here
-        property.setTags(new HashSet<>(Arrays.asList("Test Tag")));
+        property.setTags(new HashSet<>(Arrays.asList(new Tag("Test Tag"))));
         // set properties here
         property = propertyRepository.saveAndFlush(property);
     }
@@ -103,7 +104,7 @@ public class PropertyRepositoryTest {
         // Arrange
         Property newProperty = new Property();
         newProperty.setName("New Property");
-        newProperty.setTags(new HashSet<>(Arrays.asList("New Tag")));
+        newProperty.setTags(new HashSet<>(Arrays.asList(new Tag("New Tag"))));
 
         // Act
         Property savedProperty = propertyRepository.save(newProperty);
@@ -113,7 +114,7 @@ public class PropertyRepositoryTest {
         assertEquals(newProperty.getName(), savedProperty.getName());
         assertNotNull(savedProperty.getTags());
         assertEquals(1, savedProperty.getTags().size());
-        assertTrue(savedProperty.getTags().contains("New Tag"));
+        assertTrue(savedProperty.getTags().stream().anyMatch(tag -> tag.getName().equals("New Tag")));
     }
 
     @Test
@@ -136,7 +137,7 @@ public class PropertyRepositoryTest {
         // tags
         assertNotNull(readProperty.get().getTags());
         assertEquals(1, readProperty.get().getTags().size());
-        assertTrue(readProperty.get().getTags().contains("Test Tag"));
+        assertTrue(readProperty.get().getTags().stream().anyMatch(tag -> tag.getName().equals("Test Tag")));
     }
 
     @Test
@@ -190,12 +191,12 @@ public class PropertyRepositoryTest {
     @Test
     void testFindDistinctTags() {
         // Act
-        List<String> tags = propertyRepository.findDistinctTags();
+        Set<String> tags = propertyRepository.findDistinctTags();
 
         // Assert
         assertNotNull(tags);
         assertEquals(1, tags.size());
-        assertEquals("Test Tag", tags.get(0));
+        assertEquals("Test Tag", tags.iterator().next());
     }
 
     @Test
@@ -205,7 +206,7 @@ public class PropertyRepositoryTest {
         propertyRepository.saveAndFlush(property);
 
         // Act
-        List<String> tags = propertyRepository.findDistinctTags();
+        Set<String> tags = propertyRepository.findDistinctTags();
 
         // Assert
         assertNotNull(tags);
@@ -217,11 +218,11 @@ public class PropertyRepositoryTest {
         // Arrange
         Property property2 = new Property();
         property2.setName("Test Property 2");
-        property2.setTags(new HashSet<>(Arrays.asList("Test Tag 2", "Test Tag 3")));
+        property2.setTags(new HashSet<>(Arrays.asList(new Tag("Test Tag 2"), new Tag("Test Tag 3"))));
         propertyRepository.saveAndFlush(property2);
 
         // Act
-        List<String> tags = propertyRepository.findDistinctTags();
+        Set<String> tags = propertyRepository.findDistinctTags();
 
         // Assert
         assertNotNull(tags);

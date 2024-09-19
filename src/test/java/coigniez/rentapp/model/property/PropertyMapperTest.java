@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.Address;
 import coigniez.rentapp.model.address.AddressDTO;
+import coigniez.rentapp.model.property.tag.Tag;
+import coigniez.rentapp.model.property.tag.TagDTO;
 
 public class PropertyMapperTest {
 
@@ -35,7 +37,7 @@ public class PropertyMapperTest {
         address.setCountry("Belgium");
         entity.setAddress(address);
         // set Tags for entity
-        Set<String> tags = Set.of("tag1", "tag2");
+        Set<Tag> tags = Set.of(new Tag("tag1"), new Tag("tag2"));
         entity.setTags(tags);
 
         // Act
@@ -56,8 +58,8 @@ public class PropertyMapperTest {
         assertEquals(entity.getAddress().getCountry(), dto.getAddress().getCountry());
         // assert Tags
         assertEquals(entity.getTags().size(), dto.getTags().size());
-        assertTrue(dto.getTags().contains("tag1"));
-        assertTrue(dto.getTags().contains("tag2"));
+        assertTrue(dto.getTags().stream().anyMatch(tag -> tag.getName().equals("tag1")));
+        assertTrue(dto.getTags().stream().anyMatch(tag -> tag.getName().equals("tag2")));
     }
 
     @Test
@@ -66,7 +68,7 @@ public class PropertyMapperTest {
         Property entity = new Property();
         entity.setId(1L);
         entity.setName("Test Property");
-        entity.setTags(Set.of("tag1", "tag2"));
+        entity.setTags(Set.of(new Tag("tag1"), new Tag("tag2")));
 
         // Act
         PropertyDTO dto = propertyMapper.toDto(entity);
@@ -77,8 +79,8 @@ public class PropertyMapperTest {
         assertEquals(entity.getName(), dto.getName());
         assertNull(dto.getAddress());
         assertEquals(entity.getTags().size(), dto.getTags().size());
-        assertTrue(dto.getTags().contains("tag1"));
-        assertTrue(dto.getTags().contains("tag2"));
+        assertTrue(dto.getTags().stream().anyMatch(tag -> tag.getName().equals("tag1")));
+        assertTrue(dto.getTags().stream().anyMatch(tag -> tag.getName().equals("tag2")));
     }
 
     @Test
@@ -141,7 +143,7 @@ public class PropertyMapperTest {
         AddressDto.setCountry("Belgium");
         dto.setAddress(AddressDto);
         // set Tags for dto
-        dto.setTags(Set.of("tag1", "tag2"));
+        dto.setTags(Set.of(new TagDTO("tag1"), new TagDTO("tag2")));
 
         // Act
         Property entity = propertyMapper.toEntity(dto);
@@ -161,8 +163,8 @@ public class PropertyMapperTest {
         assertEquals(dto.getAddress().getCountry(), entity.getAddress().getCountry());
         // assert Tags
         assertEquals(dto.getTags().size(), entity.getTags().size());
-        assertTrue(entity.getTags().contains("tag1"));
-        assertTrue(entity.getTags().contains("tag2"));
+        assertTrue(entity.getTags().stream().anyMatch(tag -> tag.getName().equals("tag1")));
+        assertTrue(entity.getTags().stream().anyMatch(tag -> tag.getName().equals("tag2")));
     }
 
     @Test
@@ -171,7 +173,7 @@ public class PropertyMapperTest {
         PropertyDTO dto = new PropertyDTO();
         dto.setId(1L);
         dto.setName("Test Property");
-        dto.setTags(Set.of("tag1", "tag2"));
+        dto.setTags(Set.of(new TagDTO("tag1"), new TagDTO("tag2")));
 
         // Act
         Property entity = propertyMapper.toEntity(dto);
@@ -182,8 +184,8 @@ public class PropertyMapperTest {
         assertEquals(dto.getName(), entity.getName());
         assertNull(entity.getAddress());
         assertEquals(dto.getTags().size(), entity.getTags().size());
-        assertTrue(entity.getTags().contains("tag1"));
-        assertTrue(entity.getTags().contains("tag2"));
+        assertTrue(entity.getTags().stream().anyMatch(tag -> tag.getName().equals("tag1")));
+        assertTrue(entity.getTags().stream().anyMatch(tag -> tag.getName().equals("tag2")));
     }
 
     @Test
@@ -247,7 +249,9 @@ public class PropertyMapperTest {
         dto.setAddress(AddressDto);
 
         // Act & Assert
-        assertThrows(InvalidAddressException.class, () -> propertyMapper.toEntity(dto));
+        Exception exception = assertThrows(InvalidAddressException.class, () -> propertyMapper.toEntity(dto));
+
+        assertEquals("Invalid country code or name: Invalid Country", exception.getMessage());
     }
 
     @Test
@@ -269,6 +273,8 @@ public class PropertyMapperTest {
         dto.setAddress(AddressDto);
 
         // Act & Assert
-        assertThrows(InvalidAddressException.class, () -> propertyMapper.toEntity(dto));
+        Exception exception = assertThrows(InvalidAddressException.class, () -> propertyMapper.toEntity(dto));
+
+        assertEquals("Invalid postal code for Belgium.", exception.getMessage());
     }
 }
