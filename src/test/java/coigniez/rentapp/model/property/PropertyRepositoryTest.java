@@ -2,8 +2,8 @@ package coigniez.rentapp.model.property;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -191,7 +191,7 @@ public class PropertyRepositoryTest {
     @Test
     void testFindDistinctTags() {
         // Act
-        Set<String> tags = propertyRepository.findDistinctTags();
+        List<String> tags = propertyRepository.findDistinctTags();
 
         // Assert
         assertNotNull(tags);
@@ -206,7 +206,7 @@ public class PropertyRepositoryTest {
         propertyRepository.saveAndFlush(property);
 
         // Act
-        Set<String> tags = propertyRepository.findDistinctTags();
+        List<String> tags = propertyRepository.findDistinctTags();
 
         // Assert
         assertNotNull(tags);
@@ -222,7 +222,7 @@ public class PropertyRepositoryTest {
         propertyRepository.saveAndFlush(property2);
 
         // Act
-        Set<String> tags = propertyRepository.findDistinctTags();
+        List<String> tags = propertyRepository.findDistinctTags();
 
         // Assert
         assertNotNull(tags);

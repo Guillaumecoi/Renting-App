@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.property.tag.TagDTO;
-import coigniez.rentapp.model.property.tag.TagMapper;
 import jakarta.validation.Valid;
 
 @Service
@@ -25,7 +24,6 @@ public class PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper = PropertyMapper.INSTANCE;
-    private final TagMapper tagMapper = TagMapper.INSTANCE;
 
     public PropertyService(PropertyRepository propertyRepository) {
         this.propertyRepository = propertyRepository;
@@ -115,7 +113,7 @@ public class PropertyService {
      * @return a list of all tags
      */
     public Set<TagDTO> findAllTags() {
-        Set<String> tags = propertyRepository.findDistinctTags();
+        List<String> tags = propertyRepository.findDistinctTags();
         return tags.stream()
                 .map(tag -> new TagDTO(tag))
                 .collect(Collectors.toSet());

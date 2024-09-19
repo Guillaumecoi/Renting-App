@@ -130,7 +130,7 @@ public class PropertyServiceTest {
     @Test
     void testFindAllTags() {
         // Arrange
-        when(propertyRepository.findDistinctTags()).thenReturn(Set.of("Test Tag"));
+        when(propertyRepository.findDistinctTags()).thenReturn(List.of("Test Tag"));
 
         // Act
         Set<TagDTO> tags = propertyService.findAllTags();
