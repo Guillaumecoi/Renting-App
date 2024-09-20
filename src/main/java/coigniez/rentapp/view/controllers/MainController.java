@@ -4,15 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import coigniez.rentapp.view.controllers.property.PropertyFormController;
-import net.rgielen.fxweaver.core.FxWeaver;
-import net.rgielen.fxweaver.core.FxmlView;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import net.rgielen.fxweaver.core.FxWeaver;
+import net.rgielen.fxweaver.core.FxmlView;
 
 @Component
 @FxmlView("/views/main.fxml")
@@ -35,6 +34,12 @@ public class MainController {
             // Load the new FXML file for the AddPropertyController
             Parent addPropertyView = fxWeaver.loadView(PropertyFormController.class);
 
+            // Get the controller using FxWeaver
+            PropertyFormController controller = fxWeaver.getBean(PropertyFormController.class);
+
+            // Pass attributes to the controller
+            controller.setMainController(this);
+
             // Set the new FXML file as the child of the AnchorPane
             mainAnchorPane.getChildren().setAll(addPropertyView);
         } catch (Exception e) {
@@ -44,5 +49,9 @@ public class MainController {
             alert.showAndWait();
             System.out.println(e.getMessage());
         }
+    }
+
+    public void homeScreen() {
+        mainAnchorPane.getChildren().clear();
     }
 }

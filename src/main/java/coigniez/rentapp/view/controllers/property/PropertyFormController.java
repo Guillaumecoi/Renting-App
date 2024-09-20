@@ -24,6 +24,7 @@ import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
+import coigniez.rentapp.view.controllers.MainController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -49,6 +50,9 @@ public class PropertyFormController {
 
     @Setter
     PropertyDTO property;
+
+    @Setter
+    private MainController mainController;
 
     @FXML
     private VBox formField;
@@ -132,7 +136,7 @@ public class PropertyFormController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == buttonTypeReturn) {
             // Handle return action
-            // TODO
+            mainController.homeScreen();
         } else if (result.isPresent() && result.get() == buttonTypeAddAnother) {
             // clear the form
             formField.getChildren().clear();
