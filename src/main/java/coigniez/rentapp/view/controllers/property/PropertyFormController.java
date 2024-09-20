@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.dlsc.formsfx.model.structure.Field;
@@ -26,6 +28,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -55,11 +58,12 @@ public class PropertyFormController {
     private FlowPane tagContainer;
     private ComboBox<String> tagComboBox;
     private List<String> availableTags;
-    private List<String> selectedTags = new ArrayList<>();
+    private List<String> selectedTags;
 
     @FXML
     public void initialize() {
         property = new PropertyDTO();
+        selectedTags = new ArrayList<>();
         createTagsPane();
         setForm(property);
 
@@ -101,13 +105,38 @@ public class PropertyFormController {
         System.out.println("The following property is submitted:" + property);
 
         try {
-            propertyService.saveProperty(property);
-        } catch (InvalidAddressException e) {
+            property = propertyService.saveProperty(property);
+            showSuccessAlert(property);
+
+        } catch (InvalidAddressException | DataIntegrityViolationException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Unable to add property");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        }
+    }
+
+    // Method to show success alert with custom buttons
+    private void showSuccessAlert(PropertyDTO property) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText("Property Submitted Successfully");
+        alert.setContentText("The property: \n" + property + "\nhas been submitted successfully. What would you like to do next?");
+
+        ButtonType buttonTypeReturn = new ButtonType("Return");
+        ButtonType buttonTypeAddAnother = new ButtonType("Add Another");
+
+        alert.getButtonTypes().setAll(buttonTypeReturn, buttonTypeAddAnother);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == buttonTypeReturn) {
+            // Handle return action
+            // TODO
+        } else if (result.isPresent() && result.get() == buttonTypeAddAnother) {
+            // clear the form
+            formField.getChildren().clear();
+            initialize();
         }
     }
 
