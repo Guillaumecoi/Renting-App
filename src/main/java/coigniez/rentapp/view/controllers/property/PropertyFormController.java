@@ -25,18 +25,12 @@ import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
 import coigniez.rentapp.view.controllers.MainController;
+import coigniez.rentapp.view.controllers.util.TagManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -59,16 +53,13 @@ public class PropertyFormController {
 
     private Form form;
     private FormRenderer formRenderer;
-    private FlowPane tagContainer;
-    private ComboBox<String> tagComboBox;
-    private List<String> availableTags;
     private List<String> selectedTags;
 
     @FXML
     public void initialize() {
         property = new PropertyDTO();
         selectedTags = new ArrayList<>();
-        createTagsPane();
+        TagManager tagManager = new TagManager(propertyService.findAllTags().stream().map(TagDTO::getName).toList());
         setForm(property);
 
         // Add a submit button
@@ -77,7 +68,7 @@ public class PropertyFormController {
 
         // Add the form and the submit button to the form field
         formField.getChildren().add(formRenderer);
-        formField.getChildren().add(tagContainer);
+        formField.getChildren().add(tagManager.getPane());
         formField.getChildren().add(submitButton);
         formField.setSpacing(10);
     }
@@ -192,79 +183,6 @@ public class PropertyFormController {
         // Render the form
         formRenderer = new FormRenderer(form);
         formRenderer.setMinWidth(800);
-    }
-
-    private void createTagsPane() {
-        // Get the available tags
-        availableTags = propertyService.findAllTags().stream().map(TagDTO::getName).toList();
-
-        // Set the attributes for the tag input field
-        HBox tagBox = new HBox();
-        Label tagInuptLabel = new Label("Tags:");
-        Label tagListLabel = new Label("Selected tags:");
-        tagComboBox = new ComboBox<>();
-        tagComboBox.setTooltip(new Tooltip("Press enter to add the tag"));
-        tagComboBox.getItems().addAll(availableTags);
-        tagComboBox.setEditable(true);
-
-        // Add the tag to the selected tags list when the user presses enter
-        tagComboBox.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                // Get the text from the input field
-                String tag = tagComboBox.getEditor().getText();
-
-                // If the text is empty, return
-                if (tag.isEmpty()) {
-                    return;
-                }
-
-                if (availableTags.contains(tag)) {
-                    // Remove the tag from the combobox
-                    tagComboBox.getItems().remove(tag);
-                }
-
-                // Add the tag to the selected tags list and create a button for it
-                selectedTags.add(tag);
-                tagContainer.getChildren().add(createTagLabelButton(tag));
-
-                // Clear the input field
-                tagComboBox.getEditor().clear();
-                tagComboBox.setValue(null);
-            }
-        });
-
-        tagBox.getChildren().addAll(tagInuptLabel, tagComboBox);
-        tagBox.setSpacing(10);
-        tagBox.setPadding(new javafx.geometry.Insets(0, 30, 0, 20));
-
-        tagContainer = new FlowPane();
-        tagContainer.setHgap(10);
-        tagContainer.setVgap(5);
-        tagContainer.getChildren().addAll(tagBox, tagListLabel);
-    }
-
-    /**
-     * Create a button for a tag that will be displayed in the UI The bottom
-     * will remove the tag from the selected tags list when clicked
-     */
-    private Button createTagLabelButton(String name) {
-        Button button = new Button(name);
-        // Remove the tag from the selected tags list when the button is clicked
-        button.setOnAction(event -> {
-            if (selectedTags.contains(name)) {
-                selectedTags.remove(name);
-                if (availableTags.contains(name)) {
-                    tagComboBox.getItems().add(name);
-                }
-            }
-            tagContainer.getChildren().remove(button);
-        });
-
-        // Set the style of the button and add a tooltip
-        button.getStyleClass().add("tag-button");
-        button.setTooltip(new Tooltip("Click to remove the tag"));
-
-        return button;
     }
 
     /**
