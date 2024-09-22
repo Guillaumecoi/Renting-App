@@ -23,6 +23,12 @@ import javafx.scene.layout.VBox;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 
+/**
+ * Controller for the property form.
+ *
+ * The controller is responsible for handling the form submission and showing
+ * the success alert.
+ */
 @Component
 @FxmlView("/views/property/PropertyForm.fxml")
 public class PropertyFormController {
@@ -30,12 +36,15 @@ public class PropertyFormController {
     @Autowired
     private PropertyService propertyService;
 
+    // The property to edit
     @Setter
     PropertyDTO property;
 
+    // The parent to return to
     @Setter
-    private MainController mainController;
+    private MainController parent;
 
+    // Helper classes for the form
     private PropertyForm propertyForm;
     private TagManager tagManager;
 
@@ -45,7 +54,7 @@ public class PropertyFormController {
     @FXML
     public void initialize() {
         property = new PropertyDTO();
-        tagManager = new TagManager(propertyService.findAllTags().stream().map(TagDTO::getName).toList());
+        tagManager = new TagManager(propertyService.findAllTags().stream().map(TagDTO::getName).toList(), null);
         propertyForm = new PropertyForm(property, List.of(Country.getNames()));
 
         // Add a submit button
@@ -59,6 +68,9 @@ public class PropertyFormController {
         formField.setSpacing(10);
     }
 
+    /**
+     * try to add the property to the database
+     */
     private void addProperty() {
         // Get the values from the form fields
         property = propertyForm.getProperty();
@@ -76,7 +88,12 @@ public class PropertyFormController {
         }
     }
 
-    // Method to show success alert with custom buttons
+    /**
+     * Show the success alert
+     *
+     * Give the user the option to return to the home screen or add another
+     * property
+     */
     private void showSuccessAlert(PropertyDTO property) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
@@ -91,7 +108,7 @@ public class PropertyFormController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == buttonTypeReturn) {
             // Handle return action
-            mainController.homeScreen();
+            parent.homeScreen();
         } else if (result.isPresent() && result.get() == buttonTypeAddAnother) {
             // clear the form
             formField.getChildren().clear();

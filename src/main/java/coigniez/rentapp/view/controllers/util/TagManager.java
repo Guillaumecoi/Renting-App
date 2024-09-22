@@ -14,28 +14,38 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import lombok.Getter;
 
+/**
+ * A manager for tags that can be selected in a UI.
+ *
+ * The manager contains a combobox for selecting tags and a list of selected
+ * tags that can be removed.
+ */
 public class TagManager {
 
-    private List<String> availableTags;
+    // Attributes
+    private List<String> availableTags;  // The list of available tags for the combobox
     @Getter
-    private List<String> selectedTags = new ArrayList<>();
+    private List<String> selectedTags;
+
+    // JavaFX components
     private ComboBox<String> tagComboBox;
-    private FlowPane tagContainer;
+    private final FlowPane tagContainer;
     @Getter
-    private HBox pane;
+    private final HBox pane;
 
-    public TagManager(List<String> availableTags) {
-        initialize(availableTags);
-    }
-
-    private void initialize(List<String> availableTags) {
+    /**
+     * Create a new tag manager.
+     *
+     * @param availableTags the list of available tags for the combobox
+     */
+    public TagManager(List<String> availableTags, List<String> selectedTags) {
         // Tag input section
         HBox tagInputBox = new HBox();
         Label tagInputLabel = new Label("Tags:");
         tagInputLabel.setMinWidth(50);
         tagComboBox = new ComboBox<>();
         tagComboBox.setTooltip(new Tooltip("Press enter to add the tag"));
-        setAvailableTags(availableTags);
+        internalSetAvailableTags(availableTags);
 
         tagComboBox.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -72,15 +82,31 @@ public class TagManager {
         pane.getChildren().addAll(tagInputBox, spacer, tagListBox);
         pane.setSpacing(10);
         pane.setPadding(new javafx.geometry.Insets(0, 30, 0, 20));
+
+        // Set the selected tags
+        internalSetSelectedTags(selectedTags);
     }
 
-    public void setSelectedTags(List<String> selectedTags) {
+    /**
+     * Private method to set the selected tags for the manager.
+     *
+     * @param selectedTags the list of selected tags
+     */
+    private void internalSetSelectedTags(List<String> selectedTags) {
         this.selectedTags = new ArrayList<>();
         tagContainer.getChildren().clear();
-        selectedTags.stream().forEach(tag -> addSelectedTag(tag));
+        if (selectedTags == null) {
+            return;
+        }
+        selectedTags.forEach(this::addSelectedTag);
     }
 
-    public void addSelectedTag(String tag) {
+    /**
+     * Add a tag to the selected tags list.
+     *
+     * @param tag the tag to add
+     */
+    private void addSelectedTag(String tag) {
         if (availableTags.contains(tag)) {
             tagComboBox.getItems().remove(tag);
         }
@@ -88,11 +114,34 @@ public class TagManager {
         tagContainer.getChildren().add(createTagLabelButton(tag));
     }
 
-    public void setAvailableTags(List<String> availableTags) {
+    /**
+     * Private method to set the available tags for the combobox.
+     *
+     * @param availableTags the list of available tags
+     */
+    private void internalSetAvailableTags(List<String> availableTags) {
         this.availableTags = availableTags;
         tagComboBox.getItems().clear();
         tagComboBox.getItems().addAll(availableTags);
         tagComboBox.setEditable(true);
+    }
+
+    /**
+     * Set the selected tags for the manager.
+     *
+     * @param selectedTags the list of selected tags
+     */
+    public void setSelectedTags(List<String> selectedTags) {
+        internalSetSelectedTags(selectedTags);
+    }
+
+    /**
+     * Set the available tags for the combobox.
+     *
+     * @param availableTags the list of available tags
+     */
+    public void setAvailableTags(List<String> availableTags) {
+        internalSetAvailableTags(availableTags);
     }
 
     /**

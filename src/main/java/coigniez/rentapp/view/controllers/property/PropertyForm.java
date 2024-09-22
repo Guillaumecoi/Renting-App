@@ -15,15 +15,25 @@ import coigniez.rentapp.model.address.AddressDTO;
 import coigniez.rentapp.model.property.PropertyDTO;
 import lombok.Getter;
 
+/**
+ * A form for creating or editing a property.
+ *
+ * The form contains fields for the name and the address of the property. The
+ * address consists of the street, house number, bus number, postal code, city,
+ * province and country.
+ */
 public class PropertyForm {
 
+    // The property to edit
     private PropertyDTO property;
-    List<String> countries;
+    private final List<String> countries;
 
-    private Form form;
+    // JavaFX components
     @Getter
     private FormRenderer formRenderer;
+    private Form form;
 
+    // Form fields
     private StringField nameField;
     private StringField streetField;
     private StringField houseNumberField;
@@ -33,12 +43,21 @@ public class PropertyForm {
     private StringField provinceField;
     private SingleSelectionField<String> countryField;
 
+    /**
+     * Create a new form for a property.
+     *
+     * @param property the property to edit
+     * @param countries the list of countries for the address
+     */
     public PropertyForm(PropertyDTO property, List<String> countries) {
         this.property = property;
         this.countries = countries;
         createForm();
     }
 
+    /**
+     * Create the form with the fields for the property
+     */
     private void createForm() {
         // set the values of the form fields
         nameField = Field.ofStringType("")

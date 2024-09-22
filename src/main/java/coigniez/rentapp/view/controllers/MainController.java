@@ -38,7 +38,7 @@ public class MainController {
             PropertyFormController controller = fxWeaver.getBean(PropertyFormController.class);
 
             // Pass attributes to the controller
-            controller.setMainController(this);
+            controller.setParent(this);
 
             // Set the new FXML file as the child of the AnchorPane
             mainAnchorPane.getChildren().setAll(addPropertyView);
