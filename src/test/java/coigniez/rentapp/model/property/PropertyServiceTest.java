@@ -1,18 +1,23 @@
 package coigniez.rentapp.model.property;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import coigniez.rentapp.exceptions.InvalidAddressException;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.address.AddressDTO;
+import coigniez.rentapp.model.property.tag.TagDTO;
 
 public class PropertyServiceTest {
 
@@ -38,6 +43,18 @@ public class PropertyServiceTest {
         // Assert
         assertEquals(property, savedProperty);
         verify(propertyRepository, times(1)).save(propertyEntity);
+    }
+
+    @Test
+    void testSavePropertyWithInvalidAddress() {
+        // Arrange
+        PropertyDTO property = new PropertyDTO();
+        property.setAddress(new AddressDTO());
+        property.getAddress().setCountry("Invalid Country");
+
+        // Act & Assert
+        Exception exception = assertThrows(InvalidAddressException.class, () -> propertyService.saveProperty(property));
+        assertEquals("Invalid country code or name: Invalid Country", exception.getMessage());
     }
 
     @Test
@@ -108,5 +125,19 @@ public class PropertyServiceTest {
 
         // Assert
         verify(propertyRepository, times(1)).delete(propertyEntity);
+    }
+
+    @Test
+    void testFindAllTags() {
+        // Arrange
+        when(propertyRepository.findDistinctTags()).thenReturn(List.of("Test Tag"));
+
+        // Act
+        Set<TagDTO> tags = propertyService.findAllTags();
+
+        // Assert
+        assertEquals(1, tags.size());
+        assertEquals("Test Tag", tags.iterator().next().getName());
+        verify(propertyRepository, times(1)).findDistinctTags();
     }
 }

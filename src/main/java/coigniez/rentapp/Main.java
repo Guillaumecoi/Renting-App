@@ -16,41 +16,42 @@ import net.rgielen.fxweaver.spring.SpringFxWeaver;
 
 @SpringBootApplication
 public class Main extends Application {
-	private ConfigurableApplicationContext applicationContext;
-	private FxWeaver fxWeaver;
 
-	public static void main(String[] args) {
-		Application.launch(args);
-	}
+    private ConfigurableApplicationContext applicationContext;
+    private FxWeaver fxWeaver;
 
-	@Override
-	public void init() throws Exception {
-		String[] args = getParameters().getRaw().toArray(new String[0]);
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
 
-		this.applicationContext = new SpringApplication(Main.class).run(args);
-		this.fxWeaver = applicationContext.getBean(FxWeaver.class);		
-	}
+    @Override
+    public void init() throws Exception {
+        String[] args = getParameters().getRaw().toArray(String[]::new);
 
-	@Override
-	public void start(Stage stage) throws Exception {
-		Parent root = fxWeaver.loadView(MainController.class);
+        this.applicationContext = new SpringApplication(Main.class).run(args);
+        this.fxWeaver = applicationContext.getBean(FxWeaver.class);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = fxWeaver.loadView(MainController.class);
         if (root == null) {
             System.out.println("Failed to load view for MainController");
             return;
         }
-		stage.setScene(new Scene(root));
-		stage.setTitle("RentApp");
-		stage.show();
-	}
+        stage.setScene(new Scene(root));
+        stage.setTitle("RentApp");
+        stage.show();
+    }
 
-	@Override
-	public void stop() throws Exception {
-		this.applicationContext.close();
-		Platform.exit();
-	}
+    @Override
+    public void stop() throws Exception {
+        this.applicationContext.close();
+        Platform.exit();
+    }
 
-	@Bean
-	public FxWeaver fxWeaver(ConfigurableApplicationContext applicationContext) {
-		return new SpringFxWeaver(applicationContext);
-	}
+    @Bean
+    public FxWeaver fxWeaver(ConfigurableApplicationContext applicationContext) {
+        return new SpringFxWeaver(applicationContext);
+    }
 }

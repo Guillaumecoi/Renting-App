@@ -3,16 +3,15 @@ package coigniez.rentapp.view.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import coigniez.rentapp.view.controllers.property.AddPropertyController;
-import net.rgielen.fxweaver.core.FxWeaver;
-import net.rgielen.fxweaver.core.FxmlView;
-
+import coigniez.rentapp.view.controllers.property.PropertyFormController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import net.rgielen.fxweaver.core.FxWeaver;
+import net.rgielen.fxweaver.core.FxmlView;
 
 @Component
 @FxmlView("/views/main.fxml")
@@ -25,10 +24,21 @@ public class MainController {
     private AnchorPane mainAnchorPane;
 
     @FXML
+    public void initialize() {
+        mainAnchorPane.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+    }
+
+    @FXML
     public void handleAddPropertyButtonAction(ActionEvent event) {
         try {
             // Load the new FXML file for the AddPropertyController
-            Parent addPropertyView = fxWeaver.loadView(AddPropertyController.class);
+            Parent addPropertyView = fxWeaver.loadView(PropertyFormController.class);
+
+            // Get the controller using FxWeaver
+            PropertyFormController controller = fxWeaver.getBean(PropertyFormController.class);
+
+            // Pass attributes to the controller
+            controller.setParent(this);
 
             // Set the new FXML file as the child of the AnchorPane
             mainAnchorPane.getChildren().setAll(addPropertyView);
@@ -39,5 +49,9 @@ public class MainController {
             alert.showAndWait();
             System.out.println(e.getMessage());
         }
+    }
+
+    public void homeScreen() {
+        mainAnchorPane.getChildren().clear();
     }
 }

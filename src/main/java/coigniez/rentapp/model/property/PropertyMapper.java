@@ -1,65 +1,25 @@
 package coigniez.rentapp.model.property;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
-import coigniez.rentapp.interfaces.Mapper;
 import coigniez.rentapp.model.address.AddressMapper;
+import coigniez.rentapp.model.property.tag.TagMapper;
 
-public class PropertyMapper implements Mapper<Property, PropertyDTO> {
+@Mapper(uses = {AddressMapper.class, TagMapper.class})
+public interface PropertyMapper {
 
-    private final AddressMapper addressMapper = new AddressMapper();
+    PropertyMapper INSTANCE = Mappers.getMapper(PropertyMapper.class);
+    AddressMapper addressMapper = AddressMapper.INSTANCE;
+    TagMapper tagMapper = TagMapper.INSTANCE;
 
-    public PropertyDTO entityToDto(Property property) {
-        if (property == null) {
-            return null;
-        }
+    @Mapping(target = "tags", expression = "java(tagMapper.toDtoSet(property.getTags()))")
+    @Mapping(target = "address", expression = "java(addressMapper.toDto(property.getAddress()))")
+    PropertyDTO toDto(Property property);
 
-        PropertyDTO dto = new PropertyDTO();
-        dto.setId(property.getId());
-        dto.setName(property.getName());
-        dto.setAddress(addressMapper.entityToDto(property.getAddress()));
-
-        return dto;
-    }
-
-    public List<PropertyDTO> entitiesToDtos(List<Property> properties) {
-        if (properties == null) {
-            return null;
-        }
-
-        List<PropertyDTO> dtos = new ArrayList<>();
-        for (Property property : properties) {
-            dtos.add(entityToDto(property));
-        }
-
-        return dtos;
-    }
-
-    public Property dtoToEntity(PropertyDTO dto) throws InvalidAddressException {
-        if (dto == null) {
-            return null;
-        }
-
-        Property property = new Property();
-        property.setId(dto.getId());
-        property.setName(dto.getName());
-        property.setAddress(addressMapper.dtoToEntity(dto.getAddress()));
-
-        return property;
-    }
-
-    public List<Property> dtosToEntities(List<PropertyDTO> dtos) throws InvalidAddressException {
-        if (dtos == null) {
-            return null;
-        }
-
-        List<Property> properties = new ArrayList<>();
-        for (PropertyDTO dto : dtos) {
-            properties.add(dtoToEntity(dto));
-        }
-
-        return properties;
-    }
+    @Mapping(target = "tags", expression = "java(tagMapper.toEntitySet(dto.getTags()))")
+    @Mapping(target = "address", expression = "java(addressMapper.toEntity(dto.getAddress()))")
+    Property toEntity(PropertyDTO dto) throws InvalidAddressException;
 }
