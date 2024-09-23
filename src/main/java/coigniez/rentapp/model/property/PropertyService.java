@@ -1,5 +1,6 @@
 package coigniez.rentapp.model.property;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -69,11 +70,34 @@ public class PropertyService {
      *
      * @return a list of all properties
      */
+    @Transactional(readOnly = true)
     public List<PropertyDTO> findAllProperties() {
-        List<Property> properties = propertyRepository.findAll();
-        return properties.stream()
-                .map(property -> propertyMapper.toDto(property))
+        logger.info("Starting findAllProperties method");
+
+        List<Property> properties = null;
+        try {
+            logger.debug("Attempting to fetch properties from the database");
+            properties = propertyRepository.findAll();
+            logger.debug("Fetched {} properties from the database", properties.size());
+        } catch (Exception e) {
+            logger.error("Error fetching properties from the database", e);
+        }
+
+        if (properties == null) {
+            logger.warn("No properties found in the database");
+            return Collections.emptyList();
+        }
+
+        List<PropertyDTO> propertyDTOs = properties.stream()
+                .map(property -> {
+                    PropertyDTO dto = propertyMapper.toDto(property);
+                    logger.debug("Mapped Property to PropertyDTO: {}", dto);
+                    return dto;
+                })
                 .collect(Collectors.toList());
+
+        logger.info("Completed findAllProperties method with {} properties", propertyDTOs.size());
+        return propertyDTOs;
     }
 
     /**
