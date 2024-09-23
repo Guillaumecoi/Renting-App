@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import coigniez.rentapp.view.controllers.property.PropertyFormController;
+import coigniez.rentapp.view.controllers.property.PropertyListController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -26,6 +27,7 @@ public class MainController {
     @FXML
     public void initialize() {
         mainAnchorPane.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+        homeScreen();
     }
 
     @FXML
@@ -44,14 +46,25 @@ public class MainController {
             mainAnchorPane.getChildren().setAll(addPropertyView);
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
-            alert.setHeaderText(null);
             alert.setContentText("Error loading add property screen");
             alert.showAndWait();
-            System.out.println(e.getMessage());
+
         }
     }
 
     public void homeScreen() {
+        // Clear the AnchorPane
         mainAnchorPane.getChildren().clear();
+
+        // Load the PropertyListController
+        try {
+            Parent propertyListView = fxWeaver.loadView(PropertyListController.class);
+            mainAnchorPane.getChildren().setAll(propertyListView);
+        } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setContentText("Error loading property list screen");
+            alert.showAndWait();
+            System.out.println(e.getMessage());
+        }
     }
 }
