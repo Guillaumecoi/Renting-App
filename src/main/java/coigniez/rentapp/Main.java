@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
 import coigniez.rentapp.view.controllers.MainController;
 import javafx.application.Application;
