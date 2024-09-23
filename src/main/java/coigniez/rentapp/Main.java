@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
 import coigniez.rentapp.view.controllers.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -34,6 +36,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         Parent root = fxWeaver.loadView(MainController.class);
         if (root == null) {
             System.out.println("Failed to load view for MainController");
