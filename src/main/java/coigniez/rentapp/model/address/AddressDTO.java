@@ -31,4 +31,23 @@ public class AddressDTO {
     @NotEmpty
     private String country;
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        // Add street and house number
+        result.append(street).append(" ").append(houseNumber);
+        // Add bus number if available
+        if (busNumber != null && !busNumber.isEmpty()) {
+            result.append(" ").append(busNumber);
+        }
+        // Add postal code, city, province and country
+        result.append(", ").append(postalCode).append(" ").append(city);
+        // Only add province if available
+        if (province != null && !province.isEmpty()) {
+            result.append(", ").append(province);
+        }
+        result.append(", ").append(country);
+
+        return result.toString();
+    }
 }
