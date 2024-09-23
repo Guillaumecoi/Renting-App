@@ -1,7 +1,6 @@
 package coigniez.rentapp.view.controllers.property;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,13 +11,14 @@ import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
+import coigniez.rentapp.view.controllers.MainController;
 import coigniez.rentapp.view.controllers.util.TagManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
+import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 
 /**
@@ -33,6 +33,9 @@ public class PropertyFormController {
 
     @Autowired
     private PropertyService propertyService;
+
+    @Setter
+    private MainController mainController;
 
     // The property to edit
     PropertyDTO property;
@@ -57,7 +60,10 @@ public class PropertyFormController {
         property.setTagsFromList(tagManager.getSelectedTags());
         try {
             property = propertyService.saveProperty(property);
+            mainController.propertyListView();
             showSuccessAlert(property);
+            formField.getChildren().clear();
+            setProperty(null);
 
         } catch (InvalidAddressException | DataIntegrityViolationException e) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -77,16 +83,7 @@ public class PropertyFormController {
         alert.setHeaderText("Property Submitted Successfully");
         alert.setContentText("The property: \n" + property + "\nhas been submitted successfully.");
 
-        ButtonType buttonTypeAddAnother = new ButtonType("Ok");
-
-        alert.getButtonTypes().setAll(buttonTypeAddAnother);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == buttonTypeAddAnother) {
-            // clear the form
-            formField.getChildren().clear();
-            setProperty(null);
-        }
+        alert.showAndWait();
     }
 
     /**

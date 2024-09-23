@@ -69,6 +69,7 @@ public class MainController {
             PropertyFormController controller = fxWeaver.getBean(PropertyFormController.class);
 
             // Pass attributes to the controller
+            controller.setMainController(this);
             controller.setProperty(property);
 
             // Create a new stage for the popup
