@@ -195,16 +195,6 @@ public class PropertyServiceIntegrationTest {
     }
 
     @Test
-    void testDeleteProperty() throws InvalidAddressException {
-        // Act
-        propertyService.deleteProperty(property);
-
-        // Assert
-        Optional<PropertyDTO> deletedProperty = propertyService.findPropertyById(property.getId());
-        assertFalse(deletedProperty.isPresent());
-    }
-
-    @Test
     void testFindAllTags() {
         // Act
         Set<TagDTO> distinctTags = propertyService.findAllTags();

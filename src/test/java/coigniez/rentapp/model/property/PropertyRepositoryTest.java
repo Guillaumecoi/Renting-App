@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -230,5 +231,76 @@ public class PropertyRepositoryTest {
         assertTrue(tags.contains("Test Tag"));
         assertTrue(tags.contains("Test Tag 2"));
         assertTrue(tags.contains("Test Tag 3"));
+    }
+
+    @Test
+    void testFindAllProperties() {
+        // Act
+        List<Property> properties = propertyRepository.findAll();
+
+        // Assert
+        assertNotNull(properties);
+        assertEquals(1, properties.size());
+        assertEquals(property.getId(), properties.get(0).getId());
+        assertEquals(property.getName(), properties.get(0).getName());
+        assertNotNull(properties.get(0).getAddress());
+        assertEquals(property.getAddress().getStreet(), properties.get(0).getAddress().getStreet());
+        assertEquals(property.getAddress().getHouseNumber(), properties.get(0).getAddress().getHouseNumber());
+        assertEquals(property.getAddress().getBusNumber(), properties.get(0).getAddress().getBusNumber());
+        assertEquals(property.getAddress().getPostalCode(), properties.get(0).getAddress().getPostalCode());
+        assertEquals(property.getAddress().getCity(), properties.get(0).getAddress().getCity());
+        assertEquals(property.getAddress().getProvince(), properties.get(0).getAddress().getProvince());
+        assertEquals(property.getAddress().getCountry(), properties.get(0).getAddress().getCountry());
+        // tags
+        assertNotNull(properties.get(0).getTags());
+        assertEquals(1, properties.get(0).getTags().size());
+        assertTrue(properties.get(0).getTags().stream().anyMatch(tag -> tag.getName().equals("Test Tag")));
+    }
+
+    @Test
+    void testFindAllPropertiesEmpty() {
+        // Arrange
+        propertyRepository.deleteAll();
+
+        // Act
+        List<Property> properties = propertyRepository.findAll();
+
+        // Assert
+        assertNotNull(properties);
+        assertTrue(properties.isEmpty());
+    }
+
+    @Test
+    void testFindAllPropertiesMultiple() {
+        // Arrange
+        Property property2 = new Property();
+        property2.setName("Test Property 2");
+        propertyRepository.saveAndFlush(property2);
+
+        // Act
+        List<Property> properties = propertyRepository.findAll();
+
+        // Assert
+        assertNotNull(properties);
+        assertEquals(2, properties.size());
+        // First property
+        assertEquals(property.getId(), properties.get(0).getId());
+        assertEquals(property.getName(), properties.get(0).getName());
+        assertNotNull(properties.get(0).getAddress());
+        assertEquals(property.getAddress().getStreet(), properties.get(0).getAddress().getStreet());
+        assertEquals(property.getAddress().getHouseNumber(), properties.get(0).getAddress().getHouseNumber());
+        assertEquals(property.getAddress().getBusNumber(), properties.get(0).getAddress().getBusNumber());
+        assertEquals(property.getAddress().getPostalCode(), properties.get(0).getAddress().getPostalCode());
+        assertEquals(property.getAddress().getCity(), properties.get(0).getAddress().getCity());
+        assertEquals(property.getAddress().getProvince(), properties.get(0).getAddress().getProvince());
+        assertEquals(property.getAddress().getCountry(), properties.get(0).getAddress().getCountry());
+        assertNotNull(properties.get(0).getTags());
+        assertEquals(1, properties.get(0).getTags().size());
+        assertTrue(properties.get(0).getTags().stream().anyMatch(tag -> tag.getName().equals("Test Tag")));
+        // Second property
+        assertEquals(property2.getId(), properties.get(1).getId());
+        assertEquals(property2.getName(), properties.get(1).getName());
+        assertNull(properties.get(1).getAddress());
+        assertNull(properties.get(1).getTags());
     }
 }

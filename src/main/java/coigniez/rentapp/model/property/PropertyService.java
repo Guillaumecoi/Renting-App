@@ -1,5 +1,6 @@
 package coigniez.rentapp.model.property;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -16,6 +17,9 @@ import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.property.tag.TagDTO;
 import jakarta.validation.Valid;
 
+/**
+ * Service class for managing properties
+ */
 @Service
 @Validated
 public class PropertyService {
@@ -41,16 +45,12 @@ public class PropertyService {
     public PropertyDTO saveProperty(@Valid PropertyDTO property) throws InvalidAddressException {
         logger.info("Entering saveProperty method with property: " + property);
 
-        // Use ModelMapper to map PropertyDTO to Property
-        Property propertyEntity = propertyMapper.toEntity(property);
-        Property savedProperty = propertyRepository.save(propertyEntity);
+        // Save the property to the database
+        Property savedProperty = propertyRepository.save(propertyMapper.toEntity(property));
         logger.info("Property saved: " + savedProperty);
 
-        // Use ModelMapper to map Property to PropertyDTO
-        PropertyDTO result = propertyMapper.toDto(savedProperty);
-        logger.info("Returning PropertyDTO: " + result);
-
-        return result;
+        // Return the saved property
+        return propertyMapper.toDto(savedProperty);
     }
 
     /**
@@ -59,9 +59,20 @@ public class PropertyService {
      * @param id the id of the property
      * @return the property if found
      */
+    @Transactional(readOnly = true)
     public Optional<PropertyDTO> findPropertyById(Long id) {
-        return propertyRepository.findById(id)
+        logger.info("Entering findPropertyById with id: {}", id);
+
+        Optional<PropertyDTO> result = propertyRepository.findById(id)
                 .map(property -> propertyMapper.toDto(property));
+
+        if (result.isPresent()) {
+            logger.info("Property found with id: {}", id);
+        } else {
+            logger.warn("Property not found with id: {}", id);
+        }
+
+        return result;
     }
 
     /**
@@ -69,11 +80,34 @@ public class PropertyService {
      *
      * @return a list of all properties
      */
+    @Transactional(readOnly = true)
     public List<PropertyDTO> findAllProperties() {
-        List<Property> properties = propertyRepository.findAll();
-        return properties.stream()
-                .map(property -> propertyMapper.toDto(property))
+        logger.info("Starting findAllProperties method");
+
+        List<Property> properties = null;
+        try {
+            logger.debug("Attempting to fetch properties from the database");
+            properties = propertyRepository.findAll();
+            logger.debug("Fetched {} properties from the database", properties.size());
+        } catch (Exception e) {
+            logger.error("Error fetching properties from the database", e);
+        }
+
+        if (properties == null) {
+            logger.warn("No properties found in the database");
+            return Collections.emptyList();
+        }
+
+        List<PropertyDTO> propertyDTOs = properties.stream()
+                .map(property -> {
+                    PropertyDTO dto = propertyMapper.toDto(property);
+                    logger.debug("Mapped Property to PropertyDTO: {}", dto);
+                    return dto;
+                })
                 .collect(Collectors.toList());
+
+        logger.info("Completed findAllProperties method with {} properties", propertyDTOs.size());
+        return propertyDTOs;
     }
 
     /**
@@ -84,8 +118,11 @@ public class PropertyService {
      * @throws InvalidAddressException if the postal code or country is invalid
      */
     public PropertyDTO updateProperty(@Valid PropertyDTO property) throws InvalidAddressException {
-        Property updatedProperty = propertyRepository.save(propertyMapper.toEntity(property));
-        return propertyMapper.toDto(updatedProperty);
+        if (property.getId() == null) {
+            logger.error("A property must have an id to be updated");
+            throw new IllegalArgumentException("A property must have an id to be updated");
+        }
+        return saveProperty(property);
     }
 
     /**
@@ -93,18 +130,15 @@ public class PropertyService {
      *
      * @param id the id of the property to delete
      */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void deleteProperty(Long id) {
-        propertyRepository.deleteById(id);
-    }
-
-    /**
-     * Delete a property from the database
-     *
-     * @param property the PropertyDto to delete
-     * @throws InvalidAddressException if the postal code or country is invalid
-     */
-    public void deleteProperty(@Valid PropertyDTO property) throws InvalidAddressException {
-        propertyRepository.delete(propertyMapper.toEntity(property));
+        logger.info("Deleting property with id: {}", id);
+        try {
+            propertyRepository.deleteById(id);
+            logger.info("Deleted property with id: {}", id);
+        } catch (Exception e) {
+            logger.error("Error deleting property with id: {}", id, e);
+        }
     }
 
     /**
@@ -112,8 +146,11 @@ public class PropertyService {
      *
      * @return a list of all tags
      */
+    @Transactional(readOnly = true)
     public Set<TagDTO> findAllTags() {
+        logger.info("Finding all tags in the database");
         List<String> tags = propertyRepository.findDistinctTags();
+        logger.info("Found {} tags in the database", tags.size());
         return tags.stream()
                 .map(tag -> new TagDTO(tag))
                 .collect(Collectors.toSet());

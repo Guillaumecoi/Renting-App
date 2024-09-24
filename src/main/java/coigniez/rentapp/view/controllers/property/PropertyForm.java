@@ -53,6 +53,7 @@ public class PropertyForm {
         this.property = property;
         this.countries = countries;
         createForm();
+        setForm();
     }
 
     /**

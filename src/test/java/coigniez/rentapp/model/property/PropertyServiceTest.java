@@ -91,7 +91,9 @@ public class PropertyServiceTest {
     void testUpdateProperty() throws InvalidAddressException {
         // Arrange
         PropertyDTO property = new PropertyDTO();
+        property.setId(1L);
         Property propertyEntity = new Property();
+        propertyEntity.setId(1L);
         when(propertyRepository.save(any(Property.class))).thenReturn(propertyEntity);
 
         // Act
@@ -112,19 +114,6 @@ public class PropertyServiceTest {
 
         // Assert
         verify(propertyRepository, times(1)).deleteById(id);
-    }
-
-    @Test
-    void testDeletePropertyByProperty() throws InvalidAddressException {
-        // Arrange
-        PropertyDTO property = new PropertyDTO();
-        Property propertyEntity = new Property();
-
-        // Act
-        propertyService.deleteProperty(property);
-
-        // Assert
-        verify(propertyRepository, times(1)).delete(propertyEntity);
     }
 
     @Test
