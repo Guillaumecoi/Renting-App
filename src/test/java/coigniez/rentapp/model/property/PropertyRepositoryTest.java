@@ -119,6 +119,48 @@ public class PropertyRepositoryTest {
     }
 
     @Test
+    public void testCreatePropertyWithParent() {
+        // Arrange
+        Property newProperty = new Property();
+        newProperty.setName("New Property");
+        newProperty.setParent(property);
+
+        // Act
+        Property savedProperty = propertyRepository.save(newProperty);
+
+        // Assert
+        assertNotNull(savedProperty.getId());
+        assertEquals(newProperty.getName(), savedProperty.getName());
+        assertNotNull(savedProperty.getParent());
+        assertNotNull(savedProperty.getParent().getId());
+        assertEquals(property.getName(), savedProperty.getParent().getName());
+        assertEquals(property.getId(), savedProperty.getParent().getId());
+    }
+
+    @Test
+    public void testRetrieveParentPropertyAndChildren() {
+        // Arrange
+        Property newProperty = new Property();
+        newProperty.setName("New Property");
+        newProperty.setParent(property);
+        Property savedProperty = propertyRepository.save(newProperty);
+
+        // Act
+        Property savedParent = propertyRepository.findById(property.getId()).orElse(null);
+        List<Property> children = propertyRepository.findChildren(property.getId());
+
+        // Assert
+        assertNotNull(savedParent);
+        assertEquals(property.getName(), savedParent.getName());
+        assertNull(savedParent.getChildren(), "Children should not be loaded eagerly");
+
+        assertNotNull(children);
+        assertFalse(children.isEmpty());
+        assertEquals(1, children.size());
+        assertEquals(savedProperty.getId(), children.iterator().next().getId());
+    }
+
+    @Test
     public void testReadProperty() {
         // Act
         Optional<Property> readProperty = propertyRepository.findById(property.getId());
