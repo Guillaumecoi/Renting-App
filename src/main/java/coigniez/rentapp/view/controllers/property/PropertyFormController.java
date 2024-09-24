@@ -102,7 +102,6 @@ public class PropertyFormController {
         } else {
             tags = property.getTags().stream().map(TagDTO::getName).toList();
             buttonLabel = "Edit Property";
-
         }
         tagManager = new TagManager(propertyService.findAllTags().stream().map(TagDTO::getName).toList(), tags);
         propertyForm = new PropertyForm(property, List.of(Country.getNames()));

@@ -48,29 +48,25 @@ public class PropertyListController {
     private void initializeTable(List<PropertyDTO> properties) {
         // Initialize table columns
         TableColumn<PropertyDTO, String> nameColumn = new TableColumn<>("Name");
-        TableColumn<PropertyDTO, String> addressColumn = new TableColumn<>("Address");
-        TableColumn<PropertyDTO, String> tagsColumn = new TableColumn<>("Tags");
-
-        // Set cell value factories
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        nameColumn.prefWidthProperty().bind(propertyTable.widthProperty().multiply(0.20));
+
+        TableColumn<PropertyDTO, String> addressColumn = new TableColumn<>("Address");
         addressColumn.setCellValueFactory(cellData -> {
             AddressDTO address = cellData.getValue().getAddress();
             return new SimpleStringProperty(address != null ? address.toString() : "");
         });
+        addressColumn.prefWidthProperty().bind(propertyTable.widthProperty().multiply(0.50));
 
+        TableColumn<PropertyDTO, String> tagsColumn = new TableColumn<>("Tags");
         tagsColumn.setCellValueFactory(cellData -> {
             Set<TagDTO> tags = cellData.getValue().getTags();
             return new SimpleStringProperty(tags != null ? tags.stream().map(TagDTO::getName).collect(Collectors.joining(", ")) : "");
         });
-
-        nameColumn.prefWidthProperty().bind(propertyTable.widthProperty().multiply(0.20));
-        addressColumn.prefWidthProperty().bind(propertyTable.widthProperty().multiply(0.50));
         tagsColumn.prefWidthProperty().bind(propertyTable.widthProperty().multiply(0.29));
 
         // Add columns to table
-        propertyTable.getColumns().add(nameColumn);
-        propertyTable.getColumns().add(addressColumn);
-        propertyTable.getColumns().add(tagsColumn);
+        propertyTable.getColumns().addAll(nameColumn, addressColumn, tagsColumn);
 
         // Add properties to table
         propertyTable.getItems().addAll(properties);
@@ -78,54 +74,66 @@ public class PropertyListController {
         // Add double click event
         propertyTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
-                mainController.showPropertyDetails(selectedProperty);
+                handleOpenAction();
             }
         });
 
-        // Add right click event
-        propertyTable.setOnContextMenuRequested(event -> {
-            ContextMenu contextMenu = new ContextMenu();
+        // Right click action
+        propertyTable.setOnContextMenuRequested(event -> showContextMenu(event.getScreenX(), event.getScreenY()));
+    }
 
-            MenuItem open = new MenuItem("Open");
-            MenuItem edit = new MenuItem("Edit");
-            MenuItem delete = new MenuItem("Delete");
+    /**
+     * Show context menu
+     */
+    private void showContextMenu(double screenX, double screenY) {
+        ContextMenu contextMenu = new ContextMenu();
 
-            open.setOnAction(event1 -> {
-                PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
-                mainController.showPropertyDetails(selectedProperty);
-            });
+        MenuItem open = new MenuItem("Open");
+        MenuItem edit = new MenuItem("Edit");
+        MenuItem delete = new MenuItem("Delete");
 
-            edit.setOnAction(event1 -> {
-                PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
-                mainController.editProperty(selectedProperty);
-            });
+        open.setOnAction(event -> handleOpenAction());
+        edit.setOnAction(event -> handleEditAction());
+        delete.setOnAction(event -> handleDeleteAction());
 
-            delete.setOnAction(event1 -> {
-                PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
+        contextMenu.getItems().addAll(open, edit, delete);
+        contextMenu.show(propertyTable, screenX, screenY);
+        // Add event filter to hide context menu on mouse click outside
+        propertyTable.getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, e -> contextMenu.hide());
+    }
 
-                if (selectedProperty != null) {
-                    Alert alert = new Alert(AlertType.CONFIRMATION);
-                    alert.setTitle("Delete Confirmation");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Are you sure you want to delete this property?");
+    /**
+     * Opens the detail page of selected property
+     */
+    private void handleOpenAction() {
+        PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
+        mainController.showPropertyDetails(selectedProperty);
+    }
 
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            propertyService.deleteProperty(selectedProperty.getId());
-                            propertyTable.getItems().remove(selectedProperty);
-                        }
-                    });
+    /**
+     * Opens an edit page for the selected property
+     */
+    private void handleEditAction() {
+        PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
+        mainController.editProperty(selectedProperty);
+    }
+
+    /**
+     * Deletes the selected property
+     */
+    private void handleDeleteAction() {
+        PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
+        if (selectedProperty != null) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Delete Confirmation");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to delete this property?");
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    propertyService.deleteProperty(selectedProperty.getId());
+                    propertyTable.getItems().remove(selectedProperty);
                 }
             });
-
-            contextMenu.getItems().addAll(open, edit, delete);
-            contextMenu.show(propertyTable, event.getScreenX(), event.getScreenY());
-
-            // Add event filter to hide context menu on mouse click outside
-            propertyTable.getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, e -> {
-                contextMenu.hide();
-            });
-        });
+        }
     }
 }
