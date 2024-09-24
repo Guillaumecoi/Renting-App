@@ -14,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -49,8 +48,5 @@ public class Property {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Property parent;
-
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private Set<Property> children;
 
 }

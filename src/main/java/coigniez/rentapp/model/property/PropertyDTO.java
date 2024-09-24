@@ -24,7 +24,6 @@ public class PropertyDTO {
     private AddressDTO address;
     private Set<TagDTO> tags;
     private PropertyDTO parent;
-    private Set<PropertyDTO> children;
 
     /**
      * Set the tags of the property

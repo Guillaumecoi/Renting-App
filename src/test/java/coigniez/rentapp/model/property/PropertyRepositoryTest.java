@@ -146,14 +146,9 @@ public class PropertyRepositoryTest {
         Property savedProperty = propertyRepository.save(newProperty);
 
         // Act
-        Property savedParent = propertyRepository.findById(property.getId()).orElse(null);
         List<Property> children = propertyRepository.findChildren(property.getId());
 
         // Assert
-        assertNotNull(savedParent);
-        assertEquals(property.getName(), savedParent.getName());
-        assertNull(savedParent.getChildren(), "Children should not be loaded eagerly");
-
         assertNotNull(children);
         assertFalse(children.isEmpty());
         assertEquals(1, children.size());
