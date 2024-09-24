@@ -17,6 +17,7 @@ public interface PropertyMapper {
 
     @Mapping(target = "tags", expression = "java(tagMapper.toDtoSet(property.getTags()))")
     @Mapping(target = "address", expression = "java(addressMapper.toDto(property.getAddress()))")
+    @Mapping(target = "tagsFromList", ignore = true)
     PropertyDTO toDto(Property property);
 
     @Mapping(target = "tags", expression = "java(tagMapper.toEntitySet(dto.getTags()))")

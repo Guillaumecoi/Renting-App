@@ -1,5 +1,6 @@
 package coigniez.rentapp.view.controllers.property;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,7 +67,7 @@ public class PropertyListController {
         tagsColumn.prefWidthProperty().bind(propertyTable.widthProperty().multiply(0.29));
 
         // Add columns to table
-        propertyTable.getColumns().addAll(nameColumn, addressColumn, tagsColumn);
+        Collections.addAll(propertyTable.getColumns(), nameColumn, addressColumn, tagsColumn);
 
         // Add properties to table
         propertyTable.getItems().addAll(properties);
