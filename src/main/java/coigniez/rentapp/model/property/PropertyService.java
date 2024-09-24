@@ -59,6 +59,7 @@ public class PropertyService {
      * @param id the id of the property
      * @return the property if found
      */
+    @Transactional(readOnly = true)
     public Optional<PropertyDTO> findPropertyById(Long id) {
         logger.info("Entering findPropertyById with id: {}", id);
 
