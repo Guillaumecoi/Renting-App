@@ -121,6 +121,29 @@ public class PropertyMapperTest {
     }
 
     @Test
+    void testEntityToDtoWithParent() {
+        // Arrange
+        Property parent = new Property();
+        parent.setId(1L);
+        parent.setName("Parent Property");
+        Property entity = new Property();
+        entity.setId(2L);
+        entity.setName("Child Property");
+        entity.setParent(parent);
+
+        // Act
+        PropertyDTO dto = propertyMapper.toDto(entity);
+
+        // Assert
+        assertNotNull(dto);
+        assertEquals(entity.getId(), dto.getId());
+        assertEquals(entity.getName(), dto.getName());
+        assertNotNull(dto.getParent());
+        assertEquals(parent.getId(), dto.getParent().getId());
+        assertEquals(parent.getName(), dto.getParent().getName());
+    }
+
+    @Test
     void testEntityToDtoWithNull() {
         assertNull(propertyMapper.toDto(null));
     }
@@ -223,6 +246,30 @@ public class PropertyMapperTest {
         assertEquals(dto.getAddress().getProvince(), entity.getAddress().getProvince());
         assertEquals(dto.getAddress().getCountry(), entity.getAddress().getCountry());
         assertNull(entity.getTags());
+    }
+
+    @Test
+    void testDtoToEntityWithParent() throws InvalidAddressException {
+        // Arrange
+        PropertyDTO dto = new PropertyDTO();
+        dto.setId(1L);
+        dto.setName("Child Property");
+        // set ParentDTO for dto
+        PropertyDTO parentDto = new PropertyDTO();
+        parentDto.setId(2L);
+        parentDto.setName("Parent Property");
+        dto.setParent(parentDto);
+
+        // Act
+        Property entity = propertyMapper.toEntity(dto);
+
+        // Assert
+        assertNotNull(entity);
+        assertEquals(dto.getId(), entity.getId());
+        assertEquals(dto.getName(), entity.getName());
+        assertNotNull(entity.getParent());
+        assertEquals(parentDto.getId(), entity.getParent().getId());
+        assertEquals(parentDto.getName(), entity.getParent().getName());
     }
 
     @Test
