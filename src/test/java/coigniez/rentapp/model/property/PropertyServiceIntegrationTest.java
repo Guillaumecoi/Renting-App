@@ -1,5 +1,6 @@
 package coigniez.rentapp.model.property;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -155,6 +156,27 @@ public class PropertyServiceIntegrationTest {
     }
 
     @Test
+    void testCreatePropertyWithParent() throws Exception {
+        // Arrange
+        PropertyDTO parentProperty = new PropertyDTO();
+        parentProperty.setName("Parent Property");
+        PropertyDTO savedParent = propertyService.saveProperty(parentProperty);
+
+        PropertyDTO child = new PropertyDTO();
+        child.setName("Child Property");
+        child.setParent(savedParent);
+
+        // Act
+        PropertyDTO savedChild = propertyService.saveProperty(child);
+
+        // Assert
+        assertNotNull(savedChild.getId(), "Child property ID should not be null");
+        assertEquals(child.getName(), savedChild.getName(), "Child property name should match");
+        assertNotNull(savedChild.getParent(), "Child property parent should not be null");
+        assertEquals(savedParent.getId(), savedChild.getParent().getId(), "Parent property ID should match");
+    }
+
+    @Test
     void testReadProperty() {
         // Act
         Optional<PropertyDTO> readProperty = propertyService.findPropertyById(property.getId());
@@ -215,6 +237,28 @@ public class PropertyServiceIntegrationTest {
 
         // Assert
         assertTrue(distinctTags.isEmpty());
+    }
+
+    @Test
+    void testFindAllChildren() throws InvalidAddressException {
+        // Arrange
+        PropertyDTO child1 = new PropertyDTO();
+        child1.setName("Child Property 1");
+        child1.setParent(property);
+        propertyService.saveProperty(child1);
+
+        PropertyDTO child2 = new PropertyDTO();
+        child2.setName("Child Property 2");
+        child2.setParent(property);
+        propertyService.saveProperty(child2);
+
+        // Act
+        List<PropertyDTO> children = propertyService.getChildren(property.getId());
+
+        // Assert
+        assertEquals(2, children.size());
+        assertTrue(children.stream().anyMatch(child -> child.getName().equals("Child Property 1")));
+        assertTrue(children.stream().anyMatch(child -> child.getName().equals("Child Property 2")));
     }
 
     @Test

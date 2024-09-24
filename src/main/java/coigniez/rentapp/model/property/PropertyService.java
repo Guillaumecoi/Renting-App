@@ -99,11 +99,7 @@ public class PropertyService {
         }
 
         List<PropertyDTO> propertyDTOs = properties.stream()
-                .map(property -> {
-                    PropertyDTO dto = propertyMapper.toDto(property);
-                    logger.debug("Mapped Property to PropertyDTO: {}", dto);
-                    return dto;
-                })
+                .map(property -> propertyMapper.toDto(property))
                 .collect(Collectors.toList());
 
         logger.info("Completed findAllProperties method with {} properties", propertyDTOs.size());
@@ -139,6 +135,22 @@ public class PropertyService {
         } catch (Exception e) {
             logger.error("Error deleting property with id: {}", id, e);
         }
+    }
+
+    /**
+     * Find all properties that are children of a property
+     *
+     * @param id the id of the parent property
+     * @return a list of all children properties
+     */
+    @Transactional(readOnly = true)
+    public List<PropertyDTO> getChildren(Long id) {
+        logger.info("Finding children of property with id: {}", id);
+        List<Property> children = propertyRepository.findChildren(id);
+        logger.info("Found {} children of property with id: {}", children.size(), id);
+        return children.stream()
+                .map(property -> propertyMapper.toDto(property))
+                .collect(Collectors.toList());
     }
 
     /**
