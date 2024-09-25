@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
-import coigniez.rentapp.model.property.tag.TagDTO;
-import coigniez.rentapp.view.controllers.util.TagManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -27,12 +25,8 @@ public class PropertyFormController {
     @Setter
     private PropertyController propertyController;
 
-    // The property to edit
-    PropertyDTO property;
-
-    // Helper classes for the form
-    private PropertyForm propertyForm;
-    private TagManager tagManager;
+    PropertyDTO property;               // The property to edit
+    private PropertyForm propertyForm;  // Helper class for the form
 
     @FXML
     private VBox formField;
@@ -49,26 +43,21 @@ public class PropertyFormController {
     public void setProperty(PropertyDTO property) {
         formField.getChildren().clear();
         this.property = property;
-        List<String> tags;
         String buttonLabel;
         if (property == null || property.getId() == null) {
-            tags = null;
             buttonLabel = "Add Property";
             property = new PropertyDTO();
         } else {
-            tags = property.getTags().stream().map(TagDTO::getName).toList();
             buttonLabel = "Edit Property";
         }
-        tagManager = new TagManager(propertyController.getAllTags(), tags);
-        propertyForm = new PropertyForm(property, List.of(Country.getNames()));
+        propertyForm = new PropertyForm(property, List.of(Country.getNames()), propertyController.getAllTags());
 
         // Add a submit button
         Button submitButton = new Button(buttonLabel);
         submitButton.setOnAction(event -> addProperty());
 
         // Add the form and the submit button to the form field
-        formField.getChildren().add(propertyForm.getFormRenderer());
-        formField.getChildren().add(tagManager.getPane());
+        formField.getChildren().add(propertyForm.getFormPane());
         formField.getChildren().add(submitButton);
         formField.setSpacing(10);
     }
@@ -79,12 +68,10 @@ public class PropertyFormController {
     private void addProperty() {
         // Get the values from the form fields
         property = propertyForm.getProperty();
-        property.setTagsFromList(tagManager.getSelectedTags());
         // Save the property
         boolean saved = propertyController.saveProperty(property);
-
+        // Clear the form if the property was saved
         if (saved) {
-            // Clear the form
             setProperty(null);
         }
     }
