@@ -33,6 +33,7 @@ public class PropertyController {
     private PropertyService propertyService;
 
     @Setter
+    @SuppressWarnings("unused") // Will be used in the future
     private MainController mainController;
 
     @Getter
