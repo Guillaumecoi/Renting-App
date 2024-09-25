@@ -150,4 +150,20 @@ public class PropertyServiceTest {
         assertEquals("Test Tag", tags.iterator().next().getName());
         verify(propertyRepository, times(1)).findDistinctTags();
     }
+
+    @Test
+    void testGetRootProperties() {
+        // Arrange
+        Property rootProperty = new Property();
+        rootProperty.setName("Root Property");
+        when(propertyRepository.findRootProperties()).thenReturn(List.of(rootProperty));
+
+        // Act
+        List<PropertyDTO> rootProperties = propertyService.getRootProperties();
+
+        // Assert
+        assertEquals(1, rootProperties.size());
+        assertEquals("Root Property", rootProperties.get(0).getName());
+        verify(propertyRepository, times(1)).findRootProperties();
+    }
 }

@@ -192,6 +192,34 @@ public class PropertyServiceIntegrationTest {
     }
 
     @Test
+    void testFindAllProperties() throws InvalidAddressException {
+        // Arrange
+        PropertyDTO property1 = new PropertyDTO();
+        property1.setName("Property 1");
+        property1.setParent(property);
+        property1 = propertyService.saveProperty(property1);
+
+        PropertyDTO property2 = new PropertyDTO();
+        property2.setName("Property 2");
+        property2.setParent(property1);
+        propertyService.saveProperty(property2);
+
+        PropertyDTO property3 = new PropertyDTO();
+        property3.setName("Property 3");
+        propertyService.saveProperty(property3);
+
+        // Act
+        List<PropertyDTO> properties = propertyService.findAllProperties();
+
+        // Assert
+        assertEquals(4, properties.size());
+        assertTrue(properties.stream().anyMatch(prop -> prop.getName().equals("Test Property")));
+        assertTrue(properties.stream().anyMatch(prop -> prop.getName().equals("Property 1")));
+        assertTrue(properties.stream().anyMatch(prop -> prop.getName().equals("Property 2")));
+        assertTrue(properties.stream().anyMatch(prop -> prop.getName().equals("Property 3")));
+    }
+
+    @Test
     void testUpdateProperty() throws Exception {
         // Arrange
         property.setName("Updated Property");
@@ -217,26 +245,29 @@ public class PropertyServiceIntegrationTest {
     }
 
     @Test
-    void testFindAllTags() {
-        // Act
-        Set<TagDTO> distinctTags = propertyService.findAllTags();
-
-        // Assert
-        assertEquals(2, distinctTags.size());
-        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag1")));
-        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag2")));
-    }
-
-    @Test
-    void testFindAllTagsEmpty() {
+    void testGetRootProperties() throws InvalidAddressException {
         // Arrange
-        propertyRepository.deleteAll();
+        PropertyDTO property1 = new PropertyDTO();
+        property1.setName("Property 1");
+        property1.setParent(property);
+        property1 = propertyService.saveProperty(property1);
+
+        PropertyDTO property2 = new PropertyDTO();
+        property2.setName("Property 2");
+        property2.setParent(property1);
+        propertyService.saveProperty(property2);
+
+        PropertyDTO property3 = new PropertyDTO();
+        property3.setName("Property 3");
+        propertyService.saveProperty(property3);
 
         // Act
-        Set<TagDTO> distinctTags = propertyService.findAllTags();
+        List<PropertyDTO> properties = propertyService.getRootProperties();
 
         // Assert
-        assertTrue(distinctTags.isEmpty());
+        assertEquals(2, properties.size());
+        assertTrue(properties.stream().anyMatch(prop -> prop.getName().equals("Test Property")));
+        assertTrue(properties.stream().anyMatch(prop -> prop.getName().equals("Property 3")));
     }
 
     @Test
@@ -259,6 +290,29 @@ public class PropertyServiceIntegrationTest {
         assertEquals(2, children.size());
         assertTrue(children.stream().anyMatch(child -> child.getName().equals("Child Property 1")));
         assertTrue(children.stream().anyMatch(child -> child.getName().equals("Child Property 2")));
+    }
+
+    @Test
+    void testFindAllTags() {
+        // Act
+        Set<TagDTO> distinctTags = propertyService.findAllTags();
+
+        // Assert
+        assertEquals(2, distinctTags.size());
+        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag1")));
+        assertTrue(distinctTags.stream().anyMatch(tag -> tag.getName().equals("tag2")));
+    }
+
+    @Test
+    void testFindAllTagsEmpty() {
+        // Arrange
+        propertyRepository.deleteAll();
+
+        // Act
+        Set<TagDTO> distinctTags = propertyService.findAllTags();
+
+        // Assert
+        assertTrue(distinctTags.isEmpty());
     }
 
     @Test

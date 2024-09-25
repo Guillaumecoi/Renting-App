@@ -340,4 +340,31 @@ public class PropertyRepositoryTest {
         assertNull(properties.get(1).getAddress());
         assertNull(properties.get(1).getTags());
     }
+
+    @Test
+    void testFindRootProperties() {
+        // Arrange
+        Property property2 = new Property();
+        property2.setName("Test Property 2");
+        property2.setParent(property);
+        property2 = propertyRepository.saveAndFlush(property2);
+
+        Property property3 = new Property();
+        property3.setName("Test Property 3");
+        property3.setParent(property2);
+        propertyRepository.saveAndFlush(property3);
+
+        Property property4 = new Property();
+        property4.setName("Test Property 4");
+        propertyRepository.saveAndFlush(property4);
+
+        // Act
+        List<Property> rootProperties = propertyRepository.findRootProperties();
+
+        // Assert
+        assertNotNull(rootProperties);
+        assertEquals(2, rootProperties.size());
+        assertTrue(rootProperties.stream().anyMatch(p -> p.getId().equals(property.getId())));
+        assertTrue(rootProperties.stream().anyMatch(p -> p.getId().equals(property4.getId())));
+    }
 }

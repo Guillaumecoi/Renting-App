@@ -138,6 +138,20 @@ public class PropertyService {
     }
 
     /**
+     * Find all properties that have no parent
+     *
+     * @return a list of all root properties
+     */
+    public List<PropertyDTO> getRootProperties() {
+        logger.info("Finding root properties");
+        List<Property> rootProperties = propertyRepository.findRootProperties();
+        logger.info("Found {} root properties", rootProperties.size());
+        return rootProperties.stream()
+                .map(property -> propertyMapper.toDto(property))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Find all properties that are children of a property
      *
      * @param id the id of the parent property
