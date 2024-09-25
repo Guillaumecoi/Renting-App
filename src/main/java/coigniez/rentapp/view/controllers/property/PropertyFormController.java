@@ -2,19 +2,13 @@ package coigniez.rentapp.view.controllers.property;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
-import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
 import coigniez.rentapp.view.controllers.util.TagManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
@@ -29,9 +23,6 @@ import net.rgielen.fxweaver.core.FxmlView;
 @Component
 @FxmlView("/views/property/PropertyForm.fxml")
 public class PropertyFormController {
-
-    @Autowired
-    private PropertyService propertyService;
 
     @Setter
     private PropertyController propertyController;
@@ -51,46 +42,12 @@ public class PropertyFormController {
     }
 
     /**
-     * try to add the property to the database
-     */
-    private void addProperty() {
-        // Get the values from the form fields
-        property = propertyForm.getProperty();
-        property.setTagsFromList(tagManager.getSelectedTags());
-        try {
-            property = propertyService.saveProperty(property);
-            propertyController.propertyListView();
-            showSuccessAlert(property);
-            formField.getChildren().clear();
-            setProperty(null);
-
-        } catch (InvalidAddressException | DataIntegrityViolationException e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Unable to add property");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-        }
-    }
-
-    /**
-     * Show the success alert
-     */
-    private void showSuccessAlert(PropertyDTO property) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText("Property Submitted Successfully");
-        alert.setContentText("The property: \n" + property + "\nhas been submitted successfully.");
-
-        alert.showAndWait();
-    }
-
-    /**
      * Set the property to edit
      *
      * @param property the property to edit
      */
     public void setProperty(PropertyDTO property) {
+        formField.getChildren().clear();
         this.property = property;
         List<String> tags;
         String buttonLabel;
@@ -102,7 +59,7 @@ public class PropertyFormController {
             tags = property.getTags().stream().map(TagDTO::getName).toList();
             buttonLabel = "Edit Property";
         }
-        tagManager = new TagManager(propertyService.findAllTags().stream().map(TagDTO::getName).toList(), tags);
+        tagManager = new TagManager(propertyController.getAllTags(), tags);
         propertyForm = new PropertyForm(property, List.of(Country.getNames()));
 
         // Add a submit button
@@ -114,5 +71,21 @@ public class PropertyFormController {
         formField.getChildren().add(tagManager.getPane());
         formField.getChildren().add(submitButton);
         formField.setSpacing(10);
+    }
+
+    /**
+     * try to add the property to the database
+     */
+    private void addProperty() {
+        // Get the values from the form fields
+        property = propertyForm.getProperty();
+        property.setTagsFromList(tagManager.getSelectedTags());
+        // Save the property
+        boolean saved = propertyController.saveProperty(property);
+
+        if (saved) {
+            // Clear the form
+            setProperty(null);
+        }
     }
 }

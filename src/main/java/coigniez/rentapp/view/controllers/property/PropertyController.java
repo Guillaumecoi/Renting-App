@@ -1,9 +1,15 @@
 package coigniez.rentapp.view.controllers.property;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.property.PropertyDTO;
+import coigniez.rentapp.model.property.PropertyService;
+import coigniez.rentapp.model.property.tag.TagDTO;
 import coigniez.rentapp.view.controllers.MainController;
 import javafx.event.ActionEvent;
 import javafx.scene.Parent;
@@ -23,11 +29,14 @@ public class PropertyController {
     @Autowired
     private FxWeaver fxWeaver;
 
+    @Autowired
+    private PropertyService propertyService;
+
     @Setter
     private MainController mainController;
 
     @Getter
-    private AnchorPane propertyAnchorPane = new AnchorPane();
+    private final AnchorPane propertyAnchorPane = new AnchorPane();
 
     public void handleAddPropertyButtonAction(ActionEvent event) {
         editProperty(new PropertyDTO());
@@ -83,5 +92,50 @@ public class PropertyController {
             alert.setContentText("Error loading add property screen");
             alert.showAndWait();
         }
+    }
+
+    /**
+     * Called when a property is updated, to refresh the view
+     */
+    public void propertyUpdated() {
+        propertyListView();
+    }
+
+    /**
+     * Save the property to the database
+     *
+     * @param property the property to save
+     * @return true if the property was saved successfully
+     */
+    public boolean saveProperty(PropertyDTO property) {
+        try {
+            property = propertyService.saveProperty(property);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText("Property Submitted Successfully");
+            alert.setContentText("The property: \n" + property + "\nhas been submitted successfully.");
+            alert.showAndWait();
+
+            propertyUpdated();
+            return true;
+
+        } catch (InvalidAddressException | DataIntegrityViolationException e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Unable to add property");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+            return false;
+        }
+    }
+
+    /**
+     * Get all tags from the database
+     *
+     * @return a list of all tags
+     */
+    public List<String> getAllTags() {
+        return propertyService.findAllTags().stream().map(TagDTO::getName).toList();
     }
 }
