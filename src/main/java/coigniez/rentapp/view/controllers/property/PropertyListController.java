@@ -12,7 +12,6 @@ import coigniez.rentapp.model.address.AddressDTO;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
-import coigniez.rentapp.view.controllers.MainController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -36,7 +35,7 @@ public class PropertyListController {
     private TableView<PropertyDTO> propertyTable;
 
     @Setter
-    private MainController mainController;
+    private PropertyController propertyController;
 
     @FXML
     public void initialize() {
@@ -108,7 +107,7 @@ public class PropertyListController {
      */
     private void handleOpenAction() {
         PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
-        mainController.showPropertyDetails(selectedProperty);
+        propertyController.showPropertyDetails(selectedProperty);
     }
 
     /**
@@ -116,7 +115,7 @@ public class PropertyListController {
      */
     private void handleEditAction() {
         PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
-        mainController.editProperty(selectedProperty);
+        propertyController.editProperty(selectedProperty);
     }
 
     /**

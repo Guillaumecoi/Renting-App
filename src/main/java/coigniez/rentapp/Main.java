@@ -36,12 +36,18 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+
         Parent root = fxWeaver.loadView(MainController.class);
         if (root == null) {
             System.out.println("Failed to load view for MainController");
             return;
         }
-        stage.setScene(new Scene(root));
+
+        // Set the stylesheet for the entire scene
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+
+        stage.setScene(scene);
         stage.setTitle("RentApp");
         stage.show();
     }

@@ -11,7 +11,6 @@ import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
-import coigniez.rentapp.view.controllers.MainController;
 import coigniez.rentapp.view.controllers.util.TagManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -35,7 +34,7 @@ public class PropertyFormController {
     private PropertyService propertyService;
 
     @Setter
-    private MainController mainController;
+    private PropertyController propertyController;
 
     // The property to edit
     PropertyDTO property;
@@ -60,7 +59,7 @@ public class PropertyFormController {
         property.setTagsFromList(tagManager.getSelectedTags());
         try {
             property = propertyService.saveProperty(property);
-            mainController.propertyListView();
+            propertyController.propertyListView();
             showSuccessAlert(property);
             formField.getChildren().clear();
             setProperty(null);
