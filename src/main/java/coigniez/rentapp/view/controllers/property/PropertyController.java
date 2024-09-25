@@ -36,33 +36,44 @@ public class PropertyController {
     private MainController mainController;
 
     @Getter
-    private final AnchorPane propertyAnchorPane = new AnchorPane();
+    private final AnchorPane propertyPane = new AnchorPane();
 
+    private Parent propertyListView;
+    private PropertyListController propertyListController;
+
+    /**
+     * Opens a form to add a new property
+     */
     public void handleAddPropertyButtonAction(ActionEvent event) {
         editProperty(new PropertyDTO());
     }
 
-    public void propertyListView() {
-        try {
-            Parent propertyListView = fxWeaver.loadView(PropertyListController.class);
-            // Get the controller and set the main controller
-            PropertyListController controller = fxWeaver.getBean(PropertyListController.class);
-            controller.setPropertyController(this);
-            // Set the PropertyListController as the only child of the AnchorPane
-            propertyAnchorPane.getChildren().clear();
-            propertyAnchorPane.getChildren().setAll(propertyListView);
-        } catch (Exception e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setContentText("Error loading property list screen");
-            alert.showAndWait();
-            System.out.println(e.getMessage());
+    /**
+     * Set the property list view to the property pane
+     */
+    public void setPropertyListView() {
+        if (propertyListView == null) {
+            initializePropertyListView();
         }
+        propertyListController.setProperties(propertyService.findAllProperties());
+        propertyPane.getChildren().clear();
+        propertyPane.getChildren().add(propertyListView);
     }
 
-    public void showPropertyDetails(PropertyDTO property) {
+    /**
+     * Set the property details view to the property pane
+     *
+     * @param property the property to display
+     */
+    public void setPropertyDetailsView(PropertyDTO property) {
         //TODO
     }
 
+    /**
+     * Opens a popup to edit a property
+     *
+     * @param property the property to edit
+     */
     public void editProperty(PropertyDTO property) {
         try {
             // Load the new FXML file for the PropertyFormController
@@ -79,7 +90,7 @@ public class PropertyController {
             Stage popupStage = new Stage();
             popupStage.setTitle("Property");
             popupStage.initModality(Modality.WINDOW_MODAL);
-            popupStage.initOwner(propertyAnchorPane.getScene().getWindow());
+            popupStage.initOwner(propertyPane.getScene().getWindow());
 
             // Set the scene for the new stage
             Scene scene = new Scene(addPropertyView);
@@ -89,7 +100,7 @@ public class PropertyController {
             popupStage.showAndWait();
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
-            alert.setContentText("Error loading add property screen");
+            alert.setContentText("Error loading add/edit property screen");
             alert.showAndWait();
         }
     }
@@ -98,7 +109,9 @@ public class PropertyController {
      * Called when a property is updated, to refresh the view
      */
     public void propertyUpdated() {
-        propertyListView();
+        if (propertyListController != null) {
+            propertyListController.setProperties(propertyService.findAllProperties());
+        }
     }
 
     /**
@@ -131,11 +144,38 @@ public class PropertyController {
     }
 
     /**
+     * Delete a property from the database
+     *
+     * @param id the id of the property to delete
+     */
+    public void deleteProperty(Long id) {
+        propertyService.deleteProperty(id);
+        propertyUpdated();
+    }
+
+    /**
      * Get all tags from the database
      *
      * @return a list of all tags
      */
     public List<String> getAllTags() {
         return propertyService.findAllTags().stream().map(TagDTO::getName).toList();
+    }
+
+    /*
+     * Initialize the property list view
+     */
+    private void initializePropertyListView() {
+        try {
+            propertyListView = fxWeaver.loadView(PropertyListController.class);
+            // Get the controller and set the main controller
+            propertyListController = fxWeaver.getBean(PropertyListController.class);
+            propertyListController.setPropertyController(this);
+        } catch (Exception e) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setContentText("Error loading property list screen");
+            alert.showAndWait();
+            System.out.println(e.getMessage());
+        }
     }
 }

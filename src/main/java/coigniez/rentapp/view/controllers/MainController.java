@@ -23,8 +23,8 @@ public class MainController {
     @FXML
     public void initialize() {
         propertyController.setMainController(this);
-        propertyController.propertyListView();
-        mainAnchorPane.getChildren().add(propertyController.getPropertyAnchorPane());
+        propertyController.setPropertyListView();
+        mainAnchorPane.getChildren().add(propertyController.getPropertyPane());
     }
 
     @FXML

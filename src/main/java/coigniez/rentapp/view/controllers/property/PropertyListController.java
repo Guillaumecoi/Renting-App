@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import coigniez.rentapp.model.address.AddressDTO;
 import coigniez.rentapp.model.property.PropertyDTO;
-import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -28,9 +26,6 @@ import net.rgielen.fxweaver.core.FxmlView;
 @FxmlView("/views/property/PropertyList.fxml")
 public class PropertyListController {
 
-    @Autowired
-    private PropertyService propertyService;
-
     @FXML
     private TableView<PropertyDTO> propertyTable;
 
@@ -39,13 +34,10 @@ public class PropertyListController {
 
     @FXML
     public void initialize() {
-        // Fetch properties
-        List<PropertyDTO> properties = propertyService.findAllProperties();
-        initializeTable(properties);
-
+        initializeTable();
     }
 
-    private void initializeTable(List<PropertyDTO> properties) {
+    private void initializeTable() {
         // Initialize table columns
         TableColumn<PropertyDTO, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
@@ -68,9 +60,6 @@ public class PropertyListController {
         // Add columns to table
         Collections.addAll(propertyTable.getColumns(), nameColumn, addressColumn, tagsColumn);
 
-        // Add properties to table
-        propertyTable.getItems().addAll(properties);
-
         // Add double click event
         propertyTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -80,6 +69,16 @@ public class PropertyListController {
 
         // Right click action
         propertyTable.setOnContextMenuRequested(event -> showContextMenu(event.getScreenX(), event.getScreenY()));
+    }
+
+    /**
+     * Set the properties to display in the table
+     *
+     * @param properties the properties to display
+     */
+    public void setProperties(List<PropertyDTO> properties) {
+        propertyTable.getItems().clear();
+        propertyTable.getItems().addAll(properties);
     }
 
     /**
@@ -107,7 +106,7 @@ public class PropertyListController {
      */
     private void handleOpenAction() {
         PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
-        propertyController.showPropertyDetails(selectedProperty);
+        propertyController.setPropertyDetailsView(selectedProperty);
     }
 
     /**
@@ -130,8 +129,7 @@ public class PropertyListController {
             alert.setContentText("Are you sure you want to delete this property?");
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    propertyService.deleteProperty(selectedProperty.getId());
-                    propertyTable.getItems().remove(selectedProperty);
+                    propertyController.deleteProperty(selectedProperty.getId());
                 }
             });
         }
