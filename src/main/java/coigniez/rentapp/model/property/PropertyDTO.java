@@ -34,4 +34,13 @@ public class PropertyDTO {
         this.tags = tags.stream().map(TagDTO::new).collect(Collectors.toSet());
     }
 
+    /**
+     * Create a copy of the property.
+     *
+     * @return a copy of the property
+     */
+    public PropertyDTO copy() {
+        return new PropertyDTO(id, name, address, tags, parent);
+    }
+
 }
