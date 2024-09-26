@@ -55,12 +55,17 @@ public class PropertyForm {
      * @param countries the list of countries for the address
      */
     public PropertyForm(PropertyDTO property, List<String> countries, List<String> availabletags) {
+        // Set the attributes
         this.property = property;
         this.countries = countries;
+        // Get the tags of the property
         List<String> tags = property.getId() == null ? null : property.getTags().stream().map(TagDTO::getName).toList();
         this.tagManager = new TagManager(availabletags, tags);
+
+        // Create the form
         createForm();
-        setForm();
+
+        // Add the form to the form pane
         formPane.getChildren().add(formRenderer);
         formPane.getChildren().add(tagManager.getPane());
     }
@@ -106,6 +111,9 @@ public class PropertyForm {
         // Render the form
         formRenderer = new FormRenderer(form);
         formRenderer.setMinWidth(800);
+
+        // Set the values of the form fields
+        setForm();
     }
 
     /**

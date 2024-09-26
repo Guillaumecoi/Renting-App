@@ -25,14 +25,32 @@ public class PropertyFormController {
     @Setter
     private PropertyController propertyController;
 
-    PropertyDTO property;               // The property to edit
+    private PropertyDTO property;               // The property to edit
     private PropertyForm propertyForm;  // Helper class for the form
+    private PropertyMode mode;          // The mode of the form
 
     @FXML
     private VBox formField;
 
     @FXML
     public void initialize() {
+    }
+
+    // The mode of the form
+    public enum PropertyMode {
+        NEW("Create New Property"),
+        EDIT("Edit Property"),
+        SUBPROPERTY("Add Subproperty");
+
+        private final String buttonLabel;
+
+        PropertyMode(String buttonLabel) {
+            this.buttonLabel = buttonLabel;
+        }
+
+        public String getButtonLabel() {
+            return buttonLabel;
+        }
     }
 
     /**
@@ -42,18 +60,18 @@ public class PropertyFormController {
      */
     public void setProperty(PropertyDTO property) {
         formField.getChildren().clear();
-        this.property = property;
-        String buttonLabel;
-        if (property == null || property.getId() == null) {
-            buttonLabel = "Add Property";
+        // If the property is null, create a new property
+        if (property == null) {
             property = new PropertyDTO();
-        } else {
-            buttonLabel = "Edit Property";
         }
+        this.property = property;
+        // Get the mode based on the property
+        getMode();
+
         propertyForm = new PropertyForm(property, List.of(Country.getNames()), propertyController.getAllTags());
 
         // Add a submit button
-        Button submitButton = new Button(buttonLabel);
+        Button submitButton = new Button(mode.getButtonLabel());
         submitButton.setOnAction(event -> addProperty());
 
         // Add the form and the submit button to the form field
@@ -73,6 +91,19 @@ public class PropertyFormController {
         // Clear the form if the property was saved
         if (saved) {
             setProperty(null);
+        }
+    }
+
+    /**
+     * Get the mode of the form based on the property
+     */
+    private void getMode() {
+        if (property.getId() != null) {  // If the property has an id, the mode is edit
+            mode = PropertyMode.EDIT;
+        } else if (property.getParent() != null) {
+            mode = PropertyMode.SUBPROPERTY;  // If the property has a parent but no id, the mode is subproperty
+        } else {
+            mode = PropertyMode.NEW;  // Otherwise, the mode is new
         }
     }
 }

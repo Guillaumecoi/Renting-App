@@ -89,13 +89,15 @@ public class PropertyListController {
 
         MenuItem open = new MenuItem("Open");
         MenuItem edit = new MenuItem("Edit");
+        MenuItem addSubproperty = new MenuItem("Add Subproperty");
         MenuItem delete = new MenuItem("Delete");
 
         open.setOnAction(event -> handleOpenAction());
         edit.setOnAction(event -> handleEditAction());
+        addSubproperty.setOnAction(event -> handleAddSubpropertyAction());
         delete.setOnAction(event -> handleDeleteAction());
 
-        contextMenu.getItems().addAll(open, edit, delete);
+        contextMenu.getItems().addAll(open, edit, addSubproperty, delete);
         contextMenu.show(propertyTable, screenX, screenY);
         // Add event filter to hide context menu on mouse click outside
         propertyTable.getScene().addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, e -> contextMenu.hide());
@@ -115,6 +117,14 @@ public class PropertyListController {
     private void handleEditAction() {
         PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
         propertyController.editProperty(selectedProperty);
+    }
+
+    /**
+     * Adds a subproperty to the selected property
+     */
+    private void handleAddSubpropertyAction() {
+        PropertyDTO selectedProperty = propertyTable.getSelectionModel().getSelectedItem();
+        propertyController.addSubproperty(selectedProperty);
     }
 
     /**

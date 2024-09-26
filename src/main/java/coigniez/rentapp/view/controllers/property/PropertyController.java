@@ -144,6 +144,12 @@ public class PropertyController {
         }
     }
 
+    public void addSubproperty(PropertyDTO property) {
+        PropertyDTO subproperty = new PropertyDTO();
+        subproperty.setParent(property);
+        editProperty(subproperty);
+    }
+
     /**
      * Delete a property from the database
      *
