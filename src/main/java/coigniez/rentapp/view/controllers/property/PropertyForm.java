@@ -59,7 +59,7 @@ public class PropertyForm {
         this.property = property;
         this.countries = countries;
         // Get the tags of the property
-        List<String> tags = property.getId() == null ? null : property.getTags().stream().map(TagDTO::getName).toList();
+        List<String> tags = property.getTags() == null ? null : property.getTags().stream().map(TagDTO::getName).toList();
         this.tagManager = new TagManager(availabletags, tags);
 
         // Create the form

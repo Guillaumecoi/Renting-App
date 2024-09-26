@@ -1,13 +1,17 @@
 package coigniez.rentapp.view.controllers.property;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
 import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -67,8 +71,10 @@ public class PropertyFormController {
         this.property = property;
         // Get the mode based on the property
         getMode();
+        // Ask the user if they want to copy the address and tags from the parent property
+        getPopupQuestions();
 
-        propertyForm = new PropertyForm(property, List.of(Country.getNames()), propertyController.getAllTags());
+        propertyForm = new PropertyForm(property.copy(), List.of(Country.getNames()), propertyController.getAllTags());
 
         // Add a submit button
         Button submitButton = new Button(mode.getButtonLabel());
@@ -106,4 +112,32 @@ public class PropertyFormController {
             mode = PropertyMode.NEW;  // Otherwise, the mode is new
         }
     }
+
+    private void getPopupQuestions() {
+        if (mode == PropertyMode.SUBPROPERTY) {
+            // Ask if the user wants to copy the address and tags from the parent property
+            // Create a confirmation dialog
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Copy Address and Tags");
+            alert.setHeaderText(null);
+            alert.setContentText("Do you want to copy the address and tags from the parent property?");
+
+            // Add the buttons
+            ButtonType buttonTypeYes = new ButtonType("Yes");
+            ButtonType buttonTypeNo = new ButtonType("No");
+
+            alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+            // Show the dialog and get the result
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonTypeYes) {
+                // Copy the address and tags from the parent property
+                if (property.getParent().getAddress() != null) {
+                    property.setAddress(property.getParent().getAddress().copy());
+                }
+                property.setTags(property.getParent().getTags());
+            }
+        }
+    }
 }
+
