@@ -96,6 +96,11 @@ public class PropertyFormController {
         boolean saved = propertyController.saveProperty(property);
         // Clear the form if the property was saved
         if (saved) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Property Submitted Successfully");
+            alert.setHeaderText(null);
+            alert.setContentText("The property: \n" + property + "\nhas been submitted successfully.");
+            alert.showAndWait();
             setProperty(null);
         }
     }
@@ -140,4 +145,3 @@ public class PropertyFormController {
         }
     }
 }
-

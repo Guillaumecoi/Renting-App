@@ -123,14 +123,7 @@ public class PropertyController {
      */
     public boolean saveProperty(PropertyDTO property) {
         try {
-            property = propertyService.saveProperty(property);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText("Property Submitted Successfully");
-            alert.setContentText("The property: \n" + property + "\nhas been submitted successfully.");
-            alert.showAndWait();
-
+            propertyService.saveProperty(property);
             propertyUpdated();
             return true;
 
