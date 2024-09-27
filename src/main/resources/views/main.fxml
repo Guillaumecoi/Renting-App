@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.AnchorPane?>
 
-<VBox prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coigniez.rentapp.view.controllers.MainController">
+<VBox prefHeight="900.0" prefWidth="1440.0" styleClass="root" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coigniez.rentapp.view.controllers.MainController">
     <children>
-      <AnchorPane fx:id="mainAnchorPane"/>
+      <BorderPane fx:id="mainPane" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <left>
+            <VBox prefHeight="200.0" prefWidth="200.0" styleClass="sidebar" stylesheets="@../css/darkgreen.css" BorderPane.alignment="CENTER" />
+         </left>
+      </BorderPane>
     </children>
+   <stylesheets>
+      <URL value="@../css/darkgreen.css" />
+      <URL value="@../css/styles.css" />
+   </stylesheets>
 </VBox>

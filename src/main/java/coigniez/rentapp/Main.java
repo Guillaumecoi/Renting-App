@@ -45,7 +45,6 @@ public class Main extends Application {
 
         // Set the stylesheet for the entire scene
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("RentApp");

@@ -7,7 +7,7 @@ import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.view.controllers.property.PropertyController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import net.rgielen.fxweaver.core.FxmlView;
 
 @Component
@@ -18,13 +18,13 @@ public class MainController {
     private PropertyController propertyController;
 
     @FXML
-    private AnchorPane mainAnchorPane;
+    private BorderPane mainPane;
 
     @FXML
     public void initialize() {
         propertyController.setMainController(this);
         propertyController.setPropertyListView();
-        mainAnchorPane.getChildren().add(propertyController.getPropertyPane());
+        mainPane.setCenter(propertyController.getPropertyPane());
     }
 
     @FXML

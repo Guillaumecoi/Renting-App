@@ -1,0 +1,76 @@
+/* Define CSS variables */
+/* 
+--jet: #353535;
+--caribbean-current: #3c6e71;
+--white: #ffffff;
+--platinum: #d9d9d9;
+--indigo-dye: #284b63; 
+*/
+
+/* Light Theme */
+.root {
+    -fx-background-color: #ffffff; /* White background for main content */
+    -fx-text-fill: #353535; /* Jet font color */
+}
+
+.label, .button, .text-field {
+    -fx-text-fill: #353535; /* Jet font color for labels, buttons, and text fields */
+}
+
+.button {
+    -fx-background-color: #d9d9d9; /* Platinum for buttons */
+    -fx-border-color: #353535; /* Jet border color */
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.text-field {
+    -fx-background-color: #ffffff; /* White for text fields */
+    -fx-border-color: #353535; /* Jet border color */
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.table-view {
+    -fx-background-color: #ffffff; /* White background for table */
+    -fx-text-fill: #353535; /* Jet font color for table text */
+}
+
+.table-row-cell {
+    -fx-background-color: #ffffff; /* White background for table rows */
+    -fx-text-fill: #353535; /* Jet font color for table rows */
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #d9d9d9; /* Platinum background for selected table rows */
+    -fx-text-fill: #353535; /* Jet font color for selected table rows */
+}
+
+.table-column-header {
+    -fx-background-color: #d9d9d9; /* Platinum background for table headers */
+    -fx-text-fill: #353535; /* Jet font color for table headers */
+}
+
+/* Dark Sidebar */
+.sidebar {
+    -fx-background-color: #3c6e71; /* Caribbean Current background for sidebar */
+    -fx-text-fill: #ffffff; /* White font color */
+}
+
+.sidebar .label, .sidebar .button, .sidebar .text-field {
+    -fx-text-fill: #ffffff; /* White font color for labels, buttons, and text fields in sidebar */
+}
+
+.sidebar .button {
+    -fx-background-color: #284b63; /* Indigo Dye for buttons in sidebar */
+    -fx-border-color: #ffffff; /* White border color */
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.sidebar .text-field {
+    -fx-background-color: #353535; /* Jet for text fields in sidebar */
+    -fx-border-color: #ffffff; /* White border color */
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
