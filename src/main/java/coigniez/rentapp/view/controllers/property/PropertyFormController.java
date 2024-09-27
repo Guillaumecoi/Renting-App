@@ -1,11 +1,9 @@
 package coigniez.rentapp.view.controllers.property;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -74,7 +72,7 @@ public class PropertyFormController {
         // Ask the user if they want to copy the address and tags from the parent property
         getPopupQuestions();
 
-        propertyForm = new PropertyForm(property.copy(), List.of(Country.getNames()), propertyController.getAllTags());
+        propertyForm = new PropertyForm(property.copy(), propertyController.getCountries(), propertyController.getAllTags());
 
         // Add a submit button
         Button submitButton = new Button(mode.getButtonLabel());

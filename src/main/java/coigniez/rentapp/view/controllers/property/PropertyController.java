@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import coigniez.rentapp.exceptions.InvalidAddressException;
+import coigniez.rentapp.model.address.AddressService;
 import coigniez.rentapp.model.property.PropertyDTO;
 import coigniez.rentapp.model.property.PropertyService;
 import coigniez.rentapp.model.property.tag.TagDTO;
@@ -31,6 +32,9 @@ public class PropertyController {
 
     @Autowired
     private PropertyService propertyService;
+
+    @Autowired
+    private AddressService addressService;
 
     @Setter
     @SuppressWarnings("unused") // Will be used in the future
@@ -160,6 +164,15 @@ public class PropertyController {
      */
     public List<String> getAllTags() {
         return propertyService.findAllTags().stream().map(TagDTO::getName).toList();
+    }
+
+    /**
+     * Get all country options
+     *
+     * @return a list of all countries
+     */
+    public List<String> getCountries() {
+        return List.of(addressService.getCountries());
     }
 
     /*
