@@ -56,7 +56,7 @@ public class PropertyController {
         if (propertyListView == null) {
             initializePropertyListView();
         }
-        propertyListController.setProperties(propertyService.findAllProperties());
+        propertyListController.setProperties(propertyService.getRootProperties());
         propertyPane.getChildren().clear();
         propertyPane.getChildren().add(propertyListView);
     }
