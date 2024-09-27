@@ -23,7 +23,7 @@ import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
 
 @Component
-@FxmlView("/views/property/PropertyList.fxml")
+@FxmlView("/views/property/propertyList.fxml")
 public class PropertyListController {
 
     @FXML

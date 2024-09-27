@@ -21,7 +21,7 @@ import net.rgielen.fxweaver.core.FxmlView;
  * the success alert.
  */
 @Component
-@FxmlView("/views/property/PropertyForm.fxml")
+@FxmlView("/views/property/propertyForm.fxml")
 public class PropertyFormController {
 
     @Setter
