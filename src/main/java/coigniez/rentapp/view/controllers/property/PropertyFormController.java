@@ -1,22 +1,17 @@
 package coigniez.rentapp.view.controllers.property;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import coigniez.rentapp.exceptions.InvalidAddressException;
 import coigniez.rentapp.model.address.Country;
 import coigniez.rentapp.model.property.PropertyDTO;
-import coigniez.rentapp.model.property.PropertyService;
-import coigniez.rentapp.model.property.tag.TagDTO;
-import coigniez.rentapp.view.controllers.MainController;
-import coigniez.rentapp.view.controllers.util.TagManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -31,18 +26,12 @@ import net.rgielen.fxweaver.core.FxmlView;
 @FxmlView("/views/property/PropertyForm.fxml")
 public class PropertyFormController {
 
-    @Autowired
-    private PropertyService propertyService;
-
     @Setter
-    private MainController mainController;
+    private PropertyController propertyController;
 
-    // The property to edit
-    PropertyDTO property;
-
-    // Helper classes for the form
-    private PropertyForm propertyForm;
-    private TagManager tagManager;
+    private PropertyDTO property;               // The property to edit
+    private PropertyForm propertyForm;  // Helper class for the form
+    private PropertyMode mode;          // The mode of the form
 
     @FXML
     private VBox formField;
@@ -51,39 +40,21 @@ public class PropertyFormController {
     public void initialize() {
     }
 
-    /**
-     * try to add the property to the database
-     */
-    private void addProperty() {
-        // Get the values from the form fields
-        property = propertyForm.getProperty();
-        property.setTagsFromList(tagManager.getSelectedTags());
-        try {
-            property = propertyService.saveProperty(property);
-            mainController.propertyListView();
-            showSuccessAlert(property);
-            formField.getChildren().clear();
-            setProperty(null);
+    // The mode of the form
+    public enum PropertyMode {
+        NEW("Create New Property"),
+        EDIT("Edit Property"),
+        SUBPROPERTY("Add Subproperty");
 
-        } catch (InvalidAddressException | DataIntegrityViolationException e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Unable to add property");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        private final String buttonLabel;
+
+        PropertyMode(String buttonLabel) {
+            this.buttonLabel = buttonLabel;
         }
-    }
 
-    /**
-     * Show the success alert
-     */
-    private void showSuccessAlert(PropertyDTO property) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText("Property Submitted Successfully");
-        alert.setContentText("The property: \n" + property + "\nhas been submitted successfully.");
-
-        alert.showAndWait();
+        public String getButtonLabel() {
+            return buttonLabel;
+        }
     }
 
     /**
@@ -92,28 +63,85 @@ public class PropertyFormController {
      * @param property the property to edit
      */
     public void setProperty(PropertyDTO property) {
-        this.property = property;
-        List<String> tags;
-        String buttonLabel;
-        if (property == null || property.getId() == null) {
-            tags = null;
-            buttonLabel = "Add Property";
+        formField.getChildren().clear();
+        // If the property is null, create a new property
+        if (property == null) {
             property = new PropertyDTO();
-        } else {
-            tags = property.getTags().stream().map(TagDTO::getName).toList();
-            buttonLabel = "Edit Property";
         }
-        tagManager = new TagManager(propertyService.findAllTags().stream().map(TagDTO::getName).toList(), tags);
-        propertyForm = new PropertyForm(property, List.of(Country.getNames()));
+        this.property = property;
+        // Get the mode based on the property
+        getMode();
+        // Ask the user if they want to copy the address and tags from the parent property
+        getPopupQuestions();
+
+        propertyForm = new PropertyForm(property.copy(), List.of(Country.getNames()), propertyController.getAllTags());
 
         // Add a submit button
-        Button submitButton = new Button(buttonLabel);
+        Button submitButton = new Button(mode.getButtonLabel());
         submitButton.setOnAction(event -> addProperty());
 
         // Add the form and the submit button to the form field
-        formField.getChildren().add(propertyForm.getFormRenderer());
-        formField.getChildren().add(tagManager.getPane());
+        formField.getChildren().add(propertyForm.getFormPane());
         formField.getChildren().add(submitButton);
         formField.setSpacing(10);
+    }
+
+    /**
+     * try to add the property to the database
+     */
+    private void addProperty() {
+        // Get the values from the form fields
+        property = propertyForm.getProperty();
+        // Save the property
+        boolean saved = propertyController.saveProperty(property);
+        // Clear the form if the property was saved
+        if (saved) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Property Submitted Successfully");
+            alert.setHeaderText(null);
+            alert.setContentText("The property: \n" + property + "\nhas been submitted successfully.");
+            alert.showAndWait();
+            setProperty(null);
+        }
+    }
+
+    /**
+     * Get the mode of the form based on the property
+     */
+    private void getMode() {
+        if (property.getId() != null) {  // If the property has an id, the mode is edit
+            mode = PropertyMode.EDIT;
+        } else if (property.getParent() != null) {
+            mode = PropertyMode.SUBPROPERTY;  // If the property has a parent but no id, the mode is subproperty
+        } else {
+            mode = PropertyMode.NEW;  // Otherwise, the mode is new
+        }
+    }
+
+    private void getPopupQuestions() {
+        if (mode == PropertyMode.SUBPROPERTY) {
+            // Ask if the user wants to copy the address and tags from the parent property
+            // Create a confirmation dialog
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Copy Address and Tags");
+            alert.setHeaderText(null);
+            alert.setContentText("Do you want to copy the address and tags from the parent property?");
+
+            // Add the buttons
+            ButtonType buttonTypeYes = new ButtonType("Yes");
+            ButtonType buttonTypeNo = new ButtonType("No");
+
+            alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+            // Show the dialog and get the result
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonTypeYes) {
+                // Copy the address and tags from the parent property
+                if (property.getParent().getAddress() != null) {
+                    property.setAddress(property.getParent().getAddress().copy());
+                }
+                property.setTags(property.getParent().getTags());
+            }
+        }
     }
 }

@@ -117,6 +117,27 @@ public class PropertyServiceTest {
     }
 
     @Test
+    void testFindAllChildren() {
+        // Arrange
+        Property child1 = new Property();
+        child1.setName("Child Property 1");
+
+        Property child2 = new Property();
+        child2.setName("Child Property 2");
+
+        List<Property> children = List.of(child1, child2);
+        when(propertyRepository.findChildren(1L)).thenReturn(children);
+
+        // Act
+        List<PropertyDTO> childrenDTO = propertyService.getChildren(1L);
+
+        // Assert
+        assertEquals(2, childrenDTO.size());
+        assertEquals("Child Property 1", childrenDTO.get(0).getName());
+        assertEquals("Child Property 2", childrenDTO.get(1).getName());
+    }
+
+    @Test
     void testFindAllTags() {
         // Arrange
         when(propertyRepository.findDistinctTags()).thenReturn(List.of("Test Tag"));
@@ -128,5 +149,21 @@ public class PropertyServiceTest {
         assertEquals(1, tags.size());
         assertEquals("Test Tag", tags.iterator().next().getName());
         verify(propertyRepository, times(1)).findDistinctTags();
+    }
+
+    @Test
+    void testGetRootProperties() {
+        // Arrange
+        Property rootProperty = new Property();
+        rootProperty.setName("Root Property");
+        when(propertyRepository.findRootProperties()).thenReturn(List.of(rootProperty));
+
+        // Act
+        List<PropertyDTO> rootProperties = propertyService.getRootProperties();
+
+        // Assert
+        assertEquals(1, rootProperties.size());
+        assertEquals("Root Property", rootProperties.get(0).getName());
+        verify(propertyRepository, times(1)).findRootProperties();
     }
 }

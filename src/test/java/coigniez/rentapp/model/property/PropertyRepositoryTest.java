@@ -119,6 +119,43 @@ public class PropertyRepositoryTest {
     }
 
     @Test
+    public void testCreatePropertyWithParent() {
+        // Arrange
+        Property newProperty = new Property();
+        newProperty.setName("New Property");
+        newProperty.setParent(property);
+
+        // Act
+        Property savedProperty = propertyRepository.save(newProperty);
+
+        // Assert
+        assertNotNull(savedProperty.getId());
+        assertEquals(newProperty.getName(), savedProperty.getName());
+        assertNotNull(savedProperty.getParent());
+        assertNotNull(savedProperty.getParent().getId());
+        assertEquals(property.getName(), savedProperty.getParent().getName());
+        assertEquals(property.getId(), savedProperty.getParent().getId());
+    }
+
+    @Test
+    public void testRetrieveParentPropertyAndChildren() {
+        // Arrange
+        Property newProperty = new Property();
+        newProperty.setName("New Property");
+        newProperty.setParent(property);
+        Property savedProperty = propertyRepository.save(newProperty);
+
+        // Act
+        List<Property> children = propertyRepository.findChildren(property.getId());
+
+        // Assert
+        assertNotNull(children);
+        assertFalse(children.isEmpty());
+        assertEquals(1, children.size());
+        assertEquals(savedProperty.getId(), children.iterator().next().getId());
+    }
+
+    @Test
     public void testReadProperty() {
         // Act
         Optional<Property> readProperty = propertyRepository.findById(property.getId());
@@ -302,5 +339,32 @@ public class PropertyRepositoryTest {
         assertEquals(property2.getName(), properties.get(1).getName());
         assertNull(properties.get(1).getAddress());
         assertNull(properties.get(1).getTags());
+    }
+
+    @Test
+    void testFindRootProperties() {
+        // Arrange
+        Property property2 = new Property();
+        property2.setName("Test Property 2");
+        property2.setParent(property);
+        property2 = propertyRepository.saveAndFlush(property2);
+
+        Property property3 = new Property();
+        property3.setName("Test Property 3");
+        property3.setParent(property2);
+        propertyRepository.saveAndFlush(property3);
+
+        Property property4 = new Property();
+        property4.setName("Test Property 4");
+        propertyRepository.saveAndFlush(property4);
+
+        // Act
+        List<Property> rootProperties = propertyRepository.findRootProperties();
+
+        // Assert
+        assertNotNull(rootProperties);
+        assertEquals(2, rootProperties.size());
+        assertTrue(rootProperties.stream().anyMatch(p -> p.getId().equals(property.getId())));
+        assertTrue(rootProperties.stream().anyMatch(p -> p.getId().equals(property4.getId())));
     }
 }

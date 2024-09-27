@@ -13,6 +13,9 @@ import com.dlsc.formsfx.view.renderer.FormRenderer;
 
 import coigniez.rentapp.model.address.AddressDTO;
 import coigniez.rentapp.model.property.PropertyDTO;
+import coigniez.rentapp.model.property.tag.TagDTO;
+import coigniez.rentapp.view.controllers.util.TagManager;
+import javafx.scene.layout.VBox;
 import lombok.Getter;
 
 /**
@@ -27,9 +30,11 @@ public class PropertyForm {
     // The property to edit
     private PropertyDTO property;
     private final List<String> countries;
+    private final TagManager tagManager;
 
     // JavaFX components
     @Getter
+    private final VBox formPane = new VBox();
     private FormRenderer formRenderer;
     private Form form;
 
@@ -49,11 +54,20 @@ public class PropertyForm {
      * @param property the property to edit
      * @param countries the list of countries for the address
      */
-    public PropertyForm(PropertyDTO property, List<String> countries) {
+    public PropertyForm(PropertyDTO property, List<String> countries, List<String> availabletags) {
+        // Set the attributes
         this.property = property;
         this.countries = countries;
+        // Get the tags of the property
+        List<String> tags = property.getTags() == null ? null : property.getTags().stream().map(TagDTO::getName).toList();
+        this.tagManager = new TagManager(availabletags, tags);
+
+        // Create the form
         createForm();
-        setForm();
+
+        // Add the form to the form pane
+        formPane.getChildren().add(formRenderer);
+        formPane.getChildren().add(tagManager.getPane());
     }
 
     /**
@@ -97,6 +111,9 @@ public class PropertyForm {
         // Render the form
         formRenderer = new FormRenderer(form);
         formRenderer.setMinWidth(800);
+
+        // Set the values of the form fields
+        setForm();
     }
 
     /**
@@ -154,9 +171,13 @@ public class PropertyForm {
                 ? null
                 : new AddressDTO(null, street, houseNumber, busNumber, postalCode, city, province, country);
 
+        // Get the tags
+        List<String> tags = tagManager.getSelectedTags();
+
         // Set the attributes of the property
         property.setName(name);
         property.setAddress(address);
+        property.setTagsFromList(tags);
 
         return property;
     }

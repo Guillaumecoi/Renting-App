@@ -50,4 +50,14 @@ public class AddressDTO {
 
         return result.toString();
     }
+
+    /**
+     * Create a copy of the address. The copy has the same values as the
+     * original but null as id.
+     *
+     * @return a copy of the address
+     */
+    public AddressDTO copy() {
+        return new AddressDTO(null, street, houseNumber, busNumber, postalCode, city, province, country);
+    }
 }
