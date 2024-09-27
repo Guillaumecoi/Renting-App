@@ -111,7 +111,7 @@ public class PropertyController {
      */
     public void propertyUpdated() {
         if (propertyListController != null) {
-            propertyListController.setProperties(propertyService.findAllProperties());
+            propertyListController.setProperties(propertyService.getRootProperties());
         }
     }
 

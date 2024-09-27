@@ -142,6 +142,7 @@ public class PropertyService {
      *
      * @return a list of all root properties
      */
+    @Transactional(readOnly = true)
     public List<PropertyDTO> getRootProperties() {
         logger.info("Finding root properties");
         List<Property> rootProperties = propertyRepository.findRootProperties();
